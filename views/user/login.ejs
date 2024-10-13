@@ -1,0 +1,117 @@
+<%- include("../../views/partials/user/header") %>
+
+<style>
+    body {
+        background-color: #f8f9fa; /* Light background color */
+    }
+    .login-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh; /* Full height for centering */
+    }
+    .login-card {
+        background-color: #ffffff; /* White background for the card */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        padding: 2rem; /* Spacing inside the card */
+        width: 100%;
+        max-width: 400px; /* Limit maximum width */
+    }
+    .form-control {
+        border-radius: 4px; /* Rounded corners for input fields */
+    }
+    .btn {
+        border-radius: 4px; /* Rounded corners for buttons */
+    }
+    .error-message {
+        color: red; /* Change text color to red for visibility */
+        font-size: 0.875rem; /* Adjust font size */
+        display: none; /* Hide by default; shown via JavaScript */
+    }
+</style>
+
+<!-- Login Page Content -->
+<div class="container-fluid">
+    <div class="login-container">
+        <div class="login-card">
+            <h3 class="text-center mb-4">Login to Your Account</h3>
+            <form id="loginform" action="/login" method="POST">
+                <div class="form-group mb-3">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div id="error1" class="error-message"></div>
+
+                <div class="form-group mb-3">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div id="error2" class="error-message"></div>
+                <%if(locals.message && message.length>0){%>
+                    <div class="alert alert-danger text-center">
+                        <%=message%>
+
+                    </div>
+                <%}%>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success btn-sm">Login</button>
+                    <a href="/auth/google" class="btn btn-light btn-sm">
+                        <img src="https://cdn-icons-png.flaticon.com/128/2702/2702602.png" alt="Google Icon" width="20" height="20" class="me-2">
+                        Login with Google
+                    </a>
+                </div>
+            </form>
+            <div class="text-center mt-3">
+                <small>Don't have an account? <a href="/signup">Sign up</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include("../../views/partials/user/footer") %>
+
+<script>
+    const emailid = document.getElementById('email');
+    const passid = document.getElementById('password');
+    const error1 = document.getElementById('error1');
+    const error2 = document.getElementById('error2');
+    const loginform = document.getElementById('loginform');
+
+    function emailValidateChecking(e) {
+        const emailval = emailid.value;
+        const emailpattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailpattern.test(emailval)) {
+            error1.style.display = 'block';
+            error1.innerHTML = "Invalid email format";
+        } else {
+            error1.style.display = 'none';
+            error1.innerHTML = '';
+        }
+    }
+
+    function passValidateChecking(e) {
+        const passval = passid.value;
+
+        if (passval.length < 8) {
+            error2.style.display = "block";
+            error2.innerHTML = "Password should be at least 8 characters long";
+        } else {
+            error2.style.display = "none";
+            error2.innerHTML = "";
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loginform.addEventListener("submit", function (e) {
+            emailValidateChecking();
+            passValidateChecking();
+
+            if (error1.innerHTML || error2.innerHTML) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>

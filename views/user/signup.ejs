@@ -52,10 +52,17 @@
 
                         <div class="form-group mb-3">
                             <label for="confirmPassword">Confirm Password</label>
-                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                            <input type="password" class="form-control" id="confirmPassword" name="cPassword" required>
                         </div>
 
                         <div id="error5" class="error-message"></div>
+
+                        <%if(locals.message && message.length>0){%>
+                            <div class="alert alert-danger text-center">
+                                <%=message%>
+        
+                            </div>
+                        <%}%>
 
 
                        <!----- <button type="submit" class="btn btn-success w-100">Sign Up</button>--->
@@ -65,10 +72,10 @@
                         <!-- Normal Signup Button -->
                         <button type="submit" class="btn btn-success btn-sm">Sign Up</button>
                         <!-- Google Signup Button -->
-                        <button type="button" class="btn btn-light btn-sm">
+                        <a href="/auth/google" class="btn btn-light btn-sm">
                             <img src="https://cdn-icons-png.flaticon.com/128/2702/2702602.png" alt="Google Icon" width="20" height="20" class="me-2">
                             Sign up with Google
-                        </button>
+                        </a>
                     </div>
 
 
