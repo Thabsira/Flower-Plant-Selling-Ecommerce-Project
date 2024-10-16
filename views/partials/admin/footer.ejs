@@ -1,0 +1,72 @@
+<script>
+    // Chart.js Circular Chart for Total Sales
+    const totalSalesCtx = document.getElementById('totalSalesChart').getContext('2d');
+    const totalSalesChart = new Chart(totalSalesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Remaining'],
+            datasets: [{
+                label: 'Total Sales',
+                data: [75, 25], // 75% completed
+                backgroundColor: ['#007bff', '#e9ecef'],
+            }]
+        },
+        options: {
+            cutout: '80%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // Chart.js Circular Chart for Total Revenue
+    const totalRevenueCtx = document.getElementById('totalRevenueChart').getContext('2d');
+    const totalRevenueChart = new Chart(totalRevenueCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Remaining'],
+            datasets: [{
+                label: 'Total Revenue',
+                data: [60, 40], // 60% completed
+                backgroundColor: ['#28a745', '#e9ecef'],
+            }]
+        },
+        options: {
+            cutout: '80%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // Chart.js Circular Chart for User Count
+    const userCountCtx = document.getElementById('userCountChart').getContext('2d');
+    const userCountChart = new Chart(userCountCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Remaining'],
+            datasets: [{
+                label: 'User Count',
+                data: [90, 10], // 90% completed
+                backgroundColor: ['#ffc107', '#e9ecef'],
+            }]
+        },
+        options: {
+            cutout: '80%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    document.querySelector(".btn-danger").addEventListener("click", function(event) {
+        event.preventDefault();
+        window.location.href = "/admin/logout";  // This will redirect to the logout route
+    });
+
+
+
+
+</script>
+</body>
+</html>
