@@ -1,0 +1,23 @@
+<%- include("../../views/partials/admin/header") %>
+<!-- Edit Category Form -->
+ <div class="container">
+    <h2 class="mb-4 text-center">Edit Category</h2>
+
+    <form action="/admin/editCategory/<%= category._id%>" method="POST">
+      <div class="mb-3">
+        <label for="categoryName" class="form-label">Category Name</label>
+        <input type="text" class="form-control" id="categoryName" name="name" value="<%=category.name%>" placeholder="Enter category name" value="Sample Category" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="categoryDescription" class="form-label">Description</label>
+        <textarea class="form-control" id="categoryDescription" name="description" placeholder="Enter category description" rows="4" required><%=category.description%></textarea>
+      </div>
+
+      <input type="hidden" name="categoryId" value="1">
+      
+      <button type="submit" class="btn btn-primary w-100">Update Category</button>
+    </form>
+  </div>
+
+  <%- include("../../views/partials/admin/footer") %>
