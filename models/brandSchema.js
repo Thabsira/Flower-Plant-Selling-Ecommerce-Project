@@ -4,11 +4,11 @@ const{Schema}= mongoose;
 const brandSchema= new Schema({
     brandName:{
         type:String,
-        required:true
+        required:false
     },
     brandImage:{
         typr:[String],
-        required:true
+        required:false
     },
     isBlocked:{
         type:Boolean,

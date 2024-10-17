@@ -13,11 +13,11 @@ const productSchema= new Schema({
     },
     brand:{
         type:String,
-        required:true
+        
     },
     category:{
         type:Schema.Types.ObjectId,
-        ref:"category",
+        ref:"Category",
     },
     regularPrice:{
         type:Number,

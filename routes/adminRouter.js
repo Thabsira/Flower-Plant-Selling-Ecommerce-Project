@@ -2,8 +2,35 @@ const express = require('express');
 const router = express.Router();
 const adminController= require("../controllers/admin/adminController");
 const categoryController = require("../controllers/admin/categoryController");
+const productController = require("../controllers/admin/productController")
 const customerController=require("../controllers/admin/customerController");
 const {userAuth,adminAuth} = require("../middlewares/auth");
+const path = require('path');
+
+
+
+const multer = require('multer');
+
+
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        // Set the destination folder for uploaded images
+        cb(null, path.join(__dirname, "../public/uploads/product-images"));
+          // Change to match your folder structure
+          console.log('uploaded');
+    },
+    filename: function (req, file, cb) {
+        // Generate a unique filename for the uploaded files
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+
+
+const uploads = multer({ storage: storage });
+
+
  
 
 router.get("/pageerror",adminController.pageerror);
@@ -30,6 +57,14 @@ router.get("/listCategory",adminAuth,categoryController.getListCategory);
 router.get("/unlistCategory",adminAuth,categoryController.getUnlistCategory);
 router.get("/editCategory",adminAuth,categoryController.getEditCategory);
 router.post("/editCategory/:id",adminAuth,categoryController.editCategory);
+
+//Product management
+
+router.get("/addProducts",adminAuth,productController.getProductAddPage);
+router.post("/addProducts", adminAuth,uploads.array("images",4),productController.addProducts);
+router.get("/products",adminAuth,productController.getAllProducts);
+
+
 
 
 

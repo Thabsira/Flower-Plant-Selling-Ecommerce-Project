@@ -1,0 +1,136 @@
+
+<%- include("../../views/partials/admin/header") %>
+
+<div class="content col-md-10">
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Product Management</h3>
+        
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar mb-3">
+        <input type="text" class="form-control" id="searchInput" placeholder="Search by product name...">
+    </div>
+
+    <!-- Product Table -->
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover product-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Sale Price</th>
+                        <th scope="col">Offer Price</th>
+                        <th scope="col">Offer</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <%for(let i=data.length-1;i>=0;i--) { %>
+
+
+                    <tr>
+                        <td><%=data[i].productName%></td>
+                        <td><%=data[i].category.name%></td>
+                        <td><%=data[i].salePrice%></td>
+                        <td></td>
+                        <td>
+                            <button class="btn btn-sm btn-info">Add Offer</button>
+                            <button class="btn btn-sm btn-danger">Remove Offer</button>
+                        </td>
+                        <td><%=data[i].quantity%></td>
+                        <td class="actions">
+                            <button class="btn btn-sm btn-warning">Block</button>
+                            <button class="btn btn-sm btn-success">Unblock</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary">Edit</button>
+                        </td>
+                    </tr>
+
+                <!-----    <tr>
+                        <td>Jasmin Plant</td>
+                        <td>Garden</td>
+                        <td>Rs. 1000</td>
+                        <td>Rs. 850</td>
+                        <td>
+                            <button class="btn btn-sm btn-info">Add Offer</button>
+                            <button class="btn btn-sm btn-danger">Remove Offer</button>
+                        </td>
+                        <td>150</td>
+                        <td class="actions">
+                            <button class="btn btn-sm btn-warning">Block</button>
+                            <button class="btn btn-sm btn-success">Unblock</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary">Edit</button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Pink Lilly</td>
+                        <td>Outdoor</td>
+                        <td>Rs. 1500</td>
+                        <td>Rs. 1300</td>
+                        <td>
+                            <button class="btn btn-sm btn-info">Add Offer</button>
+                            <button class="btn btn-sm btn-danger">Remove Offer</button>
+                        </td>
+                        <td>50</td>
+                        <td class="actions">
+                            <button class="btn btn-sm btn-warning">Block</button>
+                            <button class="btn btn-sm btn-success">Unblock</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary">Edit</button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Lilly Pink</td>
+                        <td>Indoor</td>
+                        <td>Rs. 1200</td>
+                        <td>Rs. 1000</td>
+                        <td>
+                            <button class="btn btn-sm btn-info">Add Offer</button>
+                            <button class="btn btn-sm btn-danger">Remove Offer</button>
+                        </td>
+                        <td>200</td>
+                        <td class="actions">
+                            <button class="btn btn-sm btn-warning">Block</button>
+                            <button class="btn btn-sm btn-success">Unblock</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary">Edit</button>
+                        </td>
+                    </tr>---->
+
+                    <%}%>
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="pagination-container">
+    <% if (currentPage > 1) { %>
+    <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+    <% } %> <% for (let i = 1; i <= totalPages; i++) { %> <% if (i ===
+    currentPage) { %>
+    <span class="current-page"><%= i %></span>
+    <% } else { %>
+    <a href="?page=<%= i %>"><%= i %></a>
+    <% } %> <% } %> <% if (currentPage < totalPages) { %>
+    <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+    <% } %>
+  </div>
+
+
+<%-include("../../views/partials/admin/footer")%>
