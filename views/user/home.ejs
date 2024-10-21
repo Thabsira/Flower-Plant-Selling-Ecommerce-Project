@@ -1,34 +1,35 @@
 
-        <!-- Navbar End -->
 
-        <%-include("../../views/partials/user/header")%>
-        <!-- Modal Search Start -->
-        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content rounded-0">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body d-flex align-items-center">
-                        <div class="input-group w-75 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                        </div>
-                    </div>
+
+<%-include("../../views/partials/user/header")%>
+<!-- Modal Search Start -->
+ <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content rounded-0">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center">
+                <div class="input-group w-75 mx-auto d-flex">
+                    <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                    <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
                 </div>
             </div>
         </div>
-        <!-- Modal Search End -->
+    </div>
+</div>
 
 
-        <!-- Hero Start -->
+
+
+  <!-- Hero Start -->
         <div class="container-fluid py-5 mb-5 hero-header">
             <div class="container py-5">
                 <div class="row g-5 align-items-center">
                     <div class="col-md-12 col-lg-7">
-                        <h4 class="mb-3 text-secondary">100% Organic Foods</h4>
-                        <h1 class="mb-5 display-3 text-primary">Organic Veggies & Fruits Foods</h1>
+                        <h4 class="mb-3 text-secondary">100% Natural Blooms</h4>
+                        <h1 class="mb-5 display-3 text-primary"> Fresh Flowers Plants for Every Occasion</h1>
                         <div class="position-relative mx-auto">
                             <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="number" placeholder="Search">
                             <button type="submit" class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 25%;">Submit Now</button>
@@ -38,12 +39,12 @@
                         <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
                             <div class="carousel-inner" role="listbox">
                                 <div class="carousel-item active rounded">
-                                    <img src="img/hero-img-1.png" class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
-                                    <a href="#" class="btn px-4 py-2 text-white rounded">Fruites</a>
+                                    <img src="https://vermiorganics.co/cdn/shop/files/7_2fa76544-4a4e-42c8-834a-e0f80ca6dddb.png?v=1702721011&width=713" class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
+                                    <a href="#" class="btn px-4 py-2 text-white rounded">Indoor plants</a>
                                 </div>
                                 <div class="carousel-item rounded">
-                                    <img src="img/hero-img-2.jpg" class="img-fluid w-100 h-100 rounded" alt="Second slide">
-                                    <a href="#" class="btn px-4 py-2 text-white rounded">Vesitables</a>
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9aHyevoUjF4sbACoI41JAQab0NXwMgGSTZQ&s" class="img-fluid w-100 h-100 rounded" alt="Second slide">
+                                    <a href="#" class="btn px-4 py-2 text-white rounded">Outdoor Plants</a>
                                 </div>
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
@@ -62,69 +63,20 @@
         <!-- Hero End -->
 
 
-        <!-- Featurs Section Start -->
-        <div class="container-fluid featurs py-5">
-            <div class="container py-5">
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-3">
-                        <div class="featurs-item text-center rounded bg-light p-4">
-                            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
-                                <i class="fas fa-car-side fa-3x text-white"></i>
-                            </div>
-                            <div class="featurs-content text-center">
-                                <h5>Free Shipping</h5>
-                                <p class="mb-0">Free on order over $300</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="featurs-item text-center rounded bg-light p-4">
-                            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
-                                <i class="fas fa-user-shield fa-3x text-white"></i>
-                            </div>
-                            <div class="featurs-content text-center">
-                                <h5>Security Payment</h5>
-                                <p class="mb-0">100% security payment</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="featurs-item text-center rounded bg-light p-4">
-                            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
-                                <i class="fas fa-exchange-alt fa-3x text-white"></i>
-                            </div>
-                            <div class="featurs-content text-center">
-                                <h5>30 Day Return</h5>
-                                <p class="mb-0">30 day money guarantee</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="featurs-item text-center rounded bg-light p-4">
-                            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
-                                <i class="fa fa-phone-alt fa-3x text-white"></i>
-                            </div>
-                            <div class="featurs-content text-center">
-                                <h5>24/7 Support</h5>
-                                <p class="mb-0">Support every time fast</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Featurs Section End -->
 
 
-        <!-- Fruits Shop Start-->
-        <div class="container-fluid fruite py-5">
+
+
+
+         <!-- Fruits Shop Start-->
+      <div class="container-fluid fruite py-5">
             <div class="container py-5">
                 <div class="tab-class text-center">
                     <div class="row g-4">
                         <div class="col-lg-4 text-start">
                             <h1>Our Organic Products</h1>
                         </div>
-                        <div class="col-lg-8 text-end">
+                   <!-----     <div class="col-lg-8 text-end">
                             <ul class="nav nav-pills d-inline-flex text-center mb-5">
                                 <li class="nav-item">
                                     <a class="d-flex m-2 py-2 bg-light rounded-pill active" data-bs-toggle="pill" href="#tab-1">
@@ -152,7 +104,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </div>
+                        </div>---->
                     </div>
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane fade show p-0 active">
@@ -162,7 +114,7 @@
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="rounded position-relative fruite-item">
                                                 <div class="fruite-img">
-                                                    <img src="img/fruite-item-5.jpg" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgZNudyT8RLLRKo1ts69edwJkXaXYKTsFBvw&s" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
                                                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -178,7 +130,7 @@
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="rounded position-relative fruite-item">
                                                 <div class="fruite-img">
-                                                    <img src="img/fruite-item-5.jpg" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu-sK7t-VVlQjGQemPK3AxDAmR6gCKYR2CVQ&s" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
                                                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -194,7 +146,7 @@
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="rounded position-relative fruite-item">
                                                 <div class="fruite-img">
-                                                    <img src="img/fruite-item-2.jpg" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9xjW77yxdCRffjmslMob_PfiJ_JHejtuEXQ&s" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
                                                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -210,7 +162,7 @@
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="rounded position-relative fruite-item">
                                                 <div class="fruite-img">
-                                                    <img src="img/fruite-item-4.jpg" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="data:image/jpeg;base64,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" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
                                                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -226,7 +178,7 @@
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="rounded position-relative fruite-item">
                                                 <div class="fruite-img">
-                                                    <img src="img/fruite-item-3.jpg" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqXqhGd2FQtC0PmQ3D9AQgtMwYNYGMFkSzvw&s" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
                                                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -242,7 +194,7 @@
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="rounded position-relative fruite-item">
                                                 <div class="fruite-img">
-                                                    <img src="img/fruite-item-1.jpg" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGxlUihiN5yIZXxrrA-xTBgyPOsKrIMLg_MQ&s" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
                                                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -258,7 +210,7 @@
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="rounded position-relative fruite-item">
                                                 <div class="fruite-img">
-                                                    <img src="img/fruite-item-2.jpg" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYPCzrlGhHKc8ch_xC6-KVwI9HH5qoyt8Uqw&s" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
                                                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -274,7 +226,7 @@
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="rounded position-relative fruite-item">
                                                 <div class="fruite-img">
-                                                    <img src="img/fruite-item-5.jpg" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7VIewpAJLh70pfQUKAwKf7AoPH2jOM-vl3g&s" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
                                                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -474,185 +426,32 @@
         <!-- Fruits Shop End-->
 
 
-        <!-- Featurs Start -->
-        <div class="container-fluid service py-5">
-            <div class="container py-5">
-                <div class="row g-4 justify-content-center">
-                    <div class="col-md-6 col-lg-4">
-                        <a href="#">
-                            <div class="service-item bg-secondary rounded border border-secondary">
-                                <img src="img/featur-1.jpg" class="img-fluid rounded-top w-100" alt="">
-                                <div class="px-4 rounded-bottom">
-                                    <div class="service-content bg-primary text-center p-4 rounded">
-                                        <h5 class="text-white">Fresh Apples</h5>
-                                        <h3 class="mb-0">20% OFF</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <a href="#">
-                            <div class="service-item bg-dark rounded border border-dark">
-                                <img src="img/featur-2.jpg" class="img-fluid rounded-top w-100" alt="">
-                                <div class="px-4 rounded-bottom">
-                                    <div class="service-content bg-light text-center p-4 rounded">
-                                        <h5 class="text-primary">Tasty Fruits</h5>
-                                        <h3 class="mb-0">Free delivery</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <a href="#">
-                            <div class="service-item bg-primary rounded border border-primary">
-                                <img src="img/featur-3.jpg" class="img-fluid rounded-top w-100" alt="">
-                                <div class="px-4 rounded-bottom">
-                                    <div class="service-content bg-secondary text-center p-4 rounded">
-                                        <h5 class="text-white">Exotic Vegitable</h5>
-                                        <h3 class="mb-0">Discount 30$</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Featurs End -->
 
 
-        <!-- Vesitable Shop Start-->
-        <div class="container-fluid vesitable py-5">
-            <div class="container py-5">
-                <h1 class="mb-0">Fresh Organic Vegetables</h1>
-                <div class="owl-carousel vegetable-carousel justify-content-center">
-                    <div class="border border-primary rounded position-relative vesitable-item">
-                        <div class="vesitable-img">
-                            <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
-                        </div>
-                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Vegetable</div>
-                        <div class="p-4 rounded-bottom">
-                            <h4>Parsely</h4>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
-                            <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border border-primary rounded position-relative vesitable-item">
-                        <div class="vesitable-img">
-                            <img src="img/vegetable-item-1.jpg" class="img-fluid w-100 rounded-top" alt="">
-                        </div>
-                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Vegetable</div>
-                        <div class="p-4 rounded-bottom">
-                            <h4>Parsely</h4>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
-                            <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border border-primary rounded position-relative vesitable-item">
-                        <div class="vesitable-img">
-                            <img src="img/vegetable-item-3.png" class="img-fluid w-100 rounded-top bg-light" alt="">
-                        </div>
-                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Vegetable</div>
-                        <div class="p-4 rounded-bottom">
-                            <h4>Banana</h4>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
-                            <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border border-primary rounded position-relative vesitable-item">
-                        <div class="vesitable-img">
-                            <img src="img/vegetable-item-4.jpg" class="img-fluid w-100 rounded-top" alt="">
-                        </div>
-                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Vegetable</div>
-                        <div class="p-4 rounded-bottom">
-                            <h4>Bell Papper</h4>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
-                            <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border border-primary rounded position-relative vesitable-item">
-                        <div class="vesitable-img">
-                            <img src="img/vegetable-item-5.jpg" class="img-fluid w-100 rounded-top" alt="">
-                        </div>
-                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Vegetable</div>
-                        <div class="p-4 rounded-bottom">
-                            <h4>Potatoes</h4>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
-                            <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border border-primary rounded position-relative vesitable-item">
-                        <div class="vesitable-img">
-                            <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
-                        </div>
-                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Vegetable</div>
-                        <div class="p-4 rounded-bottom">
-                            <h4>Parsely</h4>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
-                            <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border border-primary rounded position-relative vesitable-item">
-                        <div class="vesitable-img">
-                            <img src="img/vegetable-item-5.jpg" class="img-fluid w-100 rounded-top" alt="">
-                        </div>
-                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Vegetable</div>
-                        <div class="p-4 rounded-bottom">
-                            <h4>Potatoes</h4>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
-                            <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border border-primary rounded position-relative vesitable-item">
-                        <div class="vesitable-img">
-                            <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="">
-                        </div>
-                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Vegetable</div>
-                        <div class="p-4 rounded-bottom">
-                            <h4>Parsely</h4>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
-                            <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold mb-0">$7.99 / kg</p>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Vesitable Shop End -->
 
 
-        <!-- Banner Section Start-->
-        <div class="container-fluid banner bg-secondary my-5">
+
+
+       
+        
+
+
+
+
+
+
+
+       
+
+
+
+          <!-- Banner Section Start-->
+       <div class="container-fluid banner bg-secondary my-5">
             <div class="container py-5">
                 <div class="row g-4 align-items-center">
                     <div class="col-lg-6">
                         <div class="py-4">
-                            <h1 class="display-3 text-white">Fresh Exotic Fruits</h1>
+                            <h1 class="display-3 text-white">Pure & Fresh Botanicals Vibrant Flowers Plants</h1>
                             <p class="fw-normal display-3 text-dark mb-4">in Our Store</p>
                             <p class="mb-4 text-dark">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
                             <a href="#" class="banner-btn btn border-2 border-white rounded-pill text-dark py-3 px-5">BUY</a>
@@ -660,38 +459,53 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="position-relative">
-                            <img src="img/baner-1.png" class="img-fluid w-100 rounded" alt="">
-                            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle position-absolute" style="width: 140px; height: 140px; top: 0; left: 0;">
-                                <h1 style="font-size: 100px;">1</h1>
+                            <img src="https://rukminim2.flixcart.com/image/720/864/km6mxe80/plant-seed/r/v/x/5-organic-climbing-vine-flower-fresh-plants-red-rosa-fresh-plant-original-imagf594zcfcuerj.jpeg?q=60&crop=false" class="img-fluid w-100 rounded" alt="">
+                        <!----    <div class="d-flex align-items-center justify-content-center bg-white rounded-circle position-absolute" style="width: 140px; height: 140px; top: 0; left: 0;">
+                                <h1 style="font-size: 100px;">Hero</h1>
                                 <div class="d-flex flex-column">
-                                    <span class="h2 mb-0">50$</span>
-                                    <span class="h4 text-muted mb-0">kg</span>
+                                    <span class="h2 mb-0">Of</span>
+                                    <span class="h4 text-muted mb-0">Flowers</span>
                                 </div>
-                            </div>
+                            </div>---->
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div>   
         <!-- Banner Section End -->
 
 
-        <!-- Bestsaler Product Start -->
-        <div class="container-fluid py-5">
+
+
+
+
+
+          <!----- Bestsaler Product Start -->
+       <div class="container-fluid py-5">
             <div class="container py-5">
                 <div class="text-center mx-auto mb-5" style="max-width: 700px;">
                     <h1 class="display-4">Bestseller Products</h1>
                     <p>Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable.</p>
                 </div>
                 <div class="row g-4">
+
+                    <%for(let i=0;i<products.length;i++){%>
+
+
                     <div class="col-lg-6 col-xl-4">
                         <div class="p-4 rounded bg-light">
                             <div class="row align-items-center">
                                 <div class="col-6">
-                                    <img src="img/best-product-1.jpg" class="img-fluid rounded-circle w-100" alt="">
+                                    
+                                    <img src="<%= products[i].productImage[0] %>" class="img-fluid rounded-circle w-100" alt="<%=products[i].productName%>">
+                                    
                                 </div>
+
+
+
+
                                 <div class="col-6">
-                                    <a href="#" class="h5">Organic Tomato</a>
+                                    <a href="/productDetails?id=<%=products[i]._id%>" class="h5"><%=products[i].productName%></a>
                                     <div class="d-flex my-3">
                                         <i class="fas fa-star text-primary"></i>
                                         <i class="fas fa-star text-primary"></i>
@@ -699,13 +513,13 @@
                                         <i class="fas fa-star text-primary"></i>
                                         <i class="fas fa-star"></i>
                                     </div>
-                                    <h4 class="mb-3">3.12 $</h4>
-                                    <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                    <h4 class="mb-3"><%=products[i].salePrice%></h4>
+                                    <a href="/addToCart?id=<%=products[i]._id%>" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-xl-4">
+                <!-----   <div class="col-lg-6 col-xl-4">
                         <div class="p-4 rounded bg-light">
                             <div class="row align-items-center">
                                 <div class="col-6">
@@ -877,143 +691,31 @@
                                 <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
                             </div>
                         </div>
-                    </div>
+                    </div>---->
+
+
+                    <% } %>
+
+
+
                 </div>
             </div>
         </div>
         <!-- Bestsaler Product End -->
 
 
-        <!-- Fact Start -->
-        <div class="container-fluid py-5">
-            <div class="container">
-                <div class="bg-light p-5 rounded">
-                    <div class="row g-4 justify-content-center">
-                        <div class="col-md-6 col-lg-6 col-xl-3">
-                            <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-users text-secondary"></i>
-                                <h4>satisfied customers</h4>
-                                <h1>1963</h1>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-3">
-                            <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-users text-secondary"></i>
-                                <h4>quality of service</h4>
-                                <h1>99%</h1>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-3">
-                            <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-users text-secondary"></i>
-                                <h4>quality certificates</h4>
-                                <h1>33</h1>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-3">
-                            <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-users text-secondary"></i>
-                                <h4>Available Products</h4>
-                                <h1>789</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Fact Start -->
 
 
-        <!-- Tastimonial Start -->
-        <div class="container-fluid testimonial py-5">
-            <div class="container py-5">
-                <div class="testimonial-header text-center">
-                    <h4 class="text-primary">Our Testimonial</h4>
-                    <h1 class="display-5 mb-5 text-dark">Our Client Saying!</h1>
-                </div>
-                <div class="owl-carousel testimonial-carousel">
-                    <div class="testimonial-item img-border-radius bg-light rounded p-4">
-                        <div class="position-relative">
-                            <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
-                            <div class="mb-4 pb-4 border-bottom border-secondary">
-                                <p class="mb-0">Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,
-                                </p>
-                            </div>
-                            <div class="d-flex align-items-center flex-nowrap">
-                                <div class="bg-secondary rounded">
-                                    <img src="img/testimonial-1.jpg" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="">
-                                </div>
-                                <div class="ms-4 d-block">
-                                    <h4 class="text-dark">Client Name</h4>
-                                    <p class="m-0 pb-3">Profession</p>
-                                    <div class="d-flex pe-5">
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="testimonial-item img-border-radius bg-light rounded p-4">
-                        <div class="position-relative">
-                            <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
-                            <div class="mb-4 pb-4 border-bottom border-secondary">
-                                <p class="mb-0">Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,
-                                </p>
-                            </div>
-                            <div class="d-flex align-items-center flex-nowrap">
-                                <div class="bg-secondary rounded">
-                                    <img src="img/testimonial-1.jpg" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="">
-                                </div>
-                                <div class="ms-4 d-block">
-                                    <h4 class="text-dark">Client Name</h4>
-                                    <p class="m-0 pb-3">Profession</p>
-                                    <div class="d-flex pe-5">
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="testimonial-item img-border-radius bg-light rounded p-4">
-                        <div class="position-relative">
-                            <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
-                            <div class="mb-4 pb-4 border-bottom border-secondary">
-                                <p class="mb-0">Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,
-                                </p>
-                            </div>
-                            <div class="d-flex align-items-center flex-nowrap">
-                                <div class="bg-secondary rounded">
-                                    <img src="img/testimonial-1.jpg" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="">
-                                </div>
-                                <div class="ms-4 d-block">
-                                    <h4 class="text-dark">Client Name</h4>
-                                    <p class="m-0 pb-3">Profession</p>
-                                    <div class="d-flex pe-5">
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <i class="fas fa-star text-primary"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Tastimonial End -->
 
 
-        <!-- Footer Start -->
 
-        <%-include("../../views/partials/user/footer")%>
-       
+
+
+
+
+
+
+<%- include("../../views/partials/user/footer") %>
+
+
+

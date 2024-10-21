@@ -51,7 +51,7 @@ const productSchema= new Schema({
         type:String,
         enum:["Available","out of stock","Discontinued"],
         required:true,
-        default:'Available'
+        default:0,
     },
 
 },{timestamps:true});

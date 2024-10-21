@@ -1,8 +1,12 @@
 
-const User=require("../../models/userSchema")
+const User=require("../../models/userSchema");
+const Category = require("../../models/categorySchema");
+const Product = require("../../models/productSchema");
+
 const env=require("dotenv").config();
 const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt')
+
 const loadSignup= async (req,res)=>{
     try{
     return res.render('signup');
@@ -96,11 +100,22 @@ const pageNotFound= async (req,res)=>{
 const loadHomepage = async (req,res)=>{
     try{
         const user= req.session.user;
+        const categories = await Category.find({isListed:true});
+        let productData = await Product.find(
+            {isBlocked:false,
+                category:{$in:categories.map(category=>category._id)},quantity:{$gt:0}
+            }
+        )
+
+        productData.sort((a,b)=> new Date(b.createdOn)-new Date(a.createdOn));
+        productData = productData.slice(0,6);
+
+
         if(user){
            const userData = await User.findOne({_id:user._id});
-           return res.render("home",{user:userData}); 
+           return res.render("home",{user:userData,products:productData}); 
         }else{
-            return res.render("home")
+            return res.render("home",{products:productData});
         }
     
     } catch(error){
@@ -128,29 +143,74 @@ const verifyOtp=async (req,res)=>{
 
         const{otp}=req.body;
 
+    
+
         console.log(otp);
         console.log("Stored OTP in session:", req.session.userOtp);
 
-        if(String(otp.trim())===String(req.session.userOtp)){
+        if(String(otp.trim())===String(req.session.userOtp.trim())){
             const user=req.session.userData
+
+           if (!user) {
+                console.error("No user data in session.");
+                return res.status(400).json({ success: false, message: "User data not found in session." });
+            }
+
+
+
             const passwordHash= await securePassword(user.password);
-            const saveUserData = new User({
+            const userData = {
                 name:user.name,
                 email:user.email,
                 phone:user.phone,
                 password:passwordHash,
-            })
+              //  ...(user.googleId && { googleId: user.googleId })
+            };
+
+
+
+
+            if (user.googleId) {
+                userData.googleId = user.googleId; // Only add googleId if it exists
+            }
+
+
+
+          /*  const existingUser = await User.findOne({
+                $or: [
+                    { email: user.email },
+                    { googleId: userData.googleId } // This will be null if user is signing up without Google
+                ]
+            });
+
+            if (existingUser) {
+                return res.status(400).json({ success: false, message: "User already exists with this email or Google ID" });
+            }*/
+
+
+
+
+
+            const saveUserData = new User(userData); 
+
+
+
+
+
+
+
 
             await saveUserData.save();
-            req.session.user=saveUserData._id;
+            req.session.user=saveUserData;
             res.json({success:true, redirectUrl:"/"})
         }
         else{
+            console.error("OTP does not match.");
             res.status(400).json({success:false,message:"Invalid OTP, Please try again"})
         }
 
     }catch(error){
-        console.error("Error Verifying OTP",error);
+        console.error("Error Verifying OTP",error.message);
         res.status(500).json({success:false,message:"An error occured"})
 
     }
@@ -176,7 +236,7 @@ const resendOtp=async(req,res)=>{
             res.status(500).json({success:false,message:"Failed to resend otp. Please try again"})
         }
     }catch(error){
-        console.error("Error resending OTP",error);
+        console.error("Error resending OTP",error.message);
         res.status(500).json({success:false,message:"Internal Server Error. Please try again"})
 
     }
