@@ -11,7 +11,7 @@ const categoryInfo = async (req,res)=>{
         .sort({createdAt:-1})
         .skip(skip)
         .limit(limit)
-        const totalCategories = await Category.countDocuments();
+        const totalCategories = await Category.countDocuments({});
         const totalPages = Math.ceil(totalCategories/limit);
         res.render("category",{
             cat:categoryData,
@@ -171,6 +171,58 @@ const editCategory = async (req,res)=>{
 
 
 
+const blockCategory = async (req, res) => {
+    try {
+        const id = req.query.id;
+        await Category.updateOne({ _id: id }, { $set: { isBlocked: true } });
+        res.redirect("/admin/category");  // Redirect back to category page after blocking
+    } catch (error) {
+        console.error(error);
+        res.redirect("/pageerror");  
+    }
+};
+
+
+const unblockCategory = async (req, res) => {
+    try {
+        const id = req.query.id;
+        await Category.updateOne({ _id: id }, { $set: { isBlocked: false } });
+        res.redirect("/admin/category");  // Redirect back to category page 
+    } catch (error) {
+        console.error(error);
+        res.redirect("/pageerror");  // 
+    }
+};
+
+
+const softDeleteCategory = async (req, res) => {
+    try {
+        const id = req.query.id;
+        await Category.updateOne({ _id: id }, { $set: { isDeleted: true } });
+        res.redirect("/admin/category");  // Redirect back to category page after soft delete
+    } catch (error) {
+        console.error(error);
+        res.redirect("/pageerror");  // 
+    }
+};
+
+
+
+const restoreCategory = async (req, res) => {
+    try {
+        const id = req.query.id;
+        await Category.updateOne({ _id: id }, { $set: { isDeleted: false } });
+        res.redirect("/admin/category");  // Redirect back to category page after restoring
+    } catch (error) {
+        console.error(error);
+        res.redirect("/pageerror");  
+    }
+};
+
+
+
+
+
 
 
 module.exports={
@@ -182,6 +234,10 @@ module.exports={
     getUnlistCategory,
     getEditCategory,
     editCategory,
+    unblockCategory,
+    blockCategory,
+    softDeleteCategory, 
+    restoreCategory ,  
 
 }
 

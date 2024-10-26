@@ -22,7 +22,18 @@ const categorySchema= new mongoose.Schema({
     createdAt:{
         type:Date,
         default:Date.now
+    },
+
+    isBlocked:{
+        type:Boolean,
+        default:false
+    },
+
+    isDeleted: {
+        type: Boolean,
+        default: false 
     }
+    
 
 })
 

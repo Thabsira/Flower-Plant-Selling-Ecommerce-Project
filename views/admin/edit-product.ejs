@@ -37,7 +37,7 @@
                <div class="card mb-4">
 
 
-                   <div class="card-body">
+                   <div class="card-body" style="max-height: 500px;overflow-y: scroll;">
                        <form method="post" action="/admin/editProduct/<%=product._id%>" enctype="multipart/form-data"
                            onsubmit="return validateForm()">
                            <div class="mb-4">
@@ -61,7 +61,7 @@
                            </div>--->
                            <div class="mb-4">
                                <label class="form-label">Full description</label>
-                               <input name="descriptionData" value="<%=product.description%>"  class="form-control border"
+                               <input name="description" value="<%=product.description%>"  class="form-control border"
                                    rows="4">
                                    <div id="description-error" class="error-message"></div>
                            </div>
@@ -160,7 +160,7 @@
                                    <div class="image-cropper d-flex align-items-center"
                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                    <img src="" id="croppedImg1" alt="">
-                                   <button type="button" id="saveButton1" class="btn-sm btn-primary">Save</button>
+                                   <button type="button" id="saveButton1" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
                                </div>
                                                            <div class="row">
                                                                <div class="card-body align-items-center" style="margin-bottom: 20px;">
@@ -172,7 +172,7 @@
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                                                    <img src="" id="croppedImg2" alt="">
-                                                                   <button type="button" id="saveButton2" class="btn-sm btn-primary">Save</button>
+                                                                   <button type="button" id="saveButton2" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
                                                                </div>
                                                            </div>
                                                           
@@ -186,7 +186,7 @@
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                                                    <img src="" id="croppedImg3" alt="">
-                                                                   <button type="button" id="saveButton3" class="btn-sm btn-primary">Save</button>
+                                                                   <button type="button" id="saveButton3" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
                                                                </div>
                                                            </div>
                                                           
@@ -200,7 +200,7 @@
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                                                    <img src="" id="croppedImg4" alt="">
-                                                                   <button type="button" id="saveButton4" class="btn-sm btn-primary">Save</button>
+                                                                   <button type="button" id="saveButton4" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
                                                                </div>
                                                            </div>
                                </div>
@@ -208,7 +208,7 @@
                            <div>
 
 
-                               <button class="btn btn-md rounded font-sm hover-up" id="updatebtn"
+                               <button style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;" id="updatebtn"
                                    type="button"  onclick="validateAndSubmit()">Update</button>
                            </div>
                        </form>
@@ -218,6 +218,11 @@
        </div>
        </div>
    </section>
+
+
+
+   <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+<%- include("../../views/partials/admin/footer") %>
 
 
    <script>
@@ -234,11 +239,11 @@
     
     function validateForm() {
        let imageDatas = false
-               console.log("validate form");
+               console.log("validateForm");
                clearErrorMessages();
                const name = document.getElementsByName('productName')[0].value;
-               const description = document.getElementsByName('descriptionData')[0].value;
-               const brand = document.getElementsByName('brand')[0].value;
+               const description = document.getElementsByName('description')[0].value;
+             //  const brand = document.getElementsByName('brand')[0].value;
                const price = document.getElementsByName('regularPrice')[0].value;
                const saleprice = document.getElementsByName('salePrice')[0].value;
                const color = document.getElementsByName('color')[0].value;
@@ -306,7 +311,7 @@
     
     
     
-    function viewImage1(event) {
+   /* function viewImage1(event) {
                document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0])
            }
     
@@ -367,7 +372,7 @@
     
     
            const selectedImages = [];
-       document.getElementById("imageInput").addEventListener("change", handleFileSelect);
+       document.getElementById("imageDatas").addEventListener("change", handleFileSelect);*/
     
     
            function handleFileSelect(event) {
@@ -427,5 +432,4 @@
 
 
 
-   <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
-<%- include("../../views/partials/admin/footer") %>
+   

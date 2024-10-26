@@ -29,7 +29,7 @@
            </div>
            <div class="col-lg-6">
                <div class="card mb-4">
-                   <div class="card-body">
+                   <div class="card-body" style="max-height: 500px;overflow-y: scroll;">
                        <form method="post" action="/admin/addProducts" enctype="multipart/form-data"
                            onsubmit="return validateForm()">
 
@@ -39,8 +39,8 @@
                                    class="form-control border" id="product_name">
                                <div id="productName-error" class="error-message"></div>
                            </div>
-                           <div class="col-lg-4 mb-4">
-                               <label class="form-label">Brand</label>
+                         <!---  <div class="col-lg-4 mb-4">
+                             <label class="form-label">Brand</label>
                                <select class="form-select border" name="brand">
                                    
                                 
@@ -54,7 +54,7 @@
                                      
                                </select>
                                <div id="brand-error" class="error-message"></div>
-                           </div>
+                           </div>--->
                            <div class="mb-4">
                                <label class="form-label">Full description</label>
                                <textarea placeholder="Type here" id="descriptionid" name="description" class="form-control border"
@@ -70,8 +70,8 @@
                                            <div id="regularPrice-error" class="error-message"></div>
                                    </div>
                                </div>
-                               <div class="col-lg-4">
-                                   <div class="mb-4">
+                             <div class="col-lg-4">
+                                  <div class="mb-4">
                                        <label class="form-label">Sale price</label>
                                        <input placeholder="$" name="salePrice" type="text" class="form-control border">
                                        <div id="salePrice-error" class="error-message"></div>
@@ -141,7 +141,7 @@
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                                                    <img src="" id="croppedImg1" alt="">
-                                                                   <button type="button" id="saveButton1" class="btn-sm btn-primary">Save</button>
+                                                                   <button type="button" id="saveButton1" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
                                                                </div>
                                                            </div>
                                                           
@@ -157,7 +157,7 @@
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                                                    <img src="" id="croppedImg2" alt="">
-                                                                   <button type="button" id="saveButton2" class="btn-sm btn-primary">Save</button>
+                                                                   <button type="button" id="saveButton2" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
                                                                </div>
                                                            </div>
                                                           
@@ -173,7 +173,7 @@
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                                                    <img src="" id="croppedImg3" alt="">
-                                                                   <button type="button" id="saveButton3" class="btn-sm btn-primary">Save</button>
+                                                                   <button type="button" id="saveButton3" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
                                                                </div>
                                                            </div>
                                                           
@@ -190,14 +190,14 @@
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
                                                                    <img src="" id="croppedImg4" alt="">
-                                                                   <button type="button" id="saveButton4" class="btn-sm btn-primary">Save</button>
+                                                                   <button type="button" id="saveButton4" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
                                                                </div>
                                                            </div>
                           
                                                        </div>
                            </div>
                            <div>
-                               <button class="btn btn-md rounded font-sm hover-up"  type="button" onclick="validateAndSubmit()
+                               <button style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;"  type="button" onclick="validateAndSubmit()
 ">Publish</button>
                            </div>
                        </form>

@@ -29,6 +29,18 @@
         font-size: 0.875rem; /* Adjust font size */
         display: none; /* Hide by default; shown via JavaScript */
     }
+
+    .forgot-password-link{
+        font-size: 0.875rem;
+        color: rgb(45, 45, 220);
+        text-decoration: none;
+        margin-bottom: 20px;
+    }
+
+    .forgot-password-link:hover{
+        color: rgb(37, 37, 219);;
+        text-decoration: underline;
+    }
 </style>
 
 <!-- Login Page Content -->
@@ -54,6 +66,12 @@
 
                     </div>
                 <%}%>
+
+
+                <div class="form-group d-flex justify-content-end">
+                    <a href="/forgot-password" class="forgot-password-link ms-auto">forgot password</a>
+
+                </div>
 
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn btn-success btn-sm">Login</button>

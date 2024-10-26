@@ -12,7 +12,7 @@ const sharp = require("sharp");
 
 const getProductAddPage = async (req,res)=>{
     try {
-        const category = await Category.find({isListed:true});
+        const category = await Category.find({isListed:true,isBlocked:false,isDeleted:false});
         res.render("product-add",{
            cat:category,
 
@@ -161,15 +161,31 @@ const addProductOffer = async(req,res)=>{
     try {
         const {productId,percentage} = req.body;
         console.log("Received offer for product:", productId, "with percentage:", percentage);
-
+//find product
         const findProduct = await Product.findOne({_id:productId});
+        if(!findProduct){
+            return res.status(404).json({status:false,message:"Product Not Found"});
+
+        }
+
+
+//find category of product
         const findCategory = await Category.findOne({_id:findProduct.category});
         if(findCategory.categoryOffer>percentage){
             return res.json({status:false,message:"This products category already has a category offe"});
 
         }
 
-        findProduct.salePrice = Math.floor(findProduct.regularPrice - (findProduct.regularPrice * (percentage / 100)));
+        //checking if category has already offer
+
+        if(findCategory.categoryOffer > percentage){
+            return res.json({status:false,message:"This category already exists"})
+        }
+
+
+//Apply offer
+
+        /*findProduct.salePrice = Math.floor(findProduct.regularPrice - (findProduct.regularPrice * (percentage / 100)));
         findProduct.productOffer = parseInt(percentage);
         await findProduct.save();
         findCategory.categoryOffer = 0;
@@ -179,14 +195,33 @@ const addProductOffer = async(req,res)=>{
         res.redirect("/pageerror");
         res.status(500).json({status:false,message:"Internal Server Error"})
         
+    }*/
+        findProduct.salePrice = findProduct.regularPrice - (findProduct.regularPrice * (percentage / 100)); // Avoid Math.floor to ensure accuracy
+        findProduct.productOffer = percentage;
+        await findProduct.save();
+
+        // Reset category offer to 0 if a product-specific offer is applied
+        findCategory.categoryOffer = 0;
+        await findCategory.save();
+
+        res.json({ status: true });
+    } catch (error) {
+        console.error("Error applying offer:", error);
+        res.status(500).json({ status: false, message: "Internal Server Error" });
     }
+
 };
 
 const removeProductOffer = async (req,res)=>{
     try {
         const {productId} = req.body
         const findProduct = await Product.findOne({_id:productId});
-        const percentage = findProduct.productOffer;
+
+        if (!findProduct) {
+            return res.status(404).json({ status: false, message: "Product not found" });
+        }
+
+       /* const percentage = findProduct.productOffer;
         findProduct.salePrice = Math.floor(findProduct.regularPrice - (findProduct.regularPrice * (percentage / 100)));
         findProduct.productOffer = 0,
         await findProduct.save();
@@ -195,7 +230,19 @@ const removeProductOffer = async (req,res)=>{
     } catch (error) {
         res.redirect("/admin/pageerror")
         
-    }
+    }*/
+ // Reset the sale price to the regular price and remove the offer
+ findProduct.salePrice = findProduct.regularPrice; // Reset to regular price
+ findProduct.productOffer = 0; // Remove offer
+ await findProduct.save();
+
+ res.json({ status: true });
+} catch (error) {
+ console.error("Error removing offer:", error);
+ res.status(500).json({ status: false, message: "Internal Server Error" });
+}
+
+
 }
 
 
@@ -220,10 +267,17 @@ const editProduct = async (req,res)=>{
     try {
         const id = req.params.id;
         const product = await Product.findOne({_id:id});
-        const existingproduct = await Product.findOne({
+       /* const existingproduct = await Product.findOne({
             productName:data.productName,
             _id:{$ne:id}
-        })
+        })*/
+
+
+           const existingproduct = await Product.findOne({
+                productName: req.body.productName,
+                _id: { $ne: id }
+            });
+            
 
         if(existingproduct){
             return res.status(400).json({error:"Product with this name already exists. Please try another name"});
@@ -238,14 +292,14 @@ const editProduct = async (req,res)=>{
         }
 
         const updateFields = {
-            productName:data.productName,
-            description:data.description,
+            productName:req.body.productName,
+            description:req.body.description || product.description,
             category:product.category,
-            regularPrice:data.regularPrice,
-            salePrice:data.salePrice,
-            quantity:data.quantity,
-            size: data.size,
-            color:data.color
+            regularPrice:req.body.regularPrice,
+            salePrice:req.body.salePrice,
+            quantity:req.body.quantity,
+            size: req.body.size,
+            color:req.body.color
         }
 
         if(req.files.length>0){
@@ -265,7 +319,12 @@ const editProduct = async (req,res)=>{
 const deleteSingleImage = async (req,res)=>{
     try {
         const{imageNameToServer,productIdToServer} = req.body;
-        const product = await Product.findByIdAndDelete(productIdToServer,{$pull:{productImage:imageNameToServer}});
+       /* const product = await Product.findByIdAndDelete(productIdToServer,{$pull:{productImage:imageNameToServer}});*/
+
+       const product = await Product.findByIdAndUpdate(productIdToServer, {$pull: {productImage: imageNameToServer}}, {new: true});
+
+
+
         const imagePath = path.join("public","uploads","re-image",imageNameToServer);
         if(fs.existsSync(imagePath)){
             await fs.unlinkSync(imagePath);
@@ -281,6 +340,27 @@ const deleteSingleImage = async (req,res)=>{
 }
 
 
+const blockProduct = async (req,res)=>{
+    try {
+        let id = req.query.id;
+        await Product.updateOne({_id:id},{$set:{isBlocked:true}});
+        res.redirect("/admin/products");
+    } catch (error) {
+        res.redirect("/pageerror")
+    }
+}
+
+const unblockProduct = async (req,res)=>{
+    try {
+        let id = req.query.id;
+        await Product.updateOne({_id:id},{$set:{isBlocked:false}});
+        res.redirect('/admin/products')
+    } catch (error) {
+        res.redirect('/pageerror')
+    }
+}
+
+
 
 
 module.exports ={
@@ -292,4 +372,6 @@ module.exports ={
     getEditProduct,
     editProduct,
     deleteSingleImage,
+    unblockProduct,
+    blockProduct,
 };

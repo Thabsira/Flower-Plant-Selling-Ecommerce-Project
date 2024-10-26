@@ -58,6 +58,18 @@ router.get("/unlistCategory",adminAuth,categoryController.getUnlistCategory);
 router.get("/editCategory",adminAuth,categoryController.getEditCategory);
 router.post("/editCategory/:id",adminAuth,categoryController.editCategory);
 
+// Route to block category
+router.get('/blockCategory',adminAuth, categoryController.blockCategory);
+
+// Route to unblock category
+router.get('/unblockCategory',adminAuth, categoryController.unblockCategory);
+
+router.get('/softDeleteCategory',adminAuth, categoryController.softDeleteCategory); // Soft delete a category
+router.get('/restoreCategory', adminAuth,categoryController.restoreCategory); // 
+
+
+
+
 //Product management
 
 router.get("/addProducts",adminAuth,productController.getProductAddPage);
@@ -68,6 +80,9 @@ router.post('/removeProductOffer',adminAuth,productController.removeProductOffer
 router.get('/editProduct',adminAuth,productController.getEditProduct);
 router.post('/editProduct/:id',adminAuth,uploads.array('images',4),productController.editProduct);
 router.post('/deleteImage',adminAuth,productController.deleteSingleImage);
+router.get('/blockProduct',adminAuth,productController.blockProduct);
+router.get('/unblockProduct',adminAuth,productController.unblockProduct);
+
 
 
 

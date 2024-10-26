@@ -108,7 +108,7 @@ const loadHomepage = async (req,res)=>{
         )
 
         productData.sort((a,b)=> new Date(b.createdOn)-new Date(a.createdOn));
-        productData = productData.slice(0,6);
+        productData = productData.slice(0,15);
 
 
         if(user){
@@ -307,6 +307,23 @@ const logout = async(req,res)=>{
 
     }
 }
+
+
+const productDetails = async(req,res)=>{
+    try {
+        const productId = req.query.id;
+        const products = await Product.findById(productId).populate('category');
+        if(!products){
+            
+            return  res.status(404).send("Product Not Found")
+        }
+        console.log(products)
+        res.render('productDetails.ejs',{products})
+    } catch (error) {
+        console.error("Some error",error)
+       res.status(500).send('Server error') 
+    }
+}
     
 
 
@@ -321,5 +338,6 @@ module.exports= {
     loadLogin,
     login,
     logout,
+    productDetails
 
 }
