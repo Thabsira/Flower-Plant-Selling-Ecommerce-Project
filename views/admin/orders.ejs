@@ -1,0 +1,121 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<%- include("../../views/partials/admin/header") %>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Manage Orders</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% orders.forEach(order => { %>
+                <tr>
+                    <td><%= order.orderId %></td>
+                    <td><%= order.finalAmount.toFixed(2) %> USD</td> <!-- Format price -->
+                    <td>
+                        <select class="form-select" onchange="updateOrderStatus('<%= order._id %>', this.value)">
+                            <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Processing</option>
+                            <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                            <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                            <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>')">Cancel</button>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+async function updateOrderStatus(orderId, status) {
+    const response = await fetch(`/admin/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status })
+    });
+
+    if (response.ok) {
+        //alert('Order status updated successfully.');
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Order status updated successfully.',
+            timer:2000,
+            willClose:()=>{
+              location.reload();
+            }
+        });
+         
+    } else {
+        //alert('Error updating order status.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error updating order status.',
+            timer:2000,
+        });
+    }
+}
+
+/*async function deleteOrder(orderId) {
+    if (confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
+        const response = await fetch(`/admin/orders/${orderId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Order deleted successfully.');
+            location.reload(); // Reload the page to see changes
+        } else {
+            alert('Error deleting order.');
+        }
+    }
+}*/
+
+
+async function cancelOrder(orderId) {
+    if (confirm('Are you sure you want to cancel this order?')) {
+        const response = await fetch(`/admin/orders/${orderId}/cancel`, {
+            method: 'PATCH'
+        });
+
+        if (response.ok) {
+          Swal.fire({
+                icon: 'success',
+                title: 'Cancelled!',
+                text: 'Order cancelled successfully.',
+                timer: 2000, 
+                willClose: () => {
+                    location.reload(); 
+                }
+            });
+        } else {
+          Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error cancelling order.',
+                timer: 2000, // Keep the alert open for 2 seconds
+                willClose: () => {
+                    location.reload(); // Reload the page after the alert closes
+                }
+            });
+        }
+    }
+}
+
+</script>
+
+
+

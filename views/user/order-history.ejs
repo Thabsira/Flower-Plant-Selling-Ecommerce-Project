@@ -1,0 +1,75 @@
+<%- include("../../views/partials/user/header") %>
+
+<style>
+    .container, .list-group {
+        font-family: 'YourFontName', sans-serif;
+        font-size: 16px;
+        font-weight: normal;
+    }
+</style>
+
+<!-- Order History Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <h1 class="mb-4">Order History</h1>
+        
+        <!-- Check if there are any orders -->
+        <% if (orders && orders.length > 0) { %>
+            <div class="list-group">
+                <% orders.forEach(order => { %>
+                    <div class="list-group-item list-group-item-action mb-4">
+                        <!-- Order Summary -->
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5 class="fw-bold">Order ID: <%= order._id %></h5>
+                                <p>Order Date: <%= order.createdOn.toDateString() %></p>
+                                <p>Status: <strong><%= order.status %></strong></p>
+                            </div>
+                            <div class="text-end">
+                                <p>Total Amount: $<%= order.finalAmount.toFixed(2) %></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Products in Order -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% order.orderItems.forEach(item => { %>
+                                    <tr>
+                                        <td>
+                                            <img src="<%= item.product.productImage[0] %>" class="img-fluid rounded" style="width: 70px; height: 70px;" alt="Product Image">
+                                        </td>
+                                        <td><%= item.product.productName %></td>
+                                        <td>$<%= item.price.toFixed(2) %></td>
+                                        <td><%= item.quantity %></td>
+                                        <td>$<%= (item.price * item.quantity).toFixed(2) %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+
+                        <!-- Order Actions (Cancel if eligible) -->
+                        <% if (order.status === 'Pending' || order.status === 'Processing') { %>
+                            <form action="/orders/cancel/<%= order._id %>" method="POST" class="text-end mt-3">
+                                <button type="submit" class="btn btn-danger">Cancel Order</button>
+                            </form>
+                        <% } %>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p>No orders found.</p>
+        <% } %>
+    </div>
+</div>
+<!-- Order History Page End -->
+
+<%- include("../../views/partials/user/footer") %>

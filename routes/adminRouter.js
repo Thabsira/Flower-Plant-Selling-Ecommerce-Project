@@ -4,6 +4,7 @@ const adminController= require("../controllers/admin/adminController");
 const categoryController = require("../controllers/admin/categoryController");
 const productController = require("../controllers/admin/productController")
 const customerController=require("../controllers/admin/customerController");
+const orderController = require("../controllers/admin/orderController");
 const {userAuth,adminAuth} = require("../middlewares/auth");
 const path = require('path');
 
@@ -82,6 +83,15 @@ router.post('/editProduct/:id',adminAuth,uploads.array('images',4),productContro
 router.post('/deleteImage',adminAuth,productController.deleteSingleImage);
 router.get('/blockProduct',adminAuth,productController.blockProduct);
 router.get('/unblockProduct',adminAuth,productController.unblockProduct);
+
+//order management
+
+router.get('/orders',adminAuth, orderController.getAllOrders);
+router.put('/orders/:orderId/status',adminAuth, orderController.updateOrderStatus);
+router.patch('/orders/:orderId/cancel',adminAuth, orderController.cancelOrder);
+
+
+
 
 
 

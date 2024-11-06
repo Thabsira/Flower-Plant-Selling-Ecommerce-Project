@@ -1,0 +1,193 @@
+<%- include("../../views/partials/user/header") %>
+
+<style>
+    .container, .list-group {
+        font-family: 'YourFontName', sans-serif;
+        font-size: 16px; /* Adjust size if needed */
+        font-weight: normal;
+    }
+</style>
+
+<!-- Checkout Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <h1 class="mb-4">Checkout</h1>
+        <form action="/checkout/place-order" method="POST" id="orderForm">
+            <div class="row g-5">
+                <!-- Address Selection Section -->
+                <div class="col-md-12 col-lg-6 col-xl-7">
+                    <h4 class="mb-4">Select Delivery Address</h4>
+                    
+                    <!-- Loop through saved addresses from the user profile -->
+                    <div class="list-group">
+                        <% if (addresses && addresses.length > 0) { %>
+                            <% addresses.forEach(address => { %>
+                                <div class="list-group-item list-group-item-action mb-3">
+                                    <input type="radio" name="selectedAddress" value="<%= address._id %>" class="form-check-input me-3" required>
+                                    <div>
+                                        <h5 class="fw-bold mb-1"><%= address.name %></h5>
+                                        <p class="mb-0">
+                                            <%= address.address %>, <%= address.city %>, <%= address.state %>, <%= address.pincode %> <br>
+                                            <strong>Phone:</strong> <%= address.phone %>
+                                        </p>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p>No saved addresses found. Please add one below.</p>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Button to Add New Address -->
+                    <button class="btn btn-primary mt-3" onclick="window.location.href='/profile/address/add#addresses'">Add New Address</button>
+                </div>
+
+                <!-- Order Summary Section -->
+                <div class="col-md-12 col-lg-6 col-xl-5">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Products</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loop through cart items and display each -->
+                                <% cart.items.forEach(item => { %>
+                                    <tr>
+                                        <th scope="row">
+                                            <div class="d-flex align-items-center mt-2">
+                                                <img src="<%= item.productId.productImage[0] %>" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                                            </div>
+                                        </th>
+                                        <td class="py-5"><%= item.productId.productName %></td>
+                                        <td class="py-5">$<%= item.price.toFixed(2) %></td>
+                                        <td class="py-5"><%= item.quantity %></td>
+                                        <td class="py-5">$<%= (item.price * item.quantity).toFixed(2) %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                   
+
+                    <!-- Payment Methods -->
+                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                        <div class="col-12">
+                            <div class="form-check text-start my-3">
+                                <input type="radio" class="form-check-input bg-primary border-0" id="Transfer-1" name="paymentMethod" value="bank_transfer">
+                                <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
+                            </div>
+                            <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
+                        </div>
+                    </div>
+                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                        <div class="col-12">
+                            <div class="form-check text-start my-3">
+                                <input type="radio" class="form-check-input bg-primary border-0" id="Delivery-1" name="paymentMethod" value="cash_on_delivery">
+                                <label class="form-check-label" for="Delivery-1">Cash On Delivery</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                        <div class="col-12">
+                            <div class="form-check text-start my-3">
+                                <input type="radio" class="form-check-input bg-primary border-0" id="Paypal-1" name="paymentMethod" value="paypal">
+                                <label class="form-check-label" for="Paypal-1">Paypal</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Place Order Button -->
+                   <!------ <div class="row g-4 text-center align-items-center justify-content-center pt-4">
+                        <button type="button" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary" onclick="placeOrder()">Place Order</button>
+                    </div>---->
+                    
+                    <input type="hidden" name="addressId" id="addressId"/>
+                    <input type="hidden" name="paymentMethod" id="paymentMethod"/>
+                    <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Checkout Page End -->
+
+<%- include("../../views/partials/user/footer") %>
+
+<script>
+  
+
+
+    /*document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('orderForm').addEventListener('submit', (event) => {
+            console.log("Form submitted");
+        });
+
+        function placeOrder() {
+            alert('Place order function called');
+            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+            if (!selectedAddress) {
+                alert('Please select an address to proceed.');
+                return;
+            }
+        }
+
+        document.querySelector("form").addEventListener("submit", function(event) {
+            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+
+            if (!selectedAddress || !selectedPaymentMethod) {
+                event.preventDefault();
+                alert('Please select an address and payment method to proceed.');
+                return;
+            }
+            console.log("Selected Address ID:", selectedAddress.value);
+            console.log("Selected Payment Method:", selectedPaymentMethod.value);
+
+            document.getElementById('addressId').value = selectedAddress.value;
+            document.getElementById('paymentMethod').value = selectedPaymentMethod.value;
+
+            console.log("Form submitted"); 
+        });
+    });*/
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const orderForm = document.getElementById('orderForm');
+
+        orderForm.addEventListener('submit', (event) => {
+            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+
+            if (!selectedAddress || !selectedPaymentMethod) {
+                event.preventDefault();
+                alert('Please select an address and payment method to proceed.');
+                return;
+            }
+
+            console.log("Selected Address ID:", selectedAddress.value);
+            console.log("Selected Payment Method:", selectedPaymentMethod.value);
+
+            // Set hidden inputs before form submission
+            document.getElementById('addressId').value = selectedAddress.value;
+            document.getElementById('paymentMethod').value = selectedPaymentMethod.value;
+
+            console.log("Form submitted");
+        });
+    });
+
+
+
+
+
+
+
+
+</script>

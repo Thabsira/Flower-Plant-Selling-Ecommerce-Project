@@ -1,0 +1,69 @@
+<%- include("../../views/partials/user/header") %>
+
+<style>
+    body {
+        margin-top: 100px; /* Ensure content doesn't overlap with the header */
+    }
+</style>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Edit Address</h1>
+
+        <div class="card mb-4">
+            <div class="card-header">Edit Your Address</div>
+            <div class="card-body">
+                <form action="/profile/address/edit/<%= address._id %>" method="POST" onsubmit="return validateForm()">
+                    <div class="mb-3">
+                        <label for="addressType" class="form-label">Address Type</label>
+                        <select class="form-control" id="addressType" name="addressType" required>
+                            <option value="Home" <%= address.addressType === 'Home' ? 'selected' : '' %>>Home</option>
+                            <option value="Work" <%= address.addressType === 'Work' ? 'selected' : '' %>>Work</option>
+                            <option value="Other" <%= address.addressType === 'Other' ? 'selected' : '' %>>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="<%= address.name %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="city" name="city" value="<%= address.city %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="landMark" class="form-label">Landmark</label>
+                        <input type="text" class="form-control" id="landMark" name="landMark" value="<%= address.landMark %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="state" class="form-label">State</label>
+                        <input type="text" class="form-control" id="state" name="state" value="<%= address.state %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="pincode" class="form-label">Pincode</label>
+                        <input type="number" class="form-control" id="pincode" name="pincode" value="<%= address.pincode %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" class="form-control" id="phone" name="phone" value="<%= address.phone %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="altPhone" class="form-label">Alternate Phone</label>
+                        <input type="text" class="form-control" id="altPhone" name="altPhone" value="<%= address.altPhone %>">
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Update Address</button>
+                    <a href="/userProfile" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <%- include("../../views/partials/user/footer") %>
+</body>

@@ -1,6 +1,6 @@
 const User = require("../models/userSchema");
 
-const userAuth = (req,res)=>{
+/*const userAuth = (req,res,next)=>{
     if(req.session.user){
         User.findById(req.session.user)
         .then(data=>{
@@ -11,13 +11,36 @@ const userAuth = (req,res)=>{
             }
         })
         .catch(error=>{
-            console.log("Error in user auth middleware");
+            console.log("Error in user auth middleware",error);
             res.status(500).send("internal sever error")
         })
     }else{
         res.redirect("/login")
     }
-}
+}*/
+
+
+
+const userAuth = (req, res, next) => {
+    if (req.session.user) {
+        User.findById(req.session.user)
+            .then(data => {
+                if (data && !data.isBlocked) {
+                    req.user = data; // Set req.user so it’s available in downstream functions
+                    next();
+                } else {
+                    res.redirect("/login");
+                }
+            })
+            .catch(error => {
+                console.log("Error in user auth middleware", error);
+                res.status(500).send("Internal server error");
+            });
+    } else {
+        res.redirect("/login");
+    }
+};
+
 
 
 

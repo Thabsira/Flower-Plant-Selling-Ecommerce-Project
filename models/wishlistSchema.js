@@ -1,5 +1,5 @@
 const mongoose= require('mongoose');
-const{Schema}=momgoose;
+const{Schema}=mongoose;
 
 const wishlistSchema= new Schema({
     userId:{

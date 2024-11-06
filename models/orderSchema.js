@@ -3,6 +3,12 @@ const{Schema} = mongoose;
 const{v4:uuidv4} = require('uuid');
 
 const orderSchema = new Schema({
+    userId: { // Add this line
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+
     orderId:{
         type:String,
         default:()=>uuidv4(),

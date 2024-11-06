@@ -33,7 +33,8 @@ const productSchema= new Schema({
     },
     quantity:{
         type:Number,
-        default:true
+        //default:true
+        default: 0  // Default stock level, set to 0 or your preferred default quantity
     },
     color:{
         type:String,
@@ -51,8 +52,17 @@ const productSchema= new Schema({
         type:String,
         enum:["Available","out of stock","Discontinued"],
         required:true,
-        default:0,
+        //default:0,
+        default: "Available"  // Set default status to match one of the enum values
     },
+    rating: {
+        type: Number,
+        default: 0  // Default rating, if applicable
+    },
+    featured: {
+        type: Boolean,
+        default: false  // Default to non-featured
+    }
 
 },{timestamps:true});
 

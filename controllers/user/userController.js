@@ -127,6 +127,45 @@ const loadHomepage = async (req,res)=>{
 }
 
 
+/*const loadHomepage = async (req, res) => {
+    try {
+        const user = req.session.user;  // Get user info from session if logged in
+        const categories = await Category.find({ isListed: true });  // Fetch all active categories
+        let productData = await Product.find({
+            isBlocked: false,  // Only show unblocked products
+            category: { $in: categories.map(category => category._id) }, // Filter products by listed categories
+            quantity: { $gt: 0 }  // Only show products in stock
+        });
+
+        // Sort products by creation date (most recent first)
+        productData.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+        productData = productData.slice(0, 15);  // Limit the number of displayed products
+
+        if (user) {
+            // If user is logged in, fetch user data to pass username to the view
+            const userData = await User.findOne({ _id: user._id });
+            return res.render("home", { 
+                user: userData,         // Pass user data for a logged-in session
+                username: userData.username,  // Specifically pass the username for display
+                products: productData   // Pass product data to the view
+            });
+        } else {
+            // If no user is logged in, pass only product data to the view
+            return res.render("home", { 
+                products: productData,
+                username: null   // Pass null for username to indicate user is not logged in
+            });
+        }
+    } catch (error) {
+        console.log("Home page not found");
+        res.status(500).send("Server error");
+    }
+};*/
+
+
+
+
+
 const securePassword=async(password)=>{
     try{
         const passwordHash= await bcrypt.hash(password,10) 
@@ -282,6 +321,10 @@ const login = async(req,res)=>{
     }
 
     req.session.user = findUser;
+  //  req.session.userId = findUser._id; // Setting userId in session
+
+       // req.session.userId = findUser._id;
+       // req.session.username = findUser.username; 
     res.redirect("/")
 
     }catch(error){
@@ -324,6 +367,12 @@ const productDetails = async(req,res)=>{
        res.status(500).send('Server error') 
     }
 }
+
+
+
+
+
+
     
 
 
@@ -338,6 +387,7 @@ module.exports= {
     loadLogin,
     login,
     logout,
-    productDetails
+    productDetails,
+   
 
 }

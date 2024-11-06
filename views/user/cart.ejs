@@ -1,0 +1,229 @@
+<%- include("../../views/partials/user/header") %>
+
+<!-- Cart Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Products</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Handle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through cart items passed from the backend -->
+                    <% if (cart && cart.items.length > 0) { %>
+                        <% cart.items.forEach(item => { %>
+                            <!-- Adding data-product-id attribute to uniquely identify each row by productId -->
+                            <tr data-product-id="<%= item.productId._id %>">
+                                <th scope="row">
+                                    <div class="d-flex align-items-center">
+                                        <!-- Product image -->
+                                        <img src="<%= item.productId.productImage[0] %>" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="<%= item.productId.name %>">
+                                    </div>
+                                </th>
+                                <td>
+                                    <p class="mb-0 mt-4" style="color: black;"><%= item.productId.productName %></p>
+                                </td>
+                                <td>
+                                    <p class="mb-0 mt-4">$<%= item.price.toFixed(2) %></p>
+                                </td>
+                                <td>
+                                    <div class="input-group quantity mt-4" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                        
+                                            <button class="btn btn-sm btn-minus rounded-circle bg-light border" onclick="updateCartItem('<%= item.productId._id %>', -1)">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <input type="text" class="form-control form-control-sm text-center border-0" value="<%= item.quantity %>" readonly>
+                                        <div class="input-group-btn">
+                                            
+                                            <button class="btn btn-sm btn-plus rounded-circle bg-light border" onclick="updateCartItem('<%= item.productId._id %>', 1)">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <!-- Total price for this item with data-price attribute -->
+                                  <!-----  <p class="mb-0 mt-4 total-price" data-price="<%= item.price * item.quantity %>">$<%= (item.price * item.quantity).toFixed(2) %></p>--->
+                                  <p class="mb-0 mt-4 total-price" data-price="<%= item.price %>">$<%= (item.price * item.quantity).toFixed(2) %></p>
+
+                                </td>
+                                <td>
+                                    <!-- Remove item button -->
+                                    <button class="btn btn-md rounded-circle bg-light border mt-4" onclick="removeCartItem('<%= item.productId._id %>')">
+                                        <i class="fa fa-times text-danger"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <!-- If cart is empty -->
+                        <tr>
+                            <td colspan="6" class="text-center">Your cart is empty</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Total and Proceed to Checkout section -->
+        <div class="row g-4 justify-content-end">
+            <div class="col-8"></div>
+            <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+                <div class="bg-light rounded">
+                    <div class="p-4">
+                        <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
+                        <div class="d-flex justify-content-between mb-4">
+                            <h5 class="mb-0 me-4">Subtotal:</h5>
+                            <p class="mb-0 cart-subtotal">$<%= cart.cartTotal.toFixed(2) %></p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h5 class="mb-0 me-4">Shipping</h5>
+                            <div>
+                                <p class="mb-0">Flat rate: $3.00</p>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-end">Shipping to your address.</p>
+                    </div>
+                    <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
+                        <h5 class="mb-0 ps-4 me-4">Total</h5>
+                        <p class="mb-0 pe-4 cart-total">$<%= (cart.cartTotal + 3).toFixed(2) %></p> <!-- Adding flat rate shipping -->
+                    </div>
+                    <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Cart Page End -->
+
+<%- include("../../views/partials/user/footer") %>
+
+
+<script>
+  
+
+function updateCartItem(productId, change) {
+    console.log("Updating item:", productId, "Change:", change);
+    fetch('/cart/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, change })
+    })
+    .then(response => {
+        if (response.ok) {
+            response.json().then(data => {
+                console.log("Response data:", data);
+                
+                // Find the row containing this product using data-product-id attribute
+                const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+
+                if (!row) {
+                    console.error("Row not found for product ID:", productId);
+                    return;
+                }
+
+                // Update quantity input
+                const quantityInput = row.querySelector('input[type="text"]');
+                let newQuantity = parseInt(quantityInput.value) + change;
+                if (newQuantity < 1) newQuantity = 1; // Prevent going below 1
+                quantityInput.value = newQuantity;
+
+                // Update total price for this item
+                const totalPriceElement = row.querySelector('.total-price');
+
+                // Use unit price directly from the data-price attribute
+                const unitPrice = parseFloat(totalPriceElement.dataset.price);
+                console.log("Unit price:", unitPrice);
+
+                // Calculate new total price based on unit price and updated quantity
+                const newTotalPrice = unitPrice * newQuantity;
+                totalPriceElement.textContent = `$${newTotalPrice.toFixed(2)}`;
+
+                // Recalculate the cart total for all items
+                updateCartTotal();
+            });
+        } else {
+            console.error("Error response from server:", response);
+        }
+    })
+    .catch(error => {
+        console.error('Error updating cart item:', error);
+    });
+}
+
+// Function to update the overall cart total
+function updateCartTotal() {
+    const totalElements = document.querySelectorAll('.total-price');
+    let cartTotal = 0;
+
+    totalElements.forEach(totalElement => {
+        cartTotal += parseFloat(totalElement.textContent.replace('$', ''));
+    });
+
+    // Update the subtotal in the cart summary
+    document.querySelector('.cart-subtotal').textContent = `$${cartTotal.toFixed(2)}`;
+
+    // Update the total including shipping
+    const shippingCost = 3.00; // Flat shipping cost
+    document.querySelector('.cart-total').textContent = `$${(cartTotal + shippingCost).toFixed(2)}`;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Remove item from cart function
+   /* function removeCartItem(productId) {
+        fetch('/cart/remove', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId })
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            }
+        });
+    }*/
+
+
+    function removeCartItem(productId) {
+    fetch(`/cart/remove/${productId}`, {
+        method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle the updated cart data, for example:
+        console.log(data); // You can update the UI based on the response
+        location.reload(); // Reload the page to see the changes (or update the cart dynamically)
+    })
+    .catch(error => {
+        console.error('Error removing item from cart:', error);
+    });
+}
+    
+    // Proceed to checkout
+    function proceedToCheckout() {
+        window.location.href = "/checkout";
+    }
+</script>
+

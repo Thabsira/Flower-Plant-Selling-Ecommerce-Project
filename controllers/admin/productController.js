@@ -56,9 +56,6 @@ const addProducts = async (req,res)=>{
                         resizedImageName
                     );
 
-
-
-
                     try{
                     // Resize the image and save it to the new path
                     await sharp(originalImagePath)
@@ -73,8 +70,6 @@ const addProducts = async (req,res)=>{
     console.error("error",error);
 }            }
             }
-
-
 
 
 
@@ -95,7 +90,7 @@ const addProducts = async (req,res)=>{
                 size:product.size,
                 color:product.color,
                 productImage:images,
-                status:"Available",
+                status:product.quantity>1?'Available':'out of stock'
 
             });
 
@@ -129,6 +124,12 @@ const getAllProducts = async (req,res)=>{
             .populate('category')
             .exec();
 
+            const productsWithStatus = productData.map(product => ({
+                ...product.toObject(),
+                status: product.quantity > 1 ? 'Available' : 'out of stock', // Set status based on quantity
+            }));
+
+
             const count = await Product.find({
                 $or:[
                     {productName: {$regex:new RegExp(".*"+search+".*","i")}},
@@ -139,7 +140,8 @@ const getAllProducts = async (req,res)=>{
 
             if(category.length> 0){
                 res.render("products",{
-                    data:productData,
+                   // data:productData,
+                    data: productsWithStatus,
                     currentPage:page,
                     totalPages:Math.ceil(count/limit),
                     cat:category,

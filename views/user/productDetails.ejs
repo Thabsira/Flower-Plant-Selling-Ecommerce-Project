@@ -87,7 +87,7 @@
 
 
 </style>
-
+<link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
 <!---<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/2.2.3/jquery.elevatezoom.js"></script>--->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -158,8 +158,38 @@
           <span class="product-rating">&#9733;&#9733;&#9733;&#9733;&#9734;</span> <!-- 4 out of 5 stars -->
       </div>
       <div class="button-group">
-      <button class="btn btn-primary mt-2">Add to Cart</button>
-      <button class="btn btn-secondary mt-2 ms-2">Add to Wishlist</button>
+        
+  <!------   <button class="btn btn-primary mt-2" id="addToCartButton" onclick="alert('Button clicked')">Add to Cart</button>
+      <button class="btn btn-secondary mt-2 ms-2">Add to Wishlist</button>---->
+
+
+    <!-----  <button class="btn btn-primary" onclick="addToCart('<%= products._id %>')">Add to Cart</button>---->
+
+    <button 
+            class="btn btn-primary" 
+            onclick="addToCart('<%= products._id %>')" 
+            <% if (products.status !== 'Available' || products.quantity <= 1) { %> 
+                disabled 
+            <% } %>>
+            Add to Cart
+        </button>
+
+
+   <!------ <% if (products.quantity > 0) { %>
+        <form action="/add/<%= products._id %>" method="POST">
+            <div class="product-content-wrap">
+                <h6><%= products.productName %></h6>
+                <h5>Rs <%= products.productOffer > 0 ? (products.regularPrice - (products.regularPrice * products.productOffer / 100)).toFixed(2) : products.regularPrice.toFixed(2) %></h5>
+                <h4>Stock: <%= products.quantity %></h4>
+                <input type="number" name="quantity" id="quantity" min="1" max="<%= products.quantity %>" required value="1" class="form-control mb-2" style="width: 100px;">
+                <button type="submit" class="btn btn-primary">Add to Cart</button>
+            </div>
+        </form>
+    <% } %>--->
+
+
+      
+      
       </div>
   </div>
 </div>
@@ -262,58 +292,56 @@
 </div>
 
 
-
-<!----<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/2.2.3/jquery.elevatezoom.js"></script>--->
-
-
-
-
-
-
-
-<!---<script>
-$(document).ready(function(){
-  $('#main-product-img').elevateZoom({
-      zoomType: "inner", // Inner zoom effect
-      cursor: "crosshair",
-      easing: true,
-      responsive: true // Make zoom responsive
-  });
-});
-</script>--->
-
-
-<!---<script>
-    $(document).ready(function() {
-      console.log("jQuery version:", $.fn.jquery);
-        console.log($.fn.elevateZoom); // Check if elevateZoom is defined
-        $('.main-product-img').elevateZoom({
-            zoomType: "lens",
-            lensShape: "round",
-            lensSize: 200
-        });
-    });
-  
-</script>--->
-
 <!----<script>
-  $(document).ready(function() {
-      console.log("jQuery version:", $.fn.jquery);
-      console.log($.fn.elevateZoom); // Check if elevateZoom is defined
-      
-      // Initialize ElevateZoom on the correct selector
-      if ($.fn.elevateZoom) {
-          $('#main-product-img').elevateZoom({
-              zoomType: "lens",
-              lensShape: "round",
-              lensSize: 200
-          });
-      } else {
-          console.error("ElevateZoom is not defined.");
-      }
-  });
-</script>--->
+    function addToCart(productId) {
+        const quantity = 1;
+        fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId, quantity }),
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Item added to cart successfully!');
+            } else {
+                alert('Failed to add item to cart');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>---->
+
+
+
+<script>
+function addToCart(productId) {
+    const button = document.querySelector(`[onclick="addToCart('${productId}')"]`);
+    if (button.disabled) {
+        alert("This item is out of stock!");
+        return;
+    }
+
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, quantity: 1 }),
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Item added to cart successfully!');
+        } else {
+            alert('Failed to add item to cart');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+</script>
 
 
 
