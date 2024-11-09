@@ -48,38 +48,48 @@ const addCategory = async (req,res)=>{
 };
 
 
-const addCategoryOffer = async (req,res)=>{
+const addCategoryOffer = async (req, res) => {
     try {
-
         const percentage = parseInt(req.body.percentage);
         const categoryId = req.body.categoryId;
+        console.log("Received category ID:", categoryId);
         const category = await Category.findById(categoryId);
-        if(!category){
-            return res.status(404).json({status:false,message:"Category not found"});
+        if (!category) {
+            console.log("Category not found:", categoryId);
+            return res.status(404).json({ status: false, message: "Category not found" });
         }
-        const products = await Product.find({category:category._id});
-        const hasProductOffer = products.some((product)=>product.productOffer>percentage);
-        if(hasProductOffer){
-            return res.json({status:false,message:"Products within this category has already offer"});
-        }
-        await Category.updateOne({_id:categoryId},{$set:{categoryOffer:percentage}});
+        const products = await Product.find({ category: category._id });
 
-        for(const product of products){
-            product.productOffer = 0;
-            product.salesPrice.save();
+        const hasProductOffer = products.some((product) => {
+            console.log("Product offer:", product.productOffer, "New offer:", percentage);
+            return product.productOffer > percentage;
+        });
+
+        if (hasProductOffer) {
+            return res.json({ status: false, message: "Products within this category already have a higher offer" });
         }
-        res.json({status:true});
-        
+
+        await Category.updateOne({ _id: categoryId }, { $set: { categoryOffer: percentage } });
+        for (const product of products) {
+            product.productOffer = 0; 
+            await product.save(); 
+        }
+
+        res.json({ status: true, message: "Offer added successfully" });
     } catch (error) {
-        res.status(500).json({status:false,message:"Internal server error"});   
+        console.error("Error adding category offer:", error);
+        res.status(500).json({ status: false, message: "Internal server error" });
     }
 };
+
 
 
 const removeCategoryOffer = async(req,res)=>{
     try {
         const categoryId = req.body.categoryId;
         const category = await Category.findById(categoryId);
+        console.log("Category ID:", categoryId);
+        console.log("Found category:", category);
 
         if(!category){
             return res.status(404).json({status:false, message:"Cateogory not found"})
@@ -140,34 +150,42 @@ const getEditCategory = async (req,res)=>{
 };
 
 
-const editCategory = async (req,res)=>{
-    try{
+
+
+  const editCategory = async (req, res) => {
+    try {
+        console.log('Form data:', req.body); 
+
         const id = req.params.id;
-        const {name,description} = req.body;
-        const existingCategory = await Category.findOne({name:name});
-        if(existingCategory){
-            return res.status(400).json({error:"caregory exists, Please choose another name"})
+        const { name, description } = req.body;
+        const existingCategory = await Category.findOne({ name: name, _id: { $ne: id } });
+        if (existingCategory) {
+            return res.status(400).json({ error: "Category exists, Please choose another name" });
         }
+
+        console.log('Updating category with ID:', id);
+        console.log('New name:', name);
+        console.log('New description:', description);
 
         const updateCategory = await Category.findByIdAndUpdate(
-            id,{
-                name:name,
-                description:description,
-            },{new:true}
-
+            id,
+            { name, description },
+            { new: true }
         );
 
-        if(updateCategory){
-            res.redirect("/admin/category");
-        }else{
-            res.status(404).json({error:"Category Not Found"})
+        if (updateCategory) {
+            res.json({ success: true, message: 'Category updated successfully' });
+        } else {
+            res.status(404).json({ error: "Category Not Found" });
         }
 
-    }catch(error){
-        res.status(500).json({error:"Intenal Server Error"})
-
+    } catch (error) {
+        console.error("Error during category update:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
-}
+};
+
+  
 
 
 
@@ -175,7 +193,7 @@ const blockCategory = async (req, res) => {
     try {
         const id = req.query.id;
         await Category.updateOne({ _id: id }, { $set: { isBlocked: true } });
-        res.redirect("/admin/category");  // Redirect back to category page after blocking
+        res.redirect("/admin/category");  
     } catch (error) {
         console.error(error);
         res.redirect("/pageerror");  
@@ -187,10 +205,10 @@ const unblockCategory = async (req, res) => {
     try {
         const id = req.query.id;
         await Category.updateOne({ _id: id }, { $set: { isBlocked: false } });
-        res.redirect("/admin/category");  // Redirect back to category page 
+        res.redirect("/admin/category");  
     } catch (error) {
         console.error(error);
-        res.redirect("/pageerror");  // 
+        res.redirect("/pageerror");  
     }
 };
 
@@ -199,10 +217,10 @@ const softDeleteCategory = async (req, res) => {
     try {
         const id = req.query.id;
         await Category.updateOne({ _id: id }, { $set: { isDeleted: true } });
-        res.redirect("/admin/category");  // Redirect back to category page after soft delete
+        res.redirect("/admin/category");  
     } catch (error) {
         console.error(error);
-        res.redirect("/pageerror");  // 
+        res.redirect("/pageerror");  
     }
 };
 
@@ -212,7 +230,7 @@ const restoreCategory = async (req, res) => {
     try {
         const id = req.query.id;
         await Category.updateOne({ _id: id }, { $set: { isDeleted: false } });
-        res.redirect("/admin/category");  // Redirect back to category page after restoring
+        res.redirect("/admin/category");  
     } catch (error) {
         console.error(error);
         res.redirect("/pageerror");  

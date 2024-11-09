@@ -121,7 +121,7 @@
                             <li class="list-group-item">
                                 <p><strong>Order ID:</strong> <%= order._id %></p>
                                 <p><strong>Status:</strong> <%= order.status %></p>
-                                <p><strong>Total:</strong> $<%= order.total %></p>
+                             <!----- <p><strong>Total:</strong> $<%= order.total %></p>---->
                                 <a href="/profile/order/cancel/<%= order._id %>" class="btn btn-danger btn-sm">Cancel Order</a>
                             </li>
                         <% }) %>
@@ -137,7 +137,7 @@
             <div class="card-header">Password Management</div>
             <div class="card-body">
                 <p>If you forgot your password, you can reset it by clicking below:</p>
-                <a href="/profile/password/forgot" class="btn btn-warning">Forgot Password</a>
+                <a href="/forgot-password" class="btn btn-warning">Forgot Password</a>
             </div>
         </div>
     </div>

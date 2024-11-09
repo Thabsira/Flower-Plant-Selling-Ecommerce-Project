@@ -269,49 +269,61 @@
 
 <script>
     function handleFormSubmit(event){
-       event.preventDefault();
-       if(!validateForm()){
-        return
-       } 
-       const name = document.getElementsByName("name")[0].value;
-       const description = document.getElementById("descriptionId").value;
-
-       fetch('/admin/addCategory',{
-        method:"POST",
-        headers :{
-            'content-type':'application/json'
-        },
-        body:JSON.stringify({name,description})
-       })
-       .then(response=>{
-        if(!response.ok){
-            return response.json().then(err=>{
-                throw new Error(err.error);
-            })
-        }
-
-        return response.json();
-
-       }).then(data=>{
-        location.reload();
-       })
-       .catch(error=>{
-        if(error.message==="Category already Exists"){
-        Swal.fire({
-            icon:'error',
-            title:"Oops",
-            text:"Category already exists"
-        })
-        }else{
-            Swal.fire({
-                icon:"error",
-                title:"oops",
-                text:"An error occured while adding the category",
-            })
-        }
-       })
-
+    event.preventDefault();
+  
+    if (!validateForm()) {
+        return;
     }
+
+    const name = document.getElementsByName("name")[0].value;
+    const description = document.getElementById("descriptionId").value;
+
+    fetch('/admin/addCategory', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, description })
+    })
+    .then(response => {
+        
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.error);  
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+      Swal.fire({
+            icon: 'success',
+            title: 'Category Added!',
+            text: 'The new category has been added successfully.',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            location.reload();  
+        });
+    })
+    .catch(error => {
+        if (error.message === "Category already exists") {
+            Swal.fire({
+                icon: 'error',
+                title: "Oops",
+                text: "Category already exists",
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops",
+                text: "An error occurred while adding the category",
+            });
+        }
+    });
+}
+
+
+
+
 
 
     function validateForm(){

@@ -207,7 +207,7 @@
        </div>
    </section>
 <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function validateAndSubmit(){
         if(validateForm()){
@@ -236,11 +236,15 @@
     function viewImage(event,index){
         let input = event.target;
         let reader = new FileReader();
+        let cropper;
         reader.onload = function(){
             let dataURL = reader.result;
             let image = document.getElementById("imgView"+index);
             image.src = dataURL;
-            let cropper = new Cropper(image,{
+            if (cropper) {
+            cropper.destroy();
+        }
+             cropper = new Cropper(image,{
                 aspectRatio:1,
                 viewMode:1,
                 guides:true,
@@ -336,6 +340,8 @@
               const images = document.getElementById('input1')
               const quantity=document.getElementsByName('quantity')
               let isValid = true
+
+
               if (name.trim() === "") {
       displayErrorMessage('productName-error', 'Please enter a product name.');
       isValid = false;
@@ -392,6 +398,52 @@
                   displayErrorMessage("images-error",'Please select an image.');
                   isValid = false;
               }
+
+            /* if (isValid) {
+        Swal.fire({
+            title: 'Success!',
+            text: 'Product has been successfully updated.',
+            icon: 'success',
+            time:2000,
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("updateForm").submit(); // Submit the form
+            }
+        });
+    } else {
+        Swal.fire({
+            title: 'Error',
+            text: 'Please correct the highlighted errors.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }*/
+
+
+    if (isValid) {
+    Swal.fire({
+        title: 'Success!',
+        text: 'Product has been successfully updated.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("updateForm").submit(); // Submit the form
+        }
+    });
+} else {
+    Swal.fire({
+        title: 'Error',
+        text: 'Please correct the highlighted errors.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+    });
+}
+
+
+
+
               return isValid;
           }
 
@@ -411,6 +463,9 @@
               const errorMessage = document.getElementById('errorMessage');
   
           }
+
+
+          
 
 
 </script>

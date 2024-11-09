@@ -37,7 +37,7 @@
                                     <div class="input-group quantity mt-4" style="width: 100px;">
                                         <div class="input-group-btn">
                                         
-                                            <button class="btn btn-sm btn-minus rounded-circle bg-light border" onclick="updateCartItem('<%= item.productId._id %>', -1)">
+                                           <button class="btn btn-sm btn-minus rounded-circle bg-light border" onclick="updateCartItem('<%= item.productId._id %>', -1)">
                                                 <i class="fa fa-minus"></i>
                                             </button>
                                         </div>
@@ -48,17 +48,24 @@
                                             <button class="btn btn-sm btn-plus rounded-circle bg-light border" onclick="updateCartItem('<%= item.productId._id %>', 1)">
                                                 <i class="fa fa-plus"></i>
                                             </button>
+
+          
+
+
+
+
+
                                         </div>
                                     </div>
                                 </td>
                                 <td>
                                     <!-- Total price for this item with data-price attribute -->
-                                  <!-----  <p class="mb-0 mt-4 total-price" data-price="<%= item.price * item.quantity %>">$<%= (item.price * item.quantity).toFixed(2) %></p>--->
+                                 <!----  <p class="mb-0 mt-4 total-price" data-price="<%= item.price * item.quantity %>">$<%= (item.price * item.quantity).toFixed(2) %></p>--->
                                   <p class="mb-0 mt-4 total-price" data-price="<%= item.price %>">$<%= (item.price * item.quantity).toFixed(2) %></p>
 
                                 </td>
                                 <td>
-                                    <!-- Remove item button -->
+                                
                                     <button class="btn btn-md rounded-circle bg-light border mt-4" onclick="removeCartItem('<%= item.productId._id %>')">
                                         <i class="fa fa-times text-danger"></i>
                                     </button>
@@ -112,98 +119,46 @@
 <script>
   
 
+
+
 function updateCartItem(productId, change) {
     console.log("Updating item:", productId, "Change:", change);
+
     fetch('/cart/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId, change })
     })
-    .then(response => {
-        if (response.ok) {
-            response.json().then(data => {
-                console.log("Response data:", data);
-                
-                // Find the row containing this product using data-product-id attribute
-                const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+    .then(response => response.json())
+    .then(data => {
+        console.log("Response data:", data);
 
-                if (!row) {
-                    console.error("Row not found for product ID:", productId);
-                    return;
-                }
-
-                // Update quantity input
-                const quantityInput = row.querySelector('input[type="text"]');
-                let newQuantity = parseInt(quantityInput.value) + change;
-                if (newQuantity < 1) newQuantity = 1; // Prevent going below 1
-                quantityInput.value = newQuantity;
-
-                // Update total price for this item
-                const totalPriceElement = row.querySelector('.total-price');
-
-                // Use unit price directly from the data-price attribute
-                const unitPrice = parseFloat(totalPriceElement.dataset.price);
-                console.log("Unit price:", unitPrice);
-
-                // Calculate new total price based on unit price and updated quantity
-                const newTotalPrice = unitPrice * newQuantity;
-                totalPriceElement.textContent = `$${newTotalPrice.toFixed(2)}`;
-
-                // Recalculate the cart total for all items
-                updateCartTotal();
-            });
-        } else {
-            console.error("Error response from server:", response);
+        const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+        if (!row) {
+            console.error("Row not found for product ID:", productId);
+            return;
         }
+
+        const quantityInput = row.querySelector('input[type="text"]');
+        // Get updated quantity directly from backend response
+        const newQuantity = data.items.find(item => item.productId.toString() === productId).quantity;
+        quantityInput.value = newQuantity;
+        console.log("New quantity:", newQuantity);
+
+        const totalPriceElement = row.querySelector('.total-price');
+        const unitPrice = parseFloat(totalPriceElement.dataset.price);
+        const newTotalPrice = unitPrice * newQuantity;
+        totalPriceElement.textContent = `$${newTotalPrice.toFixed(2)}`;
+
+        updateCartTotal();
     })
     .catch(error => {
         console.error('Error updating cart item:', error);
     });
 }
 
-// Function to update the overall cart total
-function updateCartTotal() {
-    const totalElements = document.querySelectorAll('.total-price');
-    let cartTotal = 0;
-
-    totalElements.forEach(totalElement => {
-        cartTotal += parseFloat(totalElement.textContent.replace('$', ''));
-    });
-
-    // Update the subtotal in the cart summary
-    document.querySelector('.cart-subtotal').textContent = `$${cartTotal.toFixed(2)}`;
-
-    // Update the total including shipping
-    const shippingCost = 3.00; // Flat shipping cost
-    document.querySelector('.cart-total').textContent = `$${(cartTotal + shippingCost).toFixed(2)}`;
-}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Remove item from cart function
-   /* function removeCartItem(productId) {
-        fetch('/cart/remove', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId })
-        }).then(response => {
-            if (response.ok) {
-                location.reload();
-            }
-        });
-    }*/
 
 
     function removeCartItem(productId) {
@@ -212,16 +167,16 @@ function updateCartTotal() {
     })
     .then(response => response.json())
     .then(data => {
-        // Handle the updated cart data, for example:
-        console.log(data); // You can update the UI based on the response
-        location.reload(); // Reload the page to see the changes (or update the cart dynamically)
+        
+        console.log(data); 
+        location.reload();
     })
     .catch(error => {
         console.error('Error removing item from cart:', error);
     });
 }
     
-    // Proceed to checkout
+    //  checkout
     function proceedToCheckout() {
         window.location.href = "/checkout";
     }

@@ -7,9 +7,6 @@ const path = require("path");
 const sharp = require("sharp");
 
 
-
-
-
 const getProductAddPage = async (req,res)=>{
     try {
         const category = await Category.find({isListed:true,isBlocked:false,isDeleted:false});
@@ -264,7 +261,6 @@ const getEditProduct = async (req,res)=>{
     }
 }
 
-
 const editProduct = async (req,res)=>{
     try {
         const id = req.params.id;
@@ -289,9 +285,37 @@ const editProduct = async (req,res)=>{
 
         if(req.files && req.files.length>0){
             for(let i=0;i<req.files.length;i++){
-                images.push(req.files[i].filename);
-            }
-        }
+               // images.push(req.files[i].filename);
+
+               const originalImagePath = req.files[i].path;
+
+
+               const timestamp = Date.now();
+               const resizedImageName =  `resized-${timestamp}-${req.files[i].filename}`;
+               const resizedImagePath = path.join(
+                   __dirname, 
+                   "../../public/uploads/product-images", 
+                   resizedImageName
+               );
+
+               try{
+                // Resize the image and save it to the new path
+                await sharp(originalImagePath)
+                    .resize({ width: 440, height: 440 })
+                    .toFile(resizedImagePath);
+
+                    images.push(`/uploads/product-images/${resizedImageName}`);
+                    console.log('Resized image path stored in the array:', `/uploads/product-images/${resizedImageName}`); // Save resized image path
+                }catch(error)
+                            {
+
+                          console.error("error",error);
+                          res.redirect("/admin/pageerror")
+                               }           
+                             }        
+
+                }
+
 
         const updateFields = {
             productName:req.body.productName,
@@ -325,9 +349,12 @@ const deleteSingleImage = async (req,res)=>{
 
        const product = await Product.findByIdAndUpdate(productIdToServer, {$pull: {productImage: imageNameToServer}}, {new: true});
 
+       if(!product){
+        return res.status(404).send({status:false, message:"Product not found"});
+       }
 
 
-        const imagePath = path.join("public","uploads","re-image",imageNameToServer);
+        const imagePath = path.join(__dirname,'../../public/uploads/product-images',path.basename(imageNameToServer));
         if(fs.existsSync(imagePath)){
             await fs.unlinkSync(imagePath);
             console.log(`Image ${imageNameToServer} deleted successfully`);
@@ -335,11 +362,15 @@ const deleteSingleImage = async (req,res)=>{
         }else{
             console.log(`Image ${imageNameToServer} not found`);
         }
-        res.send({status:true});
+        res.json({status:true, redirectUrl:'/editProduct'});
     } catch (error) {
         res.redirect("/pageerror")
     }
 }
+
+
+
+
 
 
 const blockProduct = async (req,res)=>{

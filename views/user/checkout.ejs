@@ -23,7 +23,7 @@
                         <% if (addresses && addresses.length > 0) { %>
                             <% addresses.forEach(address => { %>
                                 <div class="list-group-item list-group-item-action mb-3">
-                                    <input type="radio" name="selectedAddress" value="<%= address._id %>" class="form-check-input me-3" required>
+                                    <input type="radio" name="selectedAddress" value="<%= address._id %>" class="form-check-input me-3">
                                     <div>
                                         <h5 class="fw-bold mb-1"><%= address.name %></h5>
                                         <p class="mb-0">
@@ -56,7 +56,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Loop through cart items and display each -->
+                                
                                 <% cart.items.forEach(item => { %>
                                     <tr>
                                         <th scope="row">
@@ -121,73 +121,81 @@
 
 <%- include("../../views/partials/user/footer") %>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> 
+
 <script>
-  
-
-
-    /*document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('orderForm').addEventListener('submit', (event) => {
-            console.log("Form submitted");
-        });
-
-        function placeOrder() {
-            alert('Place order function called');
-            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
-            if (!selectedAddress) {
-                alert('Please select an address to proceed.');
-                return;
-            }
-        }
-
-        document.querySelector("form").addEventListener("submit", function(event) {
-            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
-            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-
-            if (!selectedAddress || !selectedPaymentMethod) {
-                event.preventDefault();
-                alert('Please select an address and payment method to proceed.');
-                return;
-            }
-            console.log("Selected Address ID:", selectedAddress.value);
-            console.log("Selected Payment Method:", selectedPaymentMethod.value);
-
-            document.getElementById('addressId').value = selectedAddress.value;
-            document.getElementById('paymentMethod').value = selectedPaymentMethod.value;
-
-            console.log("Form submitted"); 
-        });
-    });*/
-
-
     document.addEventListener('DOMContentLoaded', function() {
         const orderForm = document.getElementById('orderForm');
 
-        orderForm.addEventListener('submit', (event) => {
+        orderForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); 
+
             const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
             const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
 
+          // const selectedAddress = document.getElementsByName('selectedAddress');
+          // const selectedPaymentMethod=document.getElementsByName('paymentMethod')
+
+           console.log("Selected Address:", selectedAddress);
+           console.log("Selected Payment Method:", selectedPaymentMethod);
+
+
+            // Check if address and payment method are selected
             if (!selectedAddress || !selectedPaymentMethod) {
-                event.preventDefault();
-                alert('Please select an address and payment method to proceed.');
+                Swal.fire({
+                    title: 'Missing Information',
+                    text: 'Please select an address and payment method to proceed.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
 
-            console.log("Selected Address ID:", selectedAddress.value);
-            console.log("Selected Payment Method:", selectedPaymentMethod.value);
-
-            // Set hidden inputs before form submission
+            
             document.getElementById('addressId').value = selectedAddress.value;
             document.getElementById('paymentMethod').value = selectedPaymentMethod.value;
 
-            console.log("Form submitted");
+            try {
+                const response = await fetch(orderForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        addressId: selectedAddress.value,
+                        paymentMethod: selectedPaymentMethod.value
+                    })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        title: 'Order Placed Successfully!',
+                        text: result.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/'; 
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: result.message || 'An error occurred while placing the order.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                console.error('Error placing order:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'An error occurred. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
         });
     });
-
-
-
-
-
-
-
-
 </script>
+
+

@@ -26,7 +26,7 @@ const userAuth = (req, res, next) => {
         User.findById(req.session.user)
             .then(data => {
                 if (data && !data.isBlocked) {
-                    req.user = data; // Set req.user so it’s available in downstream functions
+                    req.user = data; 
                     next();
                 } else {
                     res.redirect("/login");

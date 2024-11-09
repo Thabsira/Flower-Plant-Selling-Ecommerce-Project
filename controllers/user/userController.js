@@ -354,17 +354,21 @@ const logout = async(req,res)=>{
 
 const productDetails = async(req,res)=>{
     try {
+        const user= req.session.user;
         const productId = req.query.id;
         const products = await Product.findById(productId).populate('category');
         if(!products){
             
             return  res.status(404).send("Product Not Found")
         }
+        if(user){
+            const userData = await User.findOne({_id:user._id});
         console.log(products)
-        res.render('productDetails.ejs',{products})
+        res.render('productDetails.ejs',{products,userData})
+        }
     } catch (error) {
         console.error("Some error",error)
-       res.status(500).send('Server error') 
+       res.status(500).send('Server error',error) 
     }
 }
 

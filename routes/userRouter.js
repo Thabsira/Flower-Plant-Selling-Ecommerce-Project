@@ -21,8 +21,8 @@ router.post('/resend-otp',userController.resendOtp)
 router.get('/auth/google',passport.authenticate('google',{scope:["profile","email"]}));
 
 router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res)=>{
-    //req.session.user = req.user;
-    req.session.userId = req.user._id;       // Stores userId in session
+    req.session.user = req.user;
+   // req.session.userId = req.user._id;       // Stores userId in session
     req.session.username = req.user.username; // Stores username in session
     res.redirect('/')
    //console.log('user logged in',req.user);
@@ -88,6 +88,7 @@ router.get("/orders/history",userAuth,orderController.getOrderHistory);
 //product
 
 router.get('/products',userAuth, productController.getProductPage);
+router.get('/products/:productId',userAuth, productController.productDetails);
 
 
 

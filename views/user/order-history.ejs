@@ -28,6 +28,9 @@
                             <div class="text-end">
                                 <p>Total Amount: $<%= order.finalAmount.toFixed(2) %></p>
                             </div>
+                            
+                              <!------  <p>Address: $<%= order.address %></p>--->
+                            
                         </div>
                         
                         <!-- Products in Order -->
@@ -45,10 +48,14 @@
                                 <% order.orderItems.forEach(item => { %>
                                     <tr>
                                         <td>
-                                            <img src="<%= item.product.productImage[0] %>" class="img-fluid rounded" style="width: 70px; height: 70px;" alt="Product Image">
+                                            <% if (item.product && item.product.productImage && item.product.productImage.length > 0) { %>
+                                                <img src="<%= item.product.productImage[0] %>" class="img-fluid rounded" style="width: 70px; height: 70px;" alt="Product Image">
+                                            <% } else { %>
+                                                <img src="/path/to/default-image.jpg" class="img-fluid rounded" style="width: 70px; height: 70px;" alt="Default Image">
+                                            <% } %>
                                         </td>
-                                        <td><%= item.product.productName %></td>
-                                        <td>$<%= item.price.toFixed(2) %></td>
+                                        <td><%= item.product ? item.product.productName : 'Product Unavailable' %></td>
+                                        <td>$<%= item.price ? item.price.toFixed(2) : '0.00' %></td>
                                         <td><%= item.quantity %></td>
                                         <td>$<%= (item.price * item.quantity).toFixed(2) %></td>
                                     </tr>
@@ -71,5 +78,7 @@
     </div>
 </div>
 <!-- Order History Page End -->
+
+
 
 <%- include("../../views/partials/user/footer") %>

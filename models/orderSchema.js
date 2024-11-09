@@ -42,11 +42,20 @@ const orderSchema = new Schema({
         type:Number,
         required:true
     },
-    address:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-        required:true
-    },
+   // address:{
+    // type:Schema.Types.ObjectId,
+     
+   // ref:"User",
+     // required:true
+     // street: String,
+     // city: String,
+     // state: String,
+     // pincode: Number,
+   // },
+
+   address: { type: Schema.Types.ObjectId, ref: 'Address', required: true },
+
+
     invoiceDate:{
         type:Date
     },

@@ -454,9 +454,9 @@
                                         <p><%= products[i].description %></p>
                                         <div class="d-flex justify-content-between flex-lg-wrap">
                                             <!-- Dynamic price -->
-                                            <p class="text-dark fs-5 fw-bold mb-0">Rs.<%= products[i].regularPrice %> </p>
+                                            <p class="text-dark fs-5 fw-bold mb-0">Rs.<%= products[i].salePrice %> </p>
                                             <!-- Add to cart button -->
-                                            <a href="/addToCart?id=<%= products[i]._id %>" class="btn border border-secondary rounded-pill px-3 text-primary">
+                                            <a href="/cart<%= products[i]._id %>" class="btn border border-secondary rounded-pill px-3 text-primary">
                                                 <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
                                             </a>
                                         </div>

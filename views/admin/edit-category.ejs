@@ -3,7 +3,7 @@
  <div class="container">
     <h2 class="mb-4 text-center">Edit Category</h2>
 
-    <form action="/admin/editCategory/<%= category._id%>" method="POST">
+    <form action="/admin/editCategory/<%= category._id%>" method="POST" id="editCategoryForm">
       <div class="mb-3">
         <label for="categoryName" class="form-label">Category Name</label>
         <input type="text" class="form-control" id="categoryName" name="name" value="<%=category.name%>" placeholder="Enter category name" value="Sample Category" required>
@@ -21,3 +21,56 @@
   </div>
 
   <%- include("../../views/partials/admin/footer") %>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+  const form = document.getElementById('editCategoryForm');
+
+  form.addEventListener('submit', async (event) => {
+      event.preventDefault(); 
+      const formData = new FormData(form);
+      const formAction = form.getAttribute('action');
+
+      try {
+          const response = await fetch(formAction, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                   'Content-Type': 'application/json',
+              },
+              
+               body: JSON.stringify(Object.fromEntries(formData))
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+              Swal.fire({
+                  icon: 'success',
+                  title: 'Category Updated',
+                  text: data.message || 'The category has been updated successfully.',
+              }).then(() => {
+                
+                  window.location.href = '/admin/category'; 
+              });
+          } else {
+        
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: data.error || 'An error occurred while updating the category.',
+              });
+          }
+      } catch (error) {
+          Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An unexpected error occurred.',
+          });
+          console.error("Error updating category:", error);
+      }
+  });
+</script>
+
+
+

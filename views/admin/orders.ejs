@@ -10,6 +10,7 @@
                 <th>Total Price</th>
                 <th>Status</th>
                 <th>Actions</th>
+                <th>Date</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +30,26 @@
                     <td>
                         <button class="btn btn-danger" onclick="cancelOrder('<%= order._id %>')">Cancel</button>
                     </td>
+                    <td><%= order.createdOn %></td>
+                  
+                
+                   
+
+                      <td>
+                        <% if (order.address && order.address.address && order.address.address.length) { %>
+                          <% order.address.address.forEach(addr => { %>
+                            <p>Type: <%= addr.addressType %></p>
+                            <p>Name: <%= addr.name %></p>
+                            <p>City: <%= addr.city %></p>
+                            <p>State: <%= addr.state %></p>
+                            <p>Pincode: <%= addr.pincode %></p>
+                            <p>Phone: <%= addr.phone %></p>
+                          <% }) %>
+                        <% } else { %>
+                          <p>No address available</p>
+                        <% } %>
+                      </td>
+            
                 </tr>
             <% }) %>
         </tbody>
@@ -106,9 +127,9 @@ async function cancelOrder(orderId) {
                 icon: 'error',
                 title: 'Error',
                 text: 'Error cancelling order.',
-                timer: 2000, // Keep the alert open for 2 seconds
+                timer: 2000, 
                 willClose: () => {
-                    location.reload(); // Reload the page after the alert closes
+                    location.reload(); 
                 }
             });
         }
