@@ -54,21 +54,16 @@ const addProducts = async (req,res)=>{
                     );
 
                     try{
-                    // Resize the image and save it to the new path
                     await sharp(originalImagePath)
                         .resize({ width: 440, height: 440 })
                         .toFile(resizedImagePath);
-
-                    // Add the resized image path to the images array
                     images.push(`/uploads/product-images/${resizedImageName}`);
-                    console.log('Resized image path stored in the array:', `/uploads/product-images/${resizedImageName}`); // Save resized image path
+                    console.log('Resized image path stored in the array:', `/uploads/product-images/${resizedImageName}`);
                 }catch(error)
 {
     console.error("error",error);
 }            }
             }
-
-
 
             const categoryId = await Category.findOne({name:product.category});
 
@@ -123,7 +118,7 @@ const getAllProducts = async (req,res)=>{
 
             const productsWithStatus = productData.map(product => ({
                 ...product.toObject(),
-                status: product.quantity > 1 ? 'Available' : 'out of stock', // Set status based on quantity
+                status: product.quantity > 1 ? 'Available' : 'out of stock', 
             }));
 
 
@@ -160,22 +155,17 @@ const addProductOffer = async(req,res)=>{
     try {
         const {productId,percentage} = req.body;
         console.log("Received offer for product:", productId, "with percentage:", percentage);
-//find product
         const findProduct = await Product.findOne({_id:productId});
         if(!findProduct){
             return res.status(404).json({status:false,message:"Product Not Found"});
 
         }
 
-
-//find category of product
         const findCategory = await Category.findOne({_id:findProduct.category});
         if(findCategory.categoryOffer>percentage){
-            return res.json({status:false,message:"This products category already has a category offe"});
+            return res.json({status:false,message:"This products category already has a category offer"});
 
         }
-
-        //checking if category has already offer
 
         if(findCategory.categoryOffer > percentage){
             return res.json({status:false,message:"This category already exists"})
@@ -195,11 +185,10 @@ const addProductOffer = async(req,res)=>{
         res.status(500).json({status:false,message:"Internal Server Error"})
         
     }*/
-        findProduct.salePrice = findProduct.regularPrice - (findProduct.regularPrice * (percentage / 100)); // Avoid Math.floor to ensure accuracy
+        findProduct.salePrice = findProduct.regularPrice - (findProduct.regularPrice * (percentage / 100)); 
         findProduct.productOffer = percentage;
         await findProduct.save();
 
-        // Reset category offer to 0 if a product-specific offer is applied
         findCategory.categoryOffer = 0;
         await findCategory.save();
 
@@ -261,6 +250,8 @@ const getEditProduct = async (req,res)=>{
     }
 }
 
+
+//working
 const editProduct = async (req,res)=>{
     try {
         const id = req.params.id;
@@ -285,11 +276,8 @@ const editProduct = async (req,res)=>{
 
         if(req.files && req.files.length>0){
             for(let i=0;i<req.files.length;i++){
-               // images.push(req.files[i].filename);
-
+            
                const originalImagePath = req.files[i].path;
-
-
                const timestamp = Date.now();
                const resizedImageName =  `resized-${timestamp}-${req.files[i].filename}`;
                const resizedImagePath = path.join(
@@ -299,13 +287,12 @@ const editProduct = async (req,res)=>{
                );
 
                try{
-                // Resize the image and save it to the new path
                 await sharp(originalImagePath)
                     .resize({ width: 440, height: 440 })
                     .toFile(resizedImagePath);
 
                     images.push(`/uploads/product-images/${resizedImageName}`);
-                    console.log('Resized image path stored in the array:', `/uploads/product-images/${resizedImageName}`); // Save resized image path
+                    console.log('Resized image path stored in the array:', `/uploads/product-images/${resizedImageName}`);
                 }catch(error)
                             {
 
@@ -339,6 +326,7 @@ const editProduct = async (req,res)=>{
         res.redirect("/pageerror");
     }
 }
+
 
 
 

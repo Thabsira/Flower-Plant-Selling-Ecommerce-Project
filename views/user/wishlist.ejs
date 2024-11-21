@@ -1,0 +1,82 @@
+<%- include("../../views/partials/user/header") %>
+
+<!-- Wishlist Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Products</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Handle</th>
+                  </tr>
+                </thead>
+            
+
+                <tbody>
+                    <% if (wishlist && wishlist.products && wishlist.products.length > 0) { %>
+                        <% wishlist.products.forEach(item => { %>
+                            <tr data-product-id="<%= item.productId._id %>">
+                                <th scope="row">
+                                    <img src="<%= item.productId.productImage[0] %>" alt="<%= item.productId.productName %>"style="width: 100px; height: auto;" />
+                                </th>
+                                <td><%= item.productId.productName %></td>
+                                <td><%= item.productId.salePrice %></td>
+                                <td><%= item.addedOn.toDateString() %></td>
+                                <td>
+                                    <i class="fa fa-times remove-icon" onclick="removeFromWishlist('<%= item.productId._id %>', this)"></i>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                            <h3>Your wishlist is empty.</h3>
+                    <% } %>
+                </tbody>
+                
+                
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Wishlist Page End -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function removeFromWishlist(productId, element) {
+    fetch(`/wishlist/remove?productId=${productId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // SweetAlert notification for successful removal
+            Swal.fire({
+                icon: 'success',
+                title: 'Removed from Wishlist',
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            // Remove the item row from the table
+            const row = element.closest('tr');
+            row.parentNode.removeChild(row);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Could not remove item from wishlist',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+</script>
+
+<%- include("../../views/partials/user/footer") %>

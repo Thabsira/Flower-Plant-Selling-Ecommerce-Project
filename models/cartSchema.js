@@ -26,6 +26,8 @@ const cartSchema = new Schema({
             type:Number,
             required:true
         },
+        discount: { type: Number, default: 0 }, // New field
+    totalAfterDiscount: { type: Number },    // New field
         status:{
             type:String,
             default:'placed',  

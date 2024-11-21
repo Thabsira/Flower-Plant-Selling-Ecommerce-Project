@@ -70,8 +70,6 @@ const placeOrder = async (req, res) => {
         }
 
 
-
-        // Create new order
         const order = new Order({
             userId: userId,
             orderItems: cart.items.map(item => ({
@@ -128,7 +126,72 @@ const placeOrder = async (req, res) => {
 
 
 
+
+
+
+const applyCoupon = async (req, res) => {
+    try {
+        const { couponCode } = req.body; // Coupon code from the user
+        const userId = req.session.user._id; // Logged-in user's ID
+
+        // Check if the coupon exists
+        const coupon = await Coupon.findOne({ couponCode });
+        if (!coupon) {
+            return res.status(404).json({ message: "Coupon not found" });
+        }
+
+        // Check if the coupon is expired
+        const currentDate = new Date();
+        if (coupon.expireOn < currentDate) {
+            return res.status(400).json({ message: "Coupon has expired" });
+        }
+
+        // Check if the coupon has already been used by the user
+        if (coupon.userId.includes(userId)) {
+            return res.status(400).json({ message: "You have already used this coupon" });
+        }
+
+        // Fetch the user's cart
+        const cart = await Cart.findOne({ userId });
+        if (!cart || cart.items.length === 0) {
+            return res.status(400).json({ message: "Cart is empty" });
+        }
+
+        // Validate minimum order value
+        const cartTotal = cart.cartTotal || cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+        if (cartTotal < coupon.minimumPrice) {
+            return res.status(400).json({ message: `Minimum order value for this coupon is ${coupon.minimumPrice}` });
+        }
+
+        // Apply discount
+        const discount = coupon.offerPrice;
+        const totalAfterDiscount = cartTotal - discount;
+        cart.discount = discount; // Add discount to cart
+        cart.totalAfterDiscount = totalAfterDiscount; // Add final price to cart
+
+        // Save changes
+        await cart.save();
+
+        // Mark coupon as used by the user
+        coupon.userId.push(userId);
+        await coupon.save();
+
+        res.json({
+            message: "Coupon applied successfully!",
+            discount,
+            totalAfterDiscount,
+        });
+    } catch (error) {
+        console.error("Error applying coupon:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+
+
 module.exports = {
     getCheckoutPage,
     placeOrder,
+    applyCoupon,
 };

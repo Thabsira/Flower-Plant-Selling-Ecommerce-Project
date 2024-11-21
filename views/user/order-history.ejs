@@ -1,4 +1,5 @@
 <%- include("../../views/partials/user/header") %>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
 <style>
     .container, .list-group {
@@ -65,10 +66,16 @@
 
                         <!-- Order Actions (Cancel if eligible) -->
                         <% if (order.status === 'Pending' || order.status === 'Processing') { %>
-                            <form action="/orders/cancel/<%= order._id %>" method="POST" class="text-end mt-3">
+                            <form action="/orders/cancel/<%= order._id %>" method="POST"  onsubmit="return confirmCancel(event, this)" class="text-end mt-3">
                                 <button type="submit" class="btn btn-danger">Cancel Order</button>
                             </form>
                         <% } %>
+
+
+                        <% if (order.status === 'Delivered') { %>
+                            <button type="button" class="btn btn-warning return-btn" data-order-id="<%= order._id %>">Return Order</button>
+                        <% } %>
+                        
                     </div>
                 <% }) %>
             </div>
@@ -79,6 +86,80 @@
 </div>
 <!-- Order History Page End -->
 
-
-
 <%- include("../../views/partials/user/footer") %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!---<script>
+     function confirmCancel(orderId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, cancel it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`cancelOrderForm-${orderId}`).submit();
+            }
+        });
+    }
+</script>-->
+
+
+<script>
+    function confirmCancel(event, form) {
+        event.preventDefault(); // Prevent form submission
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to undo this action!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If confirmed, submit the form
+                form.submit();
+            }
+        });
+
+        return false; // Ensure the form doesn't submit without confirmation
+    }
+
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const returnButtons = document.querySelectorAll('.return-btn');
+
+        returnButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const orderId = button.getAttribute('data-order-id');
+
+                // SweetAlert Confirmation Popup
+                Swal.fire({
+                    title: 'Are you sure you want to return this order?',
+                    text: "This action cannot be undone.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, return it!',
+                    cancelButtonText: 'No, keep it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If confirmed, submit the form to return the order
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `/orders/return/${orderId}`; // The backend route to handle return
+
+                        // Append the form and submit it
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+

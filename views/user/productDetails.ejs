@@ -1,5 +1,6 @@
 <%- include("../../views/partials/user/header") %>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <style>
   body {
@@ -81,6 +82,32 @@
         .card img {
             height: 200px; /* Fixed height for product images */
             object-fit: cover; /* Cover the entire area */
+        }
+
+
+
+         /* Custom styling for the heart icon and spacing */
+         .wishlist-btn {
+            font-size: 30px; /* Increase the icon size */
+            color: #ccc; /* Set initial color to light grey */
+            cursor: pointer;
+            margin-left: 20px; /* Ensure good spacing from the button */
+            transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+            
+        
+        }
+
+        .wishlist-btn:hover {
+            color: #e74c3c; /* Bright red color on hover */
+            transform: scale(1.2); /* Slight zoom effect on hover */
+        }
+
+        .wishlist-btn.active {
+            color: #e74c3c; /* Red color when added to wishlist */
+        }
+
+        .wishlist-btn.inactive {
+            color: #d71212; /* Light grey when not in wishlist */
         }
 
 
@@ -173,6 +200,33 @@
             <% } %>>
             Add to Cart
         </button>
+
+
+    
+
+         <!-----   <% if (userData) { %>
+            
+                <i class="fa fa-heart wishlist-btn <%= userData.wishlist.includes(products._id.toString()) ? 'active' : 'inactive' %>"
+                   title="<%= userData.wishlist.includes(products._id.toString()) ? 'Already in Wishlist' : 'Add to Wishlist' %>"
+                   onclick="addToWishlist('<%= products._id %>', this)">
+                </i>
+            <% } else { %>
+                <p>Please log in to add to wishlist.</p>
+            <% } %>--->
+
+
+            <% if (userData && userData.wishlist && products) { %>
+                <!-- Heart Icon for Wishlist -->
+                <i class="fa fa-heart wishlist-btn <%= userData.wishlist.includes(products._id.toString()) ? 'active' : 'inactive' %>"
+                   title="<%= userData.wishlist.includes(products._id.toString()) ? 'Already in Wishlist' : 'Add to Wishlist' %>"
+                   onclick="addToWishlist('<%= products._id %>', this)">
+                </i>
+            <% } else if (!userData) { %>
+                <p>Please log in to add to wishlist.</p>
+            <% } %>
+        
+
+        
 
 
    <!------ <% if (products.quantity > 0) { %>
@@ -358,6 +412,48 @@
         })
         .catch(error => console.error('Error:', error));
     }
+
+
+
+
+    function addToWishlist(productId, button) {
+        fetch(`/wishlist/add?productId=${productId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // SweetAlert notification for success
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist',
+                    text: data.message,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                // Disable the wishlist button
+                button.classList.add('disabled');
+                button.setAttribute('title', 'Already in Wishlist');
+                button.style.pointerEvents = 'none';
+            } else {
+                // SweetAlert notification for already in wishlist
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Item Already in Wishlist',
+                    text: data.message,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                // Disable the button if item is already in wishlist
+                button.classList.add('disabled');
+                button.style.pointerEvents = 'none';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+
     </script>
     
     

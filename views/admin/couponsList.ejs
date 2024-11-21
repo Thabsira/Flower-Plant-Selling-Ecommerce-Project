@@ -1,0 +1,72 @@
+
+
+<%- include("../../views/partials/admin/header") %>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<style>
+  .form-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-custom {
+    margin-top: 20px;
+  }
+
+  .table-responsive {
+    margin-top: 20px;
+  }
+</style>
+
+<!-- Coupon Management Content -->
+<div class="content col-md-10">
+  <div class="d-flex justify-content-between align-items-center">
+      <h3>Coupons</h3>
+      <a href="/admin/coupons/create" class="btn btn-primary">Create New Coupon</a>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="mt-3">
+      <input type="text" class="form-control" placeholder="Search by coupon name or code">
+  </div>
+
+  <!-- Coupons Table -->
+  <div class="table-responsive mt-4">
+      <table class="table table-bordered table-hover">
+          <thead>
+              <tr>
+                  <th>Coupon Name</th>
+                  <th>Coupon code</th>
+                  <th>Offer Price</th>
+                  <th>Expiry Date</th>
+                  <th>Actions</th>
+              </tr>
+          </thead>
+          <tbody>
+            <% coupons.forEach(coupon => { %>
+              <tr>
+                <td><%= coupon.name %></td>
+                <td><%=coupon.couponCode %></td>
+                <td><%= coupon.offerPrice %></td>
+                <td><%= coupon.expireOn.toDateString() %></td>
+                <td>
+                  <!-- Edit/Delete buttons here -->
+                <!----  <button class="btn btn-warning">Edit</button>--->
+                <form action="/admin/coupons/edit/<%= coupon._id %>" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-warning">Edit</button>
+                </form>
+                  <form action="/admin/coupons/delete/<%= coupon._id %>" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+      </table>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<%- include("../../views/partials/admin/footer") %>

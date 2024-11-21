@@ -1,5 +1,67 @@
 <%- include("../../views/partials/user/header") %>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+   /* .suggestions-container {
+    position: absolute; 
+    background-color: white;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto; 
+    z-index: 1000; 
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #f1f1f1;
+}*/
+
+.suggestions-container {
+    position: absolute;
+    background-color: #ddd;
+    border: 1px solid #ddd;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    width: 300px;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+
+.category-dropdown {
+    color: #333 !important;  
+    background-color: #f5f2f2; 
+    border: 1px solid #141212; 
+}
+
+.category-dropdown option {
+    color: #333 !important;
+    background-color: #f0e9e9;
+}
+
+.category-dropdown option:hover {
+    background-color: #f0f0f0; 
+    color: #000; 
+}
+
+
+</style>
+
 <!-- Fruits Shop Start-->
 <div class="container-fluid fruite py-5">
     <div class="container py-5">
@@ -8,10 +70,26 @@
             <div class="col-lg-12">
                 <div class="row g-4">
                     <div class="col-xl-3">
+                      <!----  <div class="input-group w-100 mx-auto d-flex">
+                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1"  autocomplete="off">
+                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                        </div>-->
+
                         <div class="input-group w-100 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                            <input type="search" class="form-control p-3" id="searchInput" placeholder="keywords" aria-describedby="search-icon-1" autocomplete="off">
                             <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
                         </div>
+                        
+                        <!-- Add a container for the search suggestions -->
+                        <div id="suggestionsContainer" class="suggestions-container">
+                            <!-- Suggestions will be appended here -->
+                        </div>
+                        
+
+                        <!-- search.ejs or wherever you have the search bar -->
+                       <!---- <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off">
+                        <div id="suggestionsContainer" class="suggestions"></div>--->
+
                     </div>
                     <div class="col-6"></div>
                     <div class="col-xl-3">
@@ -43,46 +121,27 @@
                 <div class="row g-4">
                     <div class="col-lg-3">
                         <div class="row g-4">
+                          
+
                             <div class="col-lg-12">
                                 <div class="mb-3">
                                     <h4>Categories</h4>
-                                    <ul class="list-unstyled fruite-categorie">
+                                    <select id="categoryFilter" class="form-select category-dropdown" onchange="filterByCategory()">
+                                        <option value="">All Categories</option>
                                         <% categories.forEach(category => { %>
-                                        <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="?categoryId=<%= category._id %>"><i class="fas fa-seedling me-2"></i><%=category.categoryName%></category.categoryName></a>
-                                                <span>(<%= category.productCount || 0 %>)</span>
-                                            </div>
-                                        </li>
-                                       <!-- <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#"><i class="fas fa-apple-alt me-2"></i>Oranges</a>
-                                                <span>(5)</span>
-                                            </div>
-                                        </li>
-                                       
-                                        <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#"><i class="fas fa-apple-alt me-2"></i>Strawbery</a>
-                                                <span>(2)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#"><i class="fas fa-apple-alt me-2"></i>Banana</a>
-                                                <span>(8)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#"><i class="fas fa-apple-alt me-2"></i>Pumpkin</a>
-                                                <span>(5)</span>
-                                            </div>
-                                        </li>---->
+                                            <option value="<%= category._id %>" <%= String(category._id) === String(selectedCategory) ? 'selected' : '' %>>
+                                                <%= category.categoryName %>
+                                            </option>
                                         <% }) %>
-                                    </ul>
+                                    </select>
                                 </div>
                             </div>
+
+
+
+
+
+
                             <div class="col-lg-12">
                                 <div class="mb-3">
                                     <h4 class="mb-2">Price</h4>
@@ -197,7 +256,21 @@
                                         <img src="<%=product.productImage[0]%>" class="img-fluid w-100 rounded-top" alt="flower image">
                                     
                                     </div>
-                                    <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>
+                                <!-----    <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">Fruits</div>--->
+                                  <!----  <div class="position-absolute" style="top: 10px; right: 10px;">
+                                        <a href="/wishlist/add?productId=<%= product._id %>" class="text-danger">
+                                            <i class="fa fa-heart" style="font-size: 1.5rem;"></i>
+                                        </a>
+                                    </div>--->
+
+                                    <div class="position-absolute" style="top: 10px; right: 10px;">
+                                        <a href="javascript:void(0);" class="text-danger" onclick="addToWishlist('<%= product._id %>', this)">
+                                            <i class="fa fa-heart" style="font-size: 1.5rem;"></i>
+                                        </a>
+                                    </div>
+                                    
+
+
                                     <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                       <!-----  <a href="/productDetails?id=<%=products[product]%>" class="h5"><%=product.productName%></a>-->
                                       <a href="/productDetails?id=<%= product._id %>">
@@ -224,7 +297,7 @@
                             <% }) %>
                         
                             <div class="col-12">
-                                <div class="pagination d-flex justify-content-center mt-5">
+                              <!-----  <div class="pagination d-flex justify-content-center mt-5">
                                     <a href="#" class="rounded">&laquo;</a>
                                     <a href="#" class="active rounded">1</a>
                                     <a href="#" class="rounded">2</a>
@@ -233,7 +306,28 @@
                                     <a href="#" class="rounded">5</a>
                                     <a href="#" class="rounded">6</a>
                                     <a href="#" class="rounded">&raquo;</a>
+                                </div>--->
+
+                                <div class="pagination d-flex justify-content-center mt-5">
+                                    <% if (currentPage > 1) { %>
+                                        <a href="?page=<%= currentPage - 1 %>" class="rounded">&laquo;</a>
+                                    <% } else { %>
+                                        <a href="#" class="rounded disabled">&laquo;</a>
+                                    <% } %>
+                                
+                                    <% for (let i = 1; i <= totalPages; i++) { %>
+                                        <a href="?page=<%= i %>" class="rounded <%= currentPage === i ? 'active' : '' %>">
+                                            <%= i %>
+                                        </a>
+                                    <% } %>
+                                
+                                    <% if (currentPage < totalPages) { %>
+                                        <a href="?page=<%= currentPage + 1 %>" class="rounded">&raquo;</a>
+                                    <% } else { %>
+                                        <a href="#" class="rounded disabled">&raquo;</a>
+                                    <% } %>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -242,6 +336,7 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
    /* document.getElementById('sortOption').addEventListener('change', function() {
@@ -263,6 +358,120 @@
 });
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const suggestionsContainer = document.getElementById('suggestionsContainer');
+
+    searchInput.addEventListener('input', async function() {
+        const query = this.value.trim();
+        console.log(query);
+        if (query.length === 0) {
+            suggestionsContainer.innerHTML = '';
+            return;
+        }
+
+        try {
+        
+           const response = await fetch('/products/search-suggestions?query=' + query);
+            console.log(response);
+            if (!response.ok) {
+                console.error('Network response was not ok');
+                return;
+            }
+            const data = await response.json();
+            console.log('Received data:', data);  
+
+            if (data.success) {
+                suggestionsContainer.innerHTML = '';
+                if (data.suggestions.length === 0) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'suggestion-item';
+                    noResults.textContent = 'No products found';
+                    suggestionsContainer.appendChild(noResults);
+                } else {
+                    data.suggestions.forEach(suggestion => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.className = 'suggestion-item';
+                        suggestionItem.textContent = suggestion.productName;
+
+                        suggestionItem.addEventListener('click', function() {
+                           // searchInput.value = suggestion.productName;
+                           // suggestionsContainer.innerHTML = '';
+                            window.location.href = `/productDetails?id=${suggestion.productId}`;
+                        });
+
+                        suggestionsContainer.appendChild(suggestionItem);
+                    });
+                }
+            } else {
+                console.error('Error: No suggestions found.');
+                suggestionsContainer.innerHTML = '';
+            }
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+});
+
+
+
+
+
+function filterByCategory() {
+        const selectedCategory = document.getElementById('categoryFilter').value;
+        const sortOption = "<%= selectedSort || '' %>";
+        let url = '/products?';
+        if (selectedCategory) {
+            url += `categoryId=${selectedCategory}&`;
+        }
+        if (sortOption) {
+            url += `sortOption=${sortOption}`;
+        }
+        window.location.href = url;
+    }
+
+
+
+function addToWishlist(productId, element) {
+    fetch(`/wishlist/add?productId=${productId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+    
+            Swal.fire({
+                icon: 'success',
+                title: 'Added to Wishlist',
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+            element.classList.add('disabled');
+            element.style.pointerEvents = 'none';
+        } else {
+
+            Swal.fire({
+                icon: 'info',
+                title: 'Already in Wishlist',
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+            element.classList.add('disabled');
+            element.style.pointerEvents = 'none';
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
 
 </script>
 

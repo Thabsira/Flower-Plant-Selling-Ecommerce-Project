@@ -134,11 +134,12 @@ const removeItemFromCart = async (req, res) => {
 
 
 
+
+
 const updateCartItem = async (req, res) => {
     try {
         const { productId, change } = req.body;
-        const userId = req.session.user;
-
+        const userId = req.session.user; 
         if (!userId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
@@ -148,37 +149,36 @@ const updateCartItem = async (req, res) => {
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-
         const item = cart.items.find(item => item.productId.toString() === productId);
 
         if (!item) {
-            return res.status(404).json({ message: 'Item not found in cart' });
+            return res.status(404).json({ message: 'Item not found in cart' }); 
         }
+        const product = await Product.findById(productId);
 
-        console.log("Current quantity for item:", item.quantity, "Changing by:", change);
-
-
-        // Update the quantity
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' }); 
+        }
+        if (item.quantity + change > product.availableStock) {
+            return res.status(400).json({ message: 'Insufficient stock available' });
+        }
         item.quantity += change;
 
-        // Remove item if quantity is less than 1
         if (item.quantity < 1) {
             cart.items = cart.items.filter(i => i.productId.toString() !== productId);
         } else {
-            // Update the total price if item remains in the cart
             item.totalPrice = item.price * item.quantity;
-            console.log("Updated item quantity:", item.quantity, "Updated total price:", item.totalPrice);
         }
-
-        // Recalculate cart total
         cart.cartTotal = cart.items.reduce((total, item) => total + item.totalPrice, 0);
-        console.log("Updated cart total:", cart.cartTotal);
-
-        // Save the updated cart
         await cart.save();
-
-        // Return updated cart data
-        res.json(cart);
+        res.json({
+            items: cart.items.map(i => ({
+                productId: i.productId,
+                quantity: i.quantity,
+                totalPrice: i.totalPrice,
+            })),
+            cartTotal: cart.cartTotal,
+        });
     } catch (error) {
         console.error('Error updating cart item:', error);
         res.status(500).json({ message: 'Server error' });
@@ -187,18 +187,7 @@ const updateCartItem = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+    
 module.exports = {
     getCartPage,
     addToCart,

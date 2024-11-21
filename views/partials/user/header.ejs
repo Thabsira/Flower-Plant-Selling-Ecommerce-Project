@@ -112,13 +112,6 @@
 }
 
 
-
-
-
-
-
-
-
         .cart-bag {
             position: relative;
         }
@@ -153,6 +146,9 @@
             cursor: pointer;
             margin-left: 10px;
         }
+
+
+      
     </style>
 </head>
 
@@ -209,19 +205,29 @@
 
                     <!-- Search Bar -->
                     <form action="/search" method="GET" class="search-bar">
-                        <input type="text" name="q" placeholder="Search..." class="search-input">
+                        <input type="text" name="q" placeholder="Search..." class="search-input" id="headerSearchInput">
                         <button type="submit" class="btn-search">
                             <i class="fas fa-search text-primary"></i>
                         </button>
                     </form>
+
+                  <!-----  <div id="headerSuggestionsContainer" class="suggestions-container"></div>--->
 
                     <div class="d-flex m-3 me-0">
                         <a href="#" class="position-relative me-4 my-auto">
                             <i class="fa fa-shopping-bag fa-2x"></i>
                             <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
                         </a>
-                        <a href="#" class="my-auto">
-                            <i class="fas fa-user fa-2x"></i>
+                      <!----  <a href="#" class="my-auto">
+                            <i class="fas fa-heart fa-2x"></i>
+                        </a>--->
+
+
+                        <a href="/wishlist" class="my-auto position-relative">
+                            <i class="fas fa-heart fa-2x"></i>
+                            <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-circle">
+                            
+                            </span>
                         </a>
 
                         <% if (locals.user) { %>
@@ -245,5 +251,66 @@
     <!-- Navbar End -->
 
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const headerSearchInput = document.getElementById('headerSearchInput');
+    const headerSuggestionsContainer = document.getElementById('headerSuggestionsContainer');
+
+    headerSearchInput.addEventListener('input', async function() {
+        const query = this.value.trim();
+        if (query.length === 0) {
+            headerSuggestionsContainer.innerHTML = '';
+            return;
+        }
+
+        try {
+            const response = await fetch('/products/search-suggestions?query=' + encodeURIComponent(query));
+            
+            if (!response.ok) {
+                console.error('Network response was not ok');
+                return;
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                headerSuggestionsContainer.innerHTML = '';
+                if (data.suggestions.length === 0) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'suggestion-item';
+                    noResults.textContent = 'No products found';
+                    headerSuggestionsContainer.appendChild(noResults);
+                } else {
+                    data.suggestions.forEach(suggestion => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.className = 'suggestion-item';
+                        suggestionItem.textContent = suggestion.productName;
+
+                        // Redirect to the product details page when clicked
+                        suggestionItem.addEventListener('click', function() {
+                            window.location.href = `/productDetails?id=${suggestion.productId}`;
+                        });
+
+                        headerSuggestionsContainer.appendChild(suggestionItem);
+                    });
+                }
+            } else {
+                console.error('Error: No suggestions found.');
+                headerSuggestionsContainer.innerHTML = '';
+            }
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+            headerSuggestionsContainer.innerHTML = '';
+        }
+    });
+
+    // Close suggestions if the user clicks outside
+    document.addEventListener('click', function(event) {
+        if (!headerSearchInput.contains(event.target) && !headerSuggestionsContainer.contains(event.target)) {
+            headerSuggestionsContainer.innerHTML = '';
+        }
+    });
+});
+</script>
 
 </html>

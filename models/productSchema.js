@@ -34,7 +34,7 @@ const productSchema= new Schema({
     quantity:{
         type:Number,
         //default:true
-        default: 0  // Default stock level, set to 0 or your preferred default quantity
+        default: 0
     },
     color:{
         type:String,
@@ -53,18 +53,20 @@ const productSchema= new Schema({
         enum:["Available","out of stock","Discontinued"],
         required:true,
         //default:0,
-        default: "Available"  // Set default status to match one of the enum values
+        default: "Available"
     },
     rating: {
         type: Number,
-        default: 0  // Default rating, if applicable
+        default: 0 
     },
     featured: {
         type: Boolean,
-        default: false  // Default to non-featured
+        default: false
     }
 
 },{timestamps:true});
+
+productSchema.index({ productName: 'text' });
 
 
 const Product= mongoose.model("Product",productSchema);
