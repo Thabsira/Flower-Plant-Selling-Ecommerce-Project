@@ -41,6 +41,7 @@
                   <th>Coupon code</th>
                   <th>Offer Price</th>
                   <th>Expiry Date</th>
+                  <th>Status</th>
                   <th>Actions</th>
               </tr>
           </thead>
@@ -51,6 +52,17 @@
                 <td><%=coupon.couponCode %></td>
                 <td><%= coupon.offerPrice %></td>
                 <td><%= coupon.expireOn.toDateString() %></td>
+            
+                <td>
+                  <% if (!coupon.isActive) { %>
+                    <span class="badge bg-secondary">Inactive</span>
+                  <% } else if (new Date() > new Date(coupon.expireOn)) { %>
+                    <span class="badge bg-danger">Expired</span>
+                  <% } else { %>
+                    <span class="badge bg-success">Active</span>
+                  <% } %>
+                </td>
+                
                 <td>
                   <!-- Edit/Delete buttons here -->
                 <!----  <button class="btn btn-warning">Edit</button>--->
@@ -61,6 +73,8 @@
                     <button type="submit" class="btn btn-danger">Delete</button>
                   </form>
                 </td>
+
+               
               </tr>
             <% }); %>
           </tbody>

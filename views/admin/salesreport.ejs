@@ -1,0 +1,283 @@
+<body>
+  
+  <%-include("../../views/partials/admin/header")%>  
+
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+    
+      /*  padding: 20px;*/
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #343a40;
+    }
+    .form {
+      /*  margin-bottom: 30px;*/
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .detail table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .detail th, .detail td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .detail th {
+            background-color: #343a40;
+            color: white;
+            text-transform: uppercase;
+        }
+        .detail tr:hover {
+            background-color: #f1f1f1;
+        }
+        .summary table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .summary th, .summary td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .summary th {
+            background-color: #6c757d;
+            color: white;
+            text-transform: uppercase;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .pagination .page-link {
+            color: #007bff;
+            border: 1px solid #dee2e6;
+        }
+        .pagination .active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+        .download-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pdf-btn, .excel-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .pdf-btn {
+            background-color: #dc3545;
+        }
+        .excel-btn {
+            background-color: #28a745;
+        }
+        .pdf-btn:hover {
+            background-color: #a71d2a;
+        }
+        .excel-btn:hover {
+            background-color: #1c7430;
+        }
+    </style>
+
+  <div class="container" style="max-height: 600px; overflow-y: scroll;">
+      <h1>Sales Report</h1>
+      <%if( currentPage===1){%>
+      <div class="form">
+      <form action="/admin/sales-report" method="GET">
+          <div id="dateFields" class="form-group">
+              <label for="startDate">Start Date:</label>
+              <input type="date" id="startDate" name="startDate" required>
+      
+              <label for="endDate">End Date:</label>
+              <input type="date" id="endDate" name="endDate" required>
+          </div>
+          <input type="hidden" name="reportType" value="custom">
+          <button type="submit">Generate Custom Date Report</button>
+      </form>
+
+      <form action="/admin/sales-report" method="GET">
+  <div class="form-group">
+      <label for="reportType">Select Report Type:</label>
+      <select name="reportType" id="reportType">
+          <option value="weekly" <%= reportType === 'weekly' ? 'selected' : '' %>>Weekly</option>
+          <option value="monthly" <%= reportType === 'monthly' ? 'selected' : '' %>>Monthly</option>
+          <option value="yearly"<%= reportType === 'yearly' ? 'selected' : '' %> >Yearly</option>
+      </select>
+  </div>
+  <button type="submit">Generate Sales Report</button>
+</form>
+</div>
+<%}%>
+
+
+      
+      <div class="detail">
+          <table>
+              <thead>
+                  <tr>
+                      <th>Order ID</th>
+                      <th>Product</th>
+                      <th>Quantity</th>
+                      <th>Regular Total Price</th>
+                      <th>Discount</th>
+                      <th>Coupons Deduction</th>
+                      <th>Sold Price</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <% orders.forEach(order => { %>
+                      <tr>
+                          <td><%= order.orderId %></td>
+                          <td>
+                              <% order.orderItems.forEach(item => { %>
+                                  <div><%= item.product.productName %></div>
+                              <% }) %>
+                          </td>
+                          <td>
+                              <% order.orderItems.forEach(item => { %>
+                                  <div><%= item.quantity %></div>
+                              <% }) %>
+                          </td>
+                          <td>
+                              <% 
+                              let totalRegularPrice = 0;
+                              order.orderItems.forEach(item => {
+                                  totalRegularPrice += item.product.regularPrice * item.quantity;
+                              });
+                              %>
+                              Rs <%= totalRegularPrice.toFixed(2) %>
+                          </td>
+                          <td>
+                              <% 
+                              let totalOffer = totalRegularPrice - order.totalPrice; 
+                              %>
+                              <div><%= totalOffer.toFixed(2) %></div> 
+                          </td>
+                          <td><%= order.discount %></td>
+                          <td><%= order.finalAmount %></td>
+                      </tr>
+                  <% }) %>
+              </tbody>
+          </table>
+      </div>
+      <%if(currentPage===1){%>
+      
+
+      <div class="summary">
+          <table>
+              <thead>
+                  <tr>
+                      <th>Total Sales Count</th>
+                      <th>Overall Order Amount</th>
+                      <th>Coupon Deduction</th>
+                      <th>Net Sales</th>
+                      <th>Total Offer</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td><%= totalSalesCount %></td>
+                      <td>Rs <%= overallOrderAmount.toFixed(2) %></td>
+                      <td>Rs <%= couponDeduction.toFixed(2) %></td>
+                      <td>Rs <%= netSales.toFixed(2) %></td>
+                      <td>Rs <%= totalOffersApplied %></td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+      <%}%>
+
+      <div class="download-buttons">
+        <a href="/admin/sales-report?startDate=<%= startDate %>&endDate=<%= endDate %>&format=pdf" class="pdf-btn">Download PDF</a>
+        <a href="/admin/sales-report?startDate=<%= startDate %>&endDate=<%= endDate %>&format=excel" class="excel-btn">Download Excel</a>
+    </div>
+      <div class="pagination mt-4 d-flex justify-content-center">
+          <% if (totalPages > 1) { %>
+              <nav>
+                  <ul class="pagination">
+                      <% if (currentPage > 1) { %>
+                          <li class="page-item">
+                              <a class="page-link" href="?page=<%= currentPage - 1 %>&reportType=<%= reportType %>&startDate=<%= startDate %>&endDate=<%= endDate %>">Previous</a>
+                          </li>
+                      <% } %>
+      
+                      <% for (let i = 1; i <= totalPages; i++) { %>
+                          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                              <a class="page-link" href="?page=<%= i %>&reportType=<%= reportType %>&startDate=<%= startDate %>&endDate=<%= endDate %>"><%= i %></a>
+                          </li>
+                      <% } %>
+      
+                      <% if (currentPage < totalPages) { %>
+                          <li class="page-item">
+                              <a class="page-link" href="?page=<%= currentPage + 1 %>&reportType=<%= reportType %>&startDate=<%= startDate %>&endDate=<%= endDate %>">Next</a>
+                          </li>
+                      <% } %>
+                  </ul>
+              </nav>
+          <% } %>
+      </div>
+      <!-- Download Buttons --> 
+  </div>  
+</body>
+</html>
+
+
+
+    
+
+
+
+
+  
+
+  

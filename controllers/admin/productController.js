@@ -171,7 +171,6 @@ const addProductOffer = async(req,res)=>{
             return res.json({status:false,message:"This category already exists"})
         }
 
-
 //Apply offer
 
         /*findProduct.salePrice = Math.floor(findProduct.regularPrice - (findProduct.regularPrice * (percentage / 100)));

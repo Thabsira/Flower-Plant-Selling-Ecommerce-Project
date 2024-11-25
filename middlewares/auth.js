@@ -45,7 +45,7 @@ const userAuth = (req, res, next) => {
 
 
 
-const adminAuth = (req,res,next)=>{
+/*const adminAuth = (req,res,next)=>{
     User.findOne({isAdmin:true})
     .then(data=>{
         if(data){
@@ -58,7 +58,33 @@ const adminAuth = (req,res,next)=>{
         console.log("Error in admin auth middleware");
         res.status(500).send("Internal server Error")
     })
-} 
+} */
+
+
+
+    
+
+    const adminAuth = async (req, res, next) => {
+        try {
+            if (!req.session || !req.session.admin) {
+                req.flash("error", "You must be logged in as an admin.");
+                return res.redirect("/admin/login");
+            }
+            const admin = await User.findById(req.session.admin._id);
+            if (!admin || !admin.isAdmin) {
+                req.flash("error", "Access denied. Admins only.");
+                return res.redirect("/admin/login");
+            }
+            req.admin = admin;
+            next();
+        } catch (error) {
+            console.error("Error in adminAuth middleware:", error);
+            res.status(500).send("Internal Server Error");
+        }
+    };
+    
+    
+    
 
 
 module.exports={

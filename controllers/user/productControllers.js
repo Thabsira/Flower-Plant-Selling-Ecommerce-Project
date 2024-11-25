@@ -61,12 +61,12 @@ const getProductPage = async (req, res) => {
             .sort(sortCondition)
             .skip(skip)
             .limit(pageSize)
-            .select('productName salePrice productImage status quantity description category');
+            .select('productName regularPrice salePrice productImage status quantity description category');
 
         const productData = products.map(product => ({
             _id: product._id,
             productName: product.productName,
-            price: product.salePrice,
+            price: product.regularPrice,
             productImage: product.productImage,
             status: product.quantity > 1 ? 'Available' : 'Out of Stock',
             description: product.description,

@@ -136,6 +136,8 @@ router.post('/orders/return/:orderId',userAuth, orderController.returnOrder);
 router.post('/create-order',userAuth, razorpayController.createRazorpayOrder); // Create Razorpay order
 router.post('/verify-payment',userAuth, razorpayController.verifyRazorpayPayment); // Verify Razorpay payment
 
+router.post('/apply-coupon',userAuth,checkoutController.applyCoupon);
+
 
 
 

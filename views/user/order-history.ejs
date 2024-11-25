@@ -13,7 +13,7 @@
 <div class="container-fluid py-5">
     <div class="container py-5">
         <h1 class="mb-4">Order History</h1>
-        
+
         <!-- Check if there are any orders -->
         <% if (orders && orders.length > 0) { %>
             <div class="list-group">
@@ -22,18 +22,15 @@
                         <!-- Order Summary -->
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h5 class="fw-bold">Order ID: <%= order._id %></h5>
+                                <h5 class="fw-bold">Order ID: <%= order.orderId %></h5>
                                 <p>Order Date: <%= order.createdOn.toDateString() %></p>
                                 <p>Status: <strong><%= order.status %></strong></p>
                             </div>
                             <div class="text-end">
                                 <p>Total Amount: $<%= order.finalAmount.toFixed(2) %></p>
                             </div>
-                            
-                              <!------  <p>Address: $<%= order.address %></p>--->
-                            
                         </div>
-                        
+
                         <!-- Products in Order -->
                         <table class="table">
                             <thead>
@@ -42,6 +39,7 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">Quantity</th>
+                                   <!---- <th scope="col">Return Request Status</th>-->
                                     <th scope="col">Total</th>
                                 </tr>
                             </thead>
@@ -58,6 +56,7 @@
                                         <td><%= item.product ? item.product.productName : 'Product Unavailable' %></td>
                                         <td>$<%= item.price ? item.price.toFixed(2) : '0.00' %></td>
                                         <td><%= item.quantity %></td>
+                                        
                                         <td>$<%= (item.price * item.quantity).toFixed(2) %></td>
                                     </tr>
                                 <% }) %>
@@ -66,16 +65,22 @@
 
                         <!-- Order Actions (Cancel if eligible) -->
                         <% if (order.status === 'Pending' || order.status === 'Processing') { %>
-                            <form action="/orders/cancel/<%= order._id %>" method="POST"  onsubmit="return confirmCancel(event, this)" class="text-end mt-3">
+                            <form action="/orders/cancel/<%= order._id %>" method="POST" onsubmit="return confirmCancel(event, this)" class="text-end mt-3">
                                 <button type="submit" class="btn btn-danger">Cancel Order</button>
                             </form>
                         <% } %>
 
-
+                        <!-- Return Order Option -->
                         <% if (order.status === 'Delivered') { %>
                             <button type="button" class="btn btn-warning return-btn" data-order-id="<%= order._id %>">Return Order</button>
+                            <form id="return-form-<%= order._id %>" class="return-form d-none" action="/orders/return/<%= order._id %>" method="POST">
+                                <div class="form-group mt-3">
+                                    <label for="returnReason-<%= order._id %>">Return Reason:</label>
+                                    <textarea id="returnReason-<%= order._id %>" name="reason" class="form-control" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-2">Submit Return Request</button>
+                            </form>
                         <% } %>
-                        
                     </div>
                 <% }) %>
             </div>
@@ -88,57 +93,43 @@
 
 <%- include("../../views/partials/user/footer") %>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!---<script>
-     function confirmCancel(orderId) {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, cancel it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById(`cancelOrderForm-${orderId}`).submit();
-            }
-        });
-    }
-</script>-->
-
-
 <script>
-    function confirmCancel(event, form) {
-        event.preventDefault(); // Prevent form submission
+    document.addEventListener("DOMContentLoaded", function () {
+        // Return Order Button Toggle
+        const returnButtons = document.querySelectorAll(".return-btn");
+        returnButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                const orderId = button.getAttribute("data-order-id");
+                const form = document.getElementById(`return-form-${orderId}`);
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to undo this action!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, cancel it!',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // If confirmed, submit the form
-                form.submit();
-            }
+                // Toggle form visibility
+                form.classList.toggle("d-none");
+            });
         });
 
-        return false; // Ensure the form doesn't submit without confirmation
-    }
+        // Confirm Cancel Action
+        const confirmCancel = (event, form) => {
+            event.preventDefault(); // Prevent form submission
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to undo this action!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, cancel it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        };
 
-
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const returnButtons = document.querySelectorAll('.return-btn');
-
-        returnButtons.forEach(button => {
+        // Return Order Confirmation
+        const returnButtonsConfirm = document.querySelectorAll('.return-btn');
+        returnButtonsConfirm.forEach(button => {
             button.addEventListener('click', function() {
                 const orderId = button.getAttribute('data-order-id');
-
-                // SweetAlert Confirmation Popup
                 Swal.fire({
                     title: 'Are you sure you want to return this order?',
                     text: "This action cannot be undone.",
@@ -148,12 +139,9 @@
                     cancelButtonText: 'No, keep it'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // If confirmed, submit the form to return the order
                         const form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = `/orders/return/${orderId}`; // The backend route to handle return
-
-                        // Append the form and submit it
+                        form.action = `/orders/return/${orderId}`;
                         document.body.appendChild(form);
                         form.submit();
                     }
@@ -162,4 +150,3 @@
         });
     });
 </script>
-

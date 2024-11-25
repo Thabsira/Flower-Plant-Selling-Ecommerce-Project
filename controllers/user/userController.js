@@ -352,7 +352,7 @@ const logout = async(req,res)=>{
 }
 
 
-const productDetails = async(req,res)=>{
+/*const productDetails = async(req,res)=>{
     try {
         const user= req.session.user;
         const productId = req.query.id;
@@ -370,7 +370,114 @@ const productDetails = async(req,res)=>{
         console.error("Some error",error)
        res.status(500).send('Server error',error) 
     }
-}
+}*/
+
+
+
+/*const productDetails = async (req, res) => {
+    try {
+        const user = req.session.user;
+        const productId = req.query.id;
+
+        // Find the product and populate the category
+        const products = await Product.findById(productId).populate('category');
+        if (!products) {
+            return res.status(404).send("Product Not Found");
+        }
+
+        let finalSalePrice = products.salePrice;
+
+        // Check if category offer exists and is higher than the product offer
+        if (products.category.categoryOffer > products.productOffer) {
+            finalSalePrice = products.regularPrice - (products.regularPrice * (products.category.categoryOffer / 100));
+        } else if (products.productOffer > 0) {
+            finalSalePrice = products.regularPrice - (products.regularPrice * (products.productOffer / 100));
+        }
+
+        if (user) {
+            const userData = await User.findOne({ _id: user._id });
+            res.render('productDetails.ejs', {
+                products,
+                userData,
+                finalSalePrice, // Pass calculated sale price to the view
+            });
+        }
+    } catch (error) {
+        console.error("Some error", error);
+        res.status(500).send('Server error');
+    }
+};*/
+
+
+
+const productDetails = async (req, res) => {
+    try {
+        const user = req.session.user;
+        const productId = req.query.id;
+
+        // Find the product and populate the category
+        const products = await Product.findById(productId).populate('category');
+        if (!products) {
+            return res.status(404).send("Product Not Found");
+        }
+
+        // Determine the highest offer and calculate sale price
+        const productOffer = products.productOffer || 0;
+        const categoryOffer = products.category.categoryOffer || 0;
+        const highestOffer = Math.max(productOffer, categoryOffer);
+
+        let salePrice = products.regularPrice;
+        if (highestOffer > 0) {
+            salePrice = products.regularPrice - (products.regularPrice * (highestOffer / 100));
+        }
+
+        if (user) {
+            const userData = await User.findOne({ _id: user._id });
+            res.render('productDetails.ejs', {
+                products,
+                userData,
+                highestOffer,
+                salePrice, // Pass calculated sale price
+            });
+        }
+    } catch (error) {
+        console.error("Some error", error);
+        res.status(500).send('Server error');
+    }
+};
+
+
+
+
+
+
+/*const productDetails = async (req, res) => {
+    try {
+        const user= req.session.user;
+        const productId = req.params.id;
+        const product = await Product.findById(productId).populate('category');
+        
+        if (!product) {
+            return res.status(404).render('page_404', { message: 'Product not found' });
+        }
+
+        // Calculate the highest offer
+        const highestOffer = Math.max(product.productOffer, product.category?.categoryOffer || 0);
+
+        // Calculate sale price based on the highest offer
+        const salePrice = product.regularPrice - (product.regularPrice * (highestOffer / 100));
+
+        res.render('productDetails', {
+            product,
+            salePrice: salePrice.toFixed(2), // Send calculated sale price
+            highestOffer // Send highest offer
+        });
+    } catch (error) {
+        console.error("Error fetching product details:", error);
+        res.status(500).render('page_404', { message: 'Internal Server Error' });
+    }
+};*/
+
 
 
 

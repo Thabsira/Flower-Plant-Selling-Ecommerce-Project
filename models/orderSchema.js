@@ -62,23 +62,31 @@ const orderSchema = new Schema({
     status:{
         type:String,
         required:true,
-        enum:['Pending','Processing','Shipped','Delivered','Cancelled','Return Request',"Returned"]
+        enum:['Pending','Processing','Shipped','Delivered','Cancelled','Return Request',"Returned",'Return Approved','Return Rejected']
     },
+    returnReason: { type: String }, 
+    returnRequestStatus: { type: String, enum: ["Pending", "Accepted", "Rejected"], default: "Pending" }, // New field for admin decision
     createdOn:{
         type:Date,
         default:Date.now,
         required:true
     },
     couponApplied:{
-        type:Boolean,
-        default:false
+        type:String,
+        default:null,
     },
+
+    couponCode: { type: String, required: false },
+    
+    discount: { type: Number, default: 0 },
+
     paymentMethod: {
         type: String,
         enum: ["COD", "Razorpay"],
         required: true,
         default: "COD"
     },
+    
     paymentStatus: {
         type: String,
         enum: ["Pending", "Paid"],

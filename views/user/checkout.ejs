@@ -1,3 +1,5 @@
+
+
 <%- include("../../views/partials/user/header") %>
 
 <style>
@@ -23,7 +25,7 @@
                         <% if (addresses && addresses.length > 0) { %>
                             <% addresses.forEach(address => { %>
                                 <div class="list-group-item list-group-item-action mb-3">
-                                    <input type="radio" name="selectedAddress" value="<%= address._id %>" class="form-check-input me-3">
+                                    <input type="radio" name="selectedAddress" value="<%= address._id %>" class="form-check-input me-3" id="address_<%= address._id %>">
                                     <div>
                                         <h5 class="fw-bold mb-1"><%= address.name %></h5>
                                         <p class="mb-0">
@@ -61,7 +63,7 @@
                                     <tr>
                                         <th scope="row">
                                             <div class="d-flex align-items-center mt-2">
-                                                <img src="<%= item.productId.productImage[0] %>" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                                                <img src="<%= item.productId.productImage[0] %>" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="Product Image">
                                             </div>
                                         </th>
                                         <td class="py-5"><%= item.productId.productName %></td>
@@ -74,39 +76,35 @@
                         </table>
                     </div>
 
-
-                      <!-- Summary Totals -->
-                      <div class="bg-light rounded p-4 mt-4">
+                    <!-- Summary Totals -->
+                    <div class="bg-light rounded p-4 mt-4">
                         <div class="d-flex justify-content-between">
                             <h5>Subtotal</h5>
-                            <p id="subtotal"></p>
+                            <p id="subtotal">$<%= cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2) %></p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h5>Discount</h5>
-                            <p id="discount">$0.00</p>
+                            <p id="discount">$<%=totalDiscount.toFixed(2) %></p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h5>Final Total</h5>
-                            <p id="final-total"></p>
+                            <p id="final-total">$<%= finalAmount.toFixed(2) %></p>
                         </div>
                     </div>
 
-
-
+                    <!-- Coupon Section -->
                     <label for="couponSelect">Select a Coupon:</label>
                     <div class="d-flex align-items-center">
                         <select id="couponSelect" class="form-select me-3">
                             <option value="" selected disabled>Choose a coupon</option>
-                            <!-- Coupons will be dynamically loaded here -->
-                            <option value="COUPON123" data-discount="10">COUPON123 - 10% Off</option>
-                            <option value="SAVE50" data-discount="50">SAVE50 - $50 Off</option>
+                            <% coupons.forEach(coupon => { %>
+                                <option value="<%= coupon.couponCode %>" data-discount="<%= coupon.discount %>">
+                                    <%= coupon.couponCode %>  <%= coupon.discount %>
+                                </option>
+                            <% }) %>
                         </select>
                         <button class="btn btn-secondary" id="copyCoupon" onclick="copyCouponCode()">Copy Code</button>
                     </div>
-
-                
-
-
 
                     <!-- Apply Coupon Section -->
                     <div class="mt-4">
@@ -117,7 +115,6 @@
                         </div>
                         <small id="couponMessage" class="text-danger"></small>
                     </div>
-
 
                     <!-- Payment Methods -->
                     <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
@@ -145,7 +142,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                         <div class="col-12">
                             <div class="form-check text-start my-3">
@@ -154,7 +150,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Place Order Button -->
                     <input type="hidden" name="addressId" id="addressId"/>
                     <input type="hidden" name="paymentMethod" id="paymentMethod"/>
@@ -167,6 +163,9 @@
 </div>
 <!-- Checkout Page End -->
 
+
+
+
 <%- include("../../views/partials/user/footer") %>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> 
@@ -177,6 +176,85 @@
 
 
 <script>
+
+
+function copyCouponCode() {
+    const couponSelect = document.getElementById("couponSelect");
+    const selectedCoupon = couponSelect.options[couponSelect.selectedIndex];
+
+    // Check if a coupon is selected
+    if (selectedCoupon.value) {
+        const couponCode = selectedCoupon.value;
+
+        // Create a temporary input element to copy the coupon code
+        const tempInput = document.createElement("input");
+        tempInput.value = couponCode; // Set the value to the selected coupon code
+        document.body.appendChild(tempInput);
+        
+        // Select the text in the input field
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the text to clipboard
+        document.execCommand("copy");
+
+        // Remove the temporary input element
+        document.body.removeChild(tempInput);
+
+        // Alert the user that the coupon code has been copied
+        alert(`${couponCode} copied to clipboard!`);
+    } else {
+        alert("Please select a coupon first!");
+    }
+}
+
+// Dynamically update totals based on coupon selection
+const couponSelect = document.getElementById('couponSelect');
+const subtotalElement = document.getElementById('subtotal');
+const discountElement = document.getElementById('discount');
+const finalTotalElement = document.getElementById('final-total');
+
+async function applyCoupon() {
+    const couponCode = document.getElementById('couponCode').value;
+
+    const response = await fetch('/apply-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ couponCode }),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+        // Update the UI with the new totals
+        document.getElementById('subtotal').innerText = `Subtotal: ${result.subtotal}`;
+        document.getElementById('discount').innerText = `Discount: ${result.couponDiscount}`;
+        document.getElementById('final-total').innerText = `Total: ${result.totalAfterCoupon}`;
+
+        // Optional: update hidden fields if you need them for further processing (e.g., during checkout)
+        document.getElementById('finalAmount').value = result.totalAfterCoupon;
+        console.log(result);
+    } else {
+        alert(result.message); // Show error message if coupon is invalid
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     document.addEventListener('DOMContentLoaded', function () {
         const orderForm = document.getElementById('orderForm');
 
@@ -317,59 +395,6 @@
 
 
     // Function to copy the selected coupon code to clipboard
-function copyCouponCode() {
-    const couponSelect = document.getElementById("couponSelect");
-    const selectedCoupon = couponSelect.options[couponSelect.selectedIndex];
-
-    // Check if a coupon is selected
-    if (selectedCoupon.value) {
-        const couponCode = selectedCoupon.value;
-
-        // Create a temporary input element to copy the coupon code
-        const tempInput = document.createElement("input");
-        tempInput.value = couponCode; // Set the value to the selected coupon code
-        document.body.appendChild(tempInput);
-        
-        // Select the text in the input field
-        tempInput.select();
-        tempInput.setSelectionRange(0, 99999); // For mobile devices
-
-        // Copy the text to clipboard
-        document.execCommand("copy");
-
-        // Remove the temporary input element
-        document.body.removeChild(tempInput);
-
-        // Alert the user that the coupon code has been copied
-        alert(`${couponCode} copied to clipboard!`);
-    } else {
-        alert("Please select a coupon first!");
-    }
-}
-
-
-
-
-
-async function applyCoupon() {
-    const couponCode = document.getElementById('couponCode').value;
-
-    const response = await fetch('/apply-coupon', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ couponCode }),
-    });
-
-    const result = await response.json();
-    if (response.ok) {
-        alert(`Coupon applied! Discount: ${result.discount}`);
-        // Update UI with the discounted total
-        document.getElementById('totalPrice').innerText = `Total: ${result.totalAfterDiscount}`;
-    } else {
-        alert(result.message); // Show error message
-    }
-}
-
 
 </script>
 

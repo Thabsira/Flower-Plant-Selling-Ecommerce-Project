@@ -7,46 +7,50 @@ const pageerror = async(req,res)=>{
 }
 
 
-const loadLogin = (req,res)=>{
-    if(req.session.admin){
+const loadLogin = (req, res) => {
+    if (req.session.admin) {
         return res.redirect('/admin/dashboard');
-
     }
-    res.render("admin-login",{message:null})
-}
+    res.render("admin-login", { message: null });
+};
 
-const login = async(req,res)=>{
-    try{
-        const {email,password}=req.body;
-        const admin = await User.findOne({email,isAdmin:true});
-        if(admin){
-            const passwordMatch= await bcrypt.compare(password,admin.password);
-            if(passwordMatch){
-                req.session.admin = true;
-                return res.redirect("/admin/dashboard");
-            }else{
-                return res.render('admin-login',{message:"incorrect password"})
-            }
-        }else{
-            return res.render('admin-login',{message:"admin not found"})
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const admin = await User.findOne({ email, isAdmin: true });
+
+        if (!admin) {
+            return res.render('admin-login', { message: "Admin not found" });
         }
-    }catch(error){
-        console.log("login error",error);
-        return res.redirect("/pageerror")
-    }
-}
 
-const loadDashboard = async(req,res)=>{
-    if(req.session.admin){
-        try{
-            res.render("dashboard");
-        }catch(error){
-            res.redirect("/pageerror")
+        const passwordMatch = await bcrypt.compare(password, admin.password);
+        if (!passwordMatch) {
+            return res.render('admin-login', { message: "Incorrect password" });
         }
-    }else{
-        res.redirect("/admin/login");
+
+        req.session.admin = {
+            _id: admin._id,
+            email: admin.email,
+        };
+
+        res.redirect("/admin/dashboard");
+    } catch (error) {
+        console.log("Login error:", error);
+        res.redirect("/pageerror");
     }
-}
+};
+
+const loadDashboard = async (req, res) => {
+    if (!req.session.admin) {
+        return res.redirect("/admin/login");
+    }
+    try {
+        res.render("dashboard");
+    } catch (error) {
+        res.redirect("/pageerror");
+    }
+};
+
 
 const logout = async(req,res)=>{
     try{

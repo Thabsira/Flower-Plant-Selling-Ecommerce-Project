@@ -151,33 +151,23 @@
 
   <!-- Product Info -->
   <div class="col-md-6">
-      <h2><%= products.productName %></h2>
-      <p class="text-muted">Product ID: <%= products._id %></p>
-      <p class="lead">Description: <%= products.description %></p>
-      <p class="fw-bold">Price: Rs <%= products.regularPrice %></p>
+    <h2><%= products.productName %></h2>
+    <p class="text-muted">Product ID: <%= products._id %></p>
+    <p class="lead">Description: <%= products.description %></p>
+    <p class="fw-bold">Price: Rs <%= products.regularPrice %></p>
 
-      <% if (products.productOffer > 0) { %>
-          <h5>Discount: <%= products.productOffer %>%</h5>
-          <h5>Sale Price: Rs <%= (products.regularPrice - (products.regularPrice * products.productOffer / 100)).toFixed(2) %></h5>
-      <% } else { %>
-          <h5>Sale Price: Rs <%= products.salePrice %></h5>
-      <% } %>
+    <% if (highestOffer > 0) { %>
+        <h5>Discount: <%= highestOffer %>%</h5>
+        <h5>Sale Price: Rs <%= salePrice %></h5>
+    <% } else { %>
+        <h5>Sale Price: Rs <%= products.regularPrice %></h5>
+    <% } %>
 
-      <% if (products.quantity > 1) { %>
-          <p><strong>Stock: </strong><span id="stockStatus"><%= products.quantity %></span></p>
-      <% } else { %>
-          <h4>Sold Out</h4>
-      <% } %>
-
-
-
-    
-
-
-
-
-
-
+    <% if (products.quantity > 1) { %>
+        <p><strong>Stock: </strong><span id="stockStatus"><%= products.quantity %></span></p>
+    <% } else { %>
+        <h4>Sold Out</h4>
+    <% } %>
 
       <!-- Static Features -->
       <div class="product-rating mt-3">

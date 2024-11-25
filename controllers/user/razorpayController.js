@@ -21,13 +21,18 @@ const createRazorpayOrder = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Cart is empty' });
         }
 
-        const amount = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+       // const amount = /cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+       const amount=req.session.totalAfterCoupon || req.session.finalAmount;
         const orderOptions = {
             amount: amount * 100,
             currency: 'INR',
             receipt: `order_${Date.now()}`,
             notes: {
-                addressId: addressId
+                addressId: addressId,
+               // couponCode: req.session.couponCode || "No coupon",
+                couponCode: req.session.couponCode || "No coupon",
+               // discount: discount.toFixed(2), // Pass discount for later use
+
             }
         };
 
@@ -78,6 +83,7 @@ const verifyRazorpayPayment = async (req, res) => {
         }
 
         console.log("Signature verified successfully!");
+        
 
         const cart = await Cart.findOne({ userId: req.session.user._id }).populate("items.productId");
 
@@ -86,7 +92,15 @@ const verifyRazorpayPayment = async (req, res) => {
             return res.status(400).json({ success: false, message: "Cart is empty" });
         }
 
-        const totalPrice = cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
+       // const totalPrice = cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
+       //const totalPrice = req.session.totalAfterCoupon || req.session.finalAmount;
+      // console.log("total price",totalPrice);
+
+      const finalAmount = req.session.totalAfterCoupon || req.session.finalAmount;
+      const discount = req.session.finalAmount - req.session.totalAfterCoupon || 0;
+
+
+
 
         const address = await Address.findOne({address:{$elemMatch:{_id:addressId}}}).lean()
        
@@ -105,9 +119,11 @@ const verifyRazorpayPayment = async (req, res) => {
                 quantity: item.quantity,
                 price: item.price,
             })),
-            totalPrice, 
-            discount: 0,
-            finalAmount: totalPrice,
+            //discount: discount,
+            //finalAmount: totalPrice,
+            totalPrice: req.session.finalAmount, // Original total before discount
+            discount, // Store the discount applied
+            finalAmount, // Store the discounted total
             address: address,
             status: "Processing",
             paymentMethod: "Razorpay",
@@ -115,6 +131,7 @@ const verifyRazorpayPayment = async (req, res) => {
             razorpayOrderId: razorpay_order_id,
             razorpayPaymentId: razorpay_payment_id,
             razorpaySignature: razorpay_signature,
+            couponApplied: req.session.couponCode || null,
         });
         await newOrder.save();
         await Cart.deleteOne({ userId: req.session.user._id });

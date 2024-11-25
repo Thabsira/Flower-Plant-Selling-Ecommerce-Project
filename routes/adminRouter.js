@@ -6,6 +6,8 @@ const productController = require("../controllers/admin/productController")
 const customerController=require("../controllers/admin/customerController");
 const orderController = require("../controllers/admin/orderController");
 const couponController = require("../controllers/admin/couponController");
+const salesReportController = require("../controllers/admin/salesreportController");
+const returnController = require("../controllers/admin/returnController");
 const {userAuth,adminAuth} = require("../middlewares/auth");
 const path = require('path');
 
@@ -100,6 +102,26 @@ router.post("/coupons/create",adminAuth,couponController.createCoupon);
 router.post('/coupons/delete/:id',adminAuth, couponController.deleteCoupon);
 router.get("/coupons/edit/:id",adminAuth, couponController.editCoupon);
 router.post("/coupons/edit/:id",adminAuth,couponController.updateCoupon); 
+
+//sales reoprt
+router.get('/sales-report',adminAuth,salesReportController.getSalesReport);
+//router.get("/sales-report/pdf",adminAuth, salesReportController.downloadPDF);
+//router.get('/sales-report/download/pdf',adminAuth, salesReportController.generatePDFReport);
+//router.get('/sales-report/download/excel',adminAuth, salesReportController.generateExcelReport);
+router.get('/sales-report/download/pdf',adminAuth,salesReportController.downloadSalesReportPDF);
+
+
+
+//router.get("/return-request",adminAuth, returnController.getReturnRequests);
+router.get("/return-request/:orderId", adminAuth, returnController.getReturnRequests);
+//router.post('/returns/:id/decide', adminAuth, returnController.decideReturnRequest);
+router.post('/returns/:orderId/decide', adminAuth, returnController.decideReturnRequest);
+
+
+
+//router.post("/admin/returns/:orderId/decide",adminAuth, returnController.decideReturnRequest);
+
+
 
 
 
