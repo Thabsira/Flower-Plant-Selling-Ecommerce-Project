@@ -1,6 +1,6 @@
-const User = require("../../models/userSchema");
+//const User = require("../../models/userSchema");
 const Cart = require("../../models/cartSchema");
-const Category = require("../../models/categorySchema");
+//const Category = require("../../models/categorySchema");
 const Product = require("../../models/productSchema");
 
 
@@ -50,8 +50,6 @@ const addToCart = async (req, res) => {
         if (!productId || quantity < 1) {
             return res.status(400).json({ message: 'Invalid product Id or quantity' });
         }
-
-        
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(400).json({ message: 'Product not found' });
@@ -134,44 +132,57 @@ const removeItemFromCart = async (req, res) => {
 
 
 
-
-
 const updateCartItem = async (req, res) => {
     try {
         const { productId, change } = req.body;
-        const userId = req.session.user; 
+        if (!Number.isInteger(change)) {
+            return res.status(400).json({ message: 'Invalid quantity change value' });
+        }
+
+        const userId = req.session.user._id;
+        console.log('userId:',userId);
         if (!userId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
-
         const cart = await Cart.findOne({ userId });
-
+        console.log("cart:",cart);
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
+
         const item = cart.items.find(item => item.productId.toString() === productId);
-
+        console.log("item:",item);
         if (!item) {
-            return res.status(404).json({ message: 'Item not found in cart' }); 
+            return res.status(404).json({ message: 'Item not found in cart' });
         }
-        const product = await Product.findById(productId);
 
+        const product = await Product.findById(productId).lean();
+        console.log("product",product);
         if (!product) {
-            return res.status(404).json({ message: 'Product not found' }); 
+            return res.status(404).json({ message: 'Product not found' });
         }
-        if (item.quantity + change > product.availableStock) {
+        console.log("checking items:",item.quantity+change);
+        console.log("checking available stock:",product.quantity);
+        if (item.quantity + change > product.quantity) {
             return res.status(400).json({ message: 'Insufficient stock available' });
         }
-        item.quantity += change;
 
+        item.quantity += change;
         if (item.quantity < 1) {
             cart.items = cart.items.filter(i => i.productId.toString() !== productId);
         } else {
             item.totalPrice = item.price * item.quantity;
         }
+
         cart.cartTotal = cart.items.reduce((total, item) => total + item.totalPrice, 0);
+
+    
         await cart.save();
+
+    
         res.json({
+            success: true,
+            message: 'Cart updated successfully',
             items: cart.items.map(i => ({
                 productId: i.productId,
                 quantity: i.quantity,
@@ -180,8 +191,27 @@ const updateCartItem = async (req, res) => {
             cartTotal: cart.cartTotal,
         });
     } catch (error) {
-        console.error('Error updating cart item:', error);
+        console.error('Error updating cart item:', error.message || error);
         res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+
+const getCartCount = async (req, res) => {
+    try {
+        const userId = req.session.user._id; // Retrieve logged-in user ID from session
+        if (!userId) {
+            return res.json({ count: 0 }); // Return 0 for unauthenticated users
+        }
+        
+        const cart = await Cart.findOne({ userId });
+        const count = cart ? cart.items.reduce((total, item) => total + item.quantity, 0) : 0;
+
+        res.json({ count });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to fetch cart count" });
     }
 };
 
@@ -194,5 +224,6 @@ module.exports = {
     listCartItems,
     removeItemFromCart,
     updateCartItem,
+    getCartCount,
     
 }

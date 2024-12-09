@@ -45,7 +45,7 @@ const orderSchema = new Schema({
    /* address:{
      type:Schema.Types.ObjectId,
      
-    ref:"User",
+    ref:"Address",
      required:true,
      street: String,
      city: String,
@@ -65,12 +65,15 @@ const orderSchema = new Schema({
         enum:['Pending','Processing','Shipped','Delivered','Cancelled','Return Request',"Returned",'Return Approved','Return Rejected']
     },
     returnReason: { type: String }, 
-    returnRequestStatus: { type: String, enum: ["Pending", "Accepted", "Rejected"], default: "Pending" }, // New field for admin decision
+
+    returnRequestStatus: { type: String, enum: ["Pending", "Accepted", "Rejected"], default: "Pending" }, 
+
     createdOn:{
         type:Date,
         default:Date.now,
         required:true
     },
+    
     couponApplied:{
         type:String,
         default:null,
@@ -81,10 +84,10 @@ const orderSchema = new Schema({
     discount: { type: Number, default: 0 },
 
     paymentMethod: {
-        type: String,
-        enum: ["COD", "Razorpay"],
+        type: [String],
+       // enum:["cash_on_delivery", "Razorpay"],
         required: true,
-        default: "COD"
+        //default: "COD"
     },
     
     paymentStatus: {

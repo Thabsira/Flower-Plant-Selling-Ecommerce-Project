@@ -314,7 +314,7 @@ const editProduct = async (req,res)=>{
             color:req.body.color
         }
 
-        if(req.files.length>0){
+        if(images.length>0){
             updateFields.$push = {productImage:{$each:images}};
         }
 

@@ -108,7 +108,9 @@ router.get('/sales-report',adminAuth,salesReportController.getSalesReport);
 //router.get("/sales-report/pdf",adminAuth, salesReportController.downloadPDF);
 //router.get('/sales-report/download/pdf',adminAuth, salesReportController.generatePDFReport);
 //router.get('/sales-report/download/excel',adminAuth, salesReportController.generateExcelReport);
-router.get('/sales-report/download/pdf',adminAuth,salesReportController.downloadSalesReportPDF);
+//router.get('/sales-report/download/pdf',adminAuth,salesReportController.downloadSalesReportPDF);
+router.get("/sales-report/download-pdf",adminAuth,salesReportController.downloadSalesReportPDF);
+router.get("/sales-report/download/excel",adminAuth,salesReportController.downloadSalesReportAsExcel);
 
 
 
@@ -120,6 +122,11 @@ router.post('/returns/:orderId/decide', adminAuth, returnController.decideReturn
 
 
 //router.post("/admin/returns/:orderId/decide",adminAuth, returnController.decideReturnRequest);
+
+router.get("/dashboard/sales-data",adminAuth,adminController. getDashboardSalesData);
+router.get("/dashboard/top-selling-products",adminAuth,adminController.getTopSellingProducts);
+router.get('/dashboard/top-selling-categories',adminAuth,adminController.getTopSellingCategories);
+//router.get("/dashboard",adminAuth, adminController.getDashboard);
 
 
 

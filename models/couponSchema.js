@@ -12,6 +12,7 @@ const couponSchema = new mongoose.Schema({
         default:Date.now,
         required:true
     },
+   
     couponCode:{
         type:String,
         required:true,
@@ -36,6 +37,14 @@ const couponSchema = new mongoose.Schema({
         type: Boolean, 
         default: true 
     },
+
+    usedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: [] // Initialize as an empty array
+    }],
+   /* usedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],*/
+
     userId:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"

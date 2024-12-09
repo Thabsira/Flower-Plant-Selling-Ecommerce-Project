@@ -1,3 +1,5 @@
+
+
 <%- include("../../views/partials/admin/header") %>
 <head>
    <style>
@@ -6,230 +8,271 @@
            overflow-x: auto;
        }
 
-
        .thumbnail {
            margin-right: 10px;
        }
+
        .input-upload {
-   position: relative;
-}
+           position: relative;
+       }
 
-
-.error-message {
+       .error-message {
            color: red;
            display: none;
        }
 
+       .form-container {
+           max-width: 100%;
+           padding: 20px;
+       }
 
+       .form-group {
+           margin-bottom: 20px;
+       }
+
+       .card-body {
+           padding: 30px;
+       }
+
+       .form-label {
+           font-size: 16px;
+           font-weight: bold;
+       }
+
+       .form-control {
+           width: 100%;
+       }
+
+       .image-cropper {
+           display: none;
+           width: 100%;
+           height: auto;
+           margin-bottom: 20px;
+       }
+
+       .col-lg-4 {
+           margin-bottom: 20px;
+       }
+
+       .col-12, .col-lg-6, .col-lg-4, .col-sm-6 {
+           padding: 10px;
+       }
+
+       .form-section {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 20px;
+   }
    </style>
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-
 </head>
-   <section class="content-main">
-       <div class="row">
-           <div class="col-9">
-               <div class="content-header">
-                   <h2 class="content-title">Edit Product</h2>
 
-
-               </div>
+<section class="content-main">
+   <div class="row">
+       <div class="col-12">
+           <div class="content-header">
+               <h2 class="content-title">Edit Product</h2>
            </div>
-           <div class="col-lg-6">
-               <div class="card mb-4">
-
-
-                   <div class="card-body" style="max-height: 500px;overflow-y: scroll;">
-                       <form method="post" action="/admin/editProduct/<%=product._id%>" enctype="multipart/form-data"
-                           onsubmit="return validateForm()">
-                           <div class="mb-4">
+       </div>
+       <div class="col-12">
+           <div class="card mb-4">
+               <div class="card-body" style="max-height: 500px;overflow-y: scroll;">
+                   <form method="post" action="/admin/editProduct/<%=product._id%>" enctype="multipart/form-data" onsubmit="return validateForm()">
+                       
+                       <div class="form-container">
+                           <!-- Product Name -->
+                           <div class="form-group">
                                <label for="product_name" class="form-label">Product Name</label>
-                               <input type="text" name="productName" value="<%=product.productName%>"
-                                   class="form-control border" id="product_name">
-                                   <div id="productName-error" class="error-message"></div>
+                               <input type="text" name="productName" value="<%=product.productName%>" class="form-control border" id="product_name">
+                               <div id="productName-error" class="error-message"></div>
                            </div>
-                         <!-----  <div class="col-lg-4 mb-4">
-                               <label class="form-label">Brand</label>
-                               <select class="form-select border" name="brand">
-                                  
-                                       <option value="">
-                                          
-                                       </option>
-                                      
-                               </select>
-                               <div id="brand-error" class="error-message"></div>
 
-
-                           </div>--->
-                           <div class="mb-4">
+                           <!-- Description -->
+                           <div class="form-group">
                                <label class="form-label">Full description</label>
-                               <input name="description" value="<%=product.description%>"  class="form-control border"
-                                   rows="4">
-                                   <div id="description-error" class="error-message"></div>
+                               <input name="description" value="<%=product.description%>" class="form-control border" rows="4">
+                               <div id="description-error" class="error-message"></div>
                            </div>
+
+                           <!-- Price and Quantity -->
                            <div class="row">
                                <div class="col-lg-4">
-                                   <div class="mb-4">
+                                   <div class="form-group">
                                        <label class="form-label">Regular price</label>
-                                       <input placeholder="$" name="regularPrice" type="text"
-                                           value="<%=product.regularPrice%>" class="form-control border">
-                                           <div id="regularPrice-error" class="error-message"></div>
+                                       <input placeholder="$" name="regularPrice" type="text" value="<%=product.regularPrice%>" class="form-control border">
+                                       <div id="regularPrice-error" class="error-message"></div>
                                    </div>
                                </div>
                                <div class="col-lg-4">
-                                   <div class="mb-4">
+                                   <div class="form-group">
                                        <label class="form-label">Sale price</label>
-                                       <input name="salePrice" type="text" value="<%=product.salePrice%>"
-                                           class="form-control border">
+                                       <input name="salePrice" type="text" value="<%=product.salePrice%>" class="form-control border">
+                                       <div id="salePrice-error" class="error-message"></div>
                                    </div>
-                                   <div id="salePrice-error" class="error-message"></div>
                                </div>
                                <div class="col-lg-4">
-                                   <div class="mb-4">
+                                   <div class="form-group">
                                        <label class="form-label">Quantity</label>
-                                       <input name="quantity" type="text" value="<%=product.quantity%>"
-                                           class="form-control border">
-                                           <div id="quantity-error" class="error-message"></div>
+                                       <input name="quantity" type="text" value="<%=product.quantity%>" class="form-control border">
+                                       <div id="quantity-error" class="error-message"></div>
                                    </div>
                                </div>
                            </div>
+
+                           <!-- Color -->
                            <div class="row">
-                             
                                <div class="col-lg-4">
-                                   <div class="mb-4">
+                                   <div class="form-group">
                                        <label class="form-label">Color</label>
-                                       <input name="color" type="text" value="<%=product.color%>"
-                                           class="form-control border">
-                                           <div id="color-error" class="error-message"></div>
+                                       <input name="color" type="text" value="<%=product.color%>" class="form-control border">
+                                       <div id="color-error" class="error-message"></div>
                                    </div>
                                </div>
-                              
                            </div>
+
+                           <!-- Category -->
                            <div class="card mb-4">
-
-
                                <div class="card-body">
                                    <div class="row gx-2">
                                        <div class="col-sm-6 mb-3">
                                            <label class="form-label">Category</label>
-                                           <select class="form-select border" style="width: 150px;" name="category">
-                                              <%for(let i=0;i<cat.length;i++){%>
-                                                <!-----   <option value="<%=cat[i].name%>">
-                                                      <%=cat[i].name%>
-                                                   </option>--->
+                                           <select class="form-select border" style="width: 100%;" name="category">
+                                               <% for (let i = 0; i < cat.length; i++) { %>
                                                    <option value="<%= cat[i].name %>" <%= product.category === cat[i].name ? 'selected' : '' %>><%= cat[i].name %></option>
-
-
-
-                                                  <%}%>
+                                               <% } %>
                                            </select>
-
-
                                            <div id="category-error" class="error-message"></div>
                                        </div>
                                    </div>
                                </div>
                            </div>
-                           <div class="card mb-2">
-                               <div class="card-header">
+
+                           <!-- Image Upload Section -->
+                           <div class="card mb-2" >
+                               <div class="card-header" >
                                    <h4>Choose images</h4>
                                </div>
 
-                               <%for(let i=0;i<product.productImage.length;i++){%>
-                                  
-                                       <div class="col-md-12">
-                                           <div class="mb-4">
-                                               <div class="col-12">
-                                                   <td>
-                                                       <input type="hidden" value="<%=product.productImage[i]%>" id="imageDatas">
-                                                       <img class="rounded" style="width: 50px; height: 60px;"
-                                                           src="<%=product.productImage[i]%>"
-                                                           alt="">
-                                                      <i onclick="deleteSingleImage('<%=product.productImage[i]%>','<%=product._id%>')" style="position: absolute; margin-left: .5rem; cursor: pointer;" class="fa fa-times fa-solid"></i>
-                                                  <!-----   <i onclick="deleteSingleImage('<%= product.productImage[i] %>', '<%= product._id %>')" style="position: absolute; top: 0; right: 0; margin: .5rem; cursor: pointer;">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 20px; height: 20px;">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                                        </svg>
-                                                    </i>--->
-                                                    
-                                                   </td>
-                                               </div>
-                                              
-                                           </div>
+                               <% for (let i = 0; i < product.productImage.length; i++) { %>
+                                   <div class="col-md-12 mb-3">
+                                       <div class="col-12">
+                                           <input type="hidden" value="<%= product.productImage[i] %>" id="imageDatas">
+                                           <img class="rounded" style="width: 50px; height: 60px;" src="<%= product.productImage[i] %>" alt="">
+                                           <i onclick="deleteSingleImage('<%= product.productImage[i] %>', '<%= product._id %>')" style="position: absolute; margin-left: .5rem; cursor: pointer;" class="fa fa-times fa-solid"></i>
                                        </div>
-
-                                       <%}%>
-                              
-                                  
-                               <div class="card-body">
-                                   <div class="card-body align-items-center" style="margin-bottom: 20px;">
-                                       <img src="" alt="" id="imgView1">
-                                       <input class="form-control" type="file" name="images" id="input1"
-                                           accept="image/png, image/jpeg, image/jpg"
-                                           onchange="viewImage1(event), viewImage(event, 1)">
-                                           <div id="images-error" class="error-message"></div>
                                    </div>
-                                   <div class="image-cropper d-flex align-items-center"
-                                   style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
-                                   <img src="" id="croppedImg1" alt="">
-                                   <button type="button" id="saveButton1" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
-                               </div>
-                                                           <div class="row">
-                                                               <div class="card-body align-items-center" style="margin-bottom: 20px;">
-                                                                   <img src="" alt="" id="imgView2">
-                                                                   <input class="form-control" type="file" name="images" id="input2"
-                                                                       accept="image/png, image/jpeg, image/jpg"
-                                                                       onchange="viewImage2(event),viewImage(event, 2)">
-                                                               </div>
-                                                               <div class="image-cropper d-flex align-items-center"
-                                                                   style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
-                                                                   <img src="" id="croppedImg2" alt="">
-                                                                   <button type="button" id="saveButton2" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
-                                                               </div>
-                                                           </div>
-                                                          
-                                                           <div class="row">
-                                                               <div class="card-body align-items-center" style="margin-bottom: 20px;">
-                                                                   <img src="" alt="" id="imgView3">
-                                                                   <input class="form-control" type="file" name="images" id="input3"
-                                                                       accept="image/png, image/jpeg, image/jpg"
-                                                                       onchange="viewImage3(event),viewImage(event, 3)">
-                                                               </div>
-                                                               <div class="image-cropper d-flex align-items-center"
-                                                                   style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
-                                                                   <img src="" id="croppedImg3" alt="">
-                                                                   <button type="button" id="saveButton3" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
-                                                               </div>
-                                                           </div>
-                                                          
-                                                           <div class="row">
-                                                               <div class="card-body align-items-center" style="margin-bottom: 20px;">
-                                                                   <img src="" alt="" id="imgView4">
-                                                                   <input class="form-control" type="file" name="images" id="input4"
-                                                                       accept="image/png, image/jpeg, image/jpg"
-                                                                       onchange="viewImage4(event),viewImage(event, 4)">
-                                                               </div>
-                                                               <div class="image-cropper d-flex align-items-center"
-                                                                   style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
-                                                                   <img src="" id="croppedImg4" alt="">
-                                                                   <button type="button" id="saveButton4" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
-                                                               </div>
-                                                           </div>
-                               </div>
+                               <% } %>
+
+                               <!-- Image Preview and Cropper -->
+                        <!----  <div class="row">
+                               <div class="col-12 mb-3">
+                                       <div class="card-body align-items-center">
+                                           <input class="form-control" type="file" name="images" id="input1" accept="image/png, image/jpeg, image/jpg" onchange="viewImage1(event), viewImage(event, 1)">
+                                           <div id="images-error" class="error-message"></div>
+                                       </div>
+                                       <div class="image-cropper" style="display:none;">
+                                           <img src="" id="croppedImg1" alt="">
+                                           <button type="button" id="saveButton1">Save</button>
+                                       </div>
+                                   </div>
+                               </div>---->
+
+                               <div class="card-body" style="display: flex;flex-wrap: wrap;gap: 20px;">
+                                <div class="card-body align-items-center" style="margin-bottom: 20px;">
+                                    <img src="" alt="" id="imgView1">
+                                    <input class="form-control" type="file" name="images" id="input1"
+                                        accept="image/png, image/jpeg, image/jpg"
+                                        onchange="viewImage1(event), viewImage(event, 1)">
+                                        <div id="images-error" class="error-message"></div>
+                                </div>
+                                <div class="image-cropper d-flex align-items-center"
+                                style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                <img src="" id="croppedImg1" alt="">
+                                <button type="button" id="saveButton1" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
+                            </div>
+
+                               <!-- Additional Image Uploads -->
+                            <!----   <div class="row">
+                                   <div class="col-12 mb-3">
+                                       <div class="card-body align-items-center">
+                                           <input class="form-control" type="file" name="images" id="input2" accept="image/png, image/jpeg, image/jpg" onchange="viewImage2(event), viewImage(event, 2)">
+                                       </div>
+                                       <div class="image-cropper" style="display:none;">
+                                           <img src="" id="croppedImg2" alt="">
+                                           <button type="button" id="saveButton2">Save</button>
+                                       </div>
+                                   </div>
+                               </div>--->
+
+
+
+                            <div class="row">
+                                <div class="card-body align-items-center" style="margin-bottom: 20px;">
+                                    <img src="" alt="" id="imgView2">
+                                    <input class="form-control" type="file" name="images" id="input2"
+                                        accept="image/png, image/jpeg, image/jpg"
+                                        onchange="viewImage2(event),viewImage(event, 2)">
+                                </div>
+                                <div class="image-cropper d-flex align-items-center"
+                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                    <img src="" id="croppedImg2" alt="">
+                                    <button type="button" id="saveButton2" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
+                                </div>
                            </div>
+
+
+
+                            <div class="row">
+                                <div class="card-body align-items-center" style="margin-bottom: 20px;">
+                                    <img src="" alt="" id="imgView3">
+                                    <input class="form-control" type="file" name="images" id="input3"
+                                        accept="image/png, image/jpeg, image/jpg"
+                                        onchange="viewImage3(event),viewImage(event, 3)">
+                                </div>
+                                <div class="image-cropper d-flex align-items-center"
+                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                    <img src="" id="croppedImg3" alt="">
+                                    <button type="button" id="saveButton3" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row">
+                                <div class="card-body align-items-center" style="margin-bottom: 20px;">
+                                    <img src="" alt="" id="imgView4">
+                                    <input class="form-control" type="file" name="images" id="input4"
+                                        accept="image/png, image/jpeg, image/jpg"
+                                        onchange="viewImage4(event),viewImage(event, 4)">
+                                </div>
+                                <div class="image-cropper d-flex align-items-center"
+                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                    <img src="" id="croppedImg4" alt="">
+                                    <button type="button" id="saveButton4" style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;">Save</button>
+                                </div>
+                            </div>
+</div>
+
+
+                               <!-- Repeat for other images if necessary... -->
+
+                           </div>
+                           
+
+                           <!-- Submit Button -->
                            <div>
-
-
-                               <button style="background-color:#3498db; color: white;border: none;border-radius: 5px;font-weight: bold;font-size: 16px;" id="updatebtn"
-                                   type="button"  onclick="validateAndSubmit()">Update</button>
+                               <button style="background-color:#3498db; color: white; border: none; border-radius: 5px; font-weight: bold; font-size: 16px;" id="updatebtn" type="button" onclick="validateAndSubmit()">Update</button>
                            </div>
-                       </form>
-                   </div>
+
+                       </div>
+                   </form>
                </div>
            </div>
        </div>
-       </div>
-   </section>
+   </div>
+</section>
+
 
 
 <!-- jQuery CDN -->

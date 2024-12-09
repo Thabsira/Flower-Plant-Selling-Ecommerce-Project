@@ -238,8 +238,15 @@
       <%}%>
 
       <div class="download-buttons">
-        <a href="/admin/sales-report?startDate=<%= startDate %>&endDate=<%= endDate %>&format=pdf" class="pdf-btn">Download PDF</a>
-        <a href="/admin/sales-report?startDate=<%= startDate %>&endDate=<%= endDate %>&format=excel" class="excel-btn">Download Excel</a>
+       <!---- <a href="/admin/sales-report?startDate=<%= startDate %>&endDate=<%= endDate %>&format=pdf" class="pdf-btn">Download PDF</a>-->
+       <a href="/admin/sales-report/download-pdf?startDate=<%= startDate %>&endDate=<%= endDate %>&reportType=<%= reportType %>" class="pdf-btn">Download PDF</a>
+       <a href="/admin/sales-report/download/excel?startDate=<%= startDate %>&endDate=<%= endDate %>&reportType=<%= reportType %>" 
+        class="btn btn-success">
+        Download Excel
+     </a>
+     
+
+        <!--<a href="/admin/sales-report?startDate=<%= startDate %>&endDate=<%= endDate %>&format=excel" class="excel-btn">Download Excel</a>--->
     </div>
       <div class="pagination mt-4 d-flex justify-content-center">
           <% if (totalPages > 1) { %>

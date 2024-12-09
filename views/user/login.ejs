@@ -59,6 +59,15 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" name="password">
                 </div>
+
+
+              <!----  <div>
+                    <input type="text" name="referralCode" placeholder="Enter referral code" />
+
+                </div>---->
+
+
+
                 <div id="error2" class="error-message"></div>
                 <%if(locals.message && message.length>0){%>
                     <div class="alert alert-danger text-center">
@@ -93,6 +102,7 @@
 <script>
     const emailid = document.getElementById('email');
     const passid = document.getElementById('password');
+    //const passid = document.getElementById('password');
     const error1 = document.getElementById('error1');
     const error2 = document.getElementById('error2');
     const loginform = document.getElementById('loginform');

@@ -31,7 +31,7 @@
                                     <p class="mb-0 mt-4" style="color: black;"><%= item.productId.productName %></p>
                                 </td>
                                 <td>
-                                    <p class="mb-0 mt-4">$<%= item.price.toFixed(2) %></p>
+                                    <p class="mb-0 mt-4">Rs. <%= item.price.toFixed(2) %></p>
                                 </td>
                                 <td>
                                     <div class="input-group quantity mt-4" style="width: 100px;">
@@ -57,8 +57,8 @@
                                 </td>
                                 <td>
                                     <!-- Total price for this item with data-price attribute -->
-                                 <!----  <p class="mb-0 mt-4 total-price" data-price="<%= item.price * item.quantity %>">$<%= (item.price * item.quantity).toFixed(2) %></p>--->
-                                  <p class="mb-0 mt-4 total-price" data-price="<%= item.price %>">$<%= (item.price * item.quantity).toFixed(2) %></p>
+                                 <!----  <p class="mb-0 mt-4 total-price" data-price="<%= item.price * item.quantity %>">Rs. <%= (item.price * item.quantity).toFixed(2) %></p>--->
+                                  <p class="mb-0 mt-4 total-price" data-price="<%= item.price %>">Rs. <%= (item.price * item.quantity).toFixed(2) %></p>
 
                                 </td>
                                 <td>
@@ -88,19 +88,19 @@
                         <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
                         <div class="d-flex justify-content-between mb-4">
                             <h5 class="mb-0 me-4">Subtotal:</h5>
-                            <p class="mb-0 cart-subtotal">$<%= cart.cartTotal.toFixed(2) %></p>
+                            <p class="mb-0 cart-subtotal">Rs. <%= cart.cartTotal.toFixed(2) %></p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h5 class="mb-0 me-4">Shipping</h5>
                             <div>
-                                <p class="mb-0">Flat rate: $3.00</p>
+                                <p class="mb-0">Flat rate: Rs. 3.00</p>
                             </div>
                         </div>
                         <p class="mb-0 text-end">Shipping to your address.</p>
                     </div>
                     <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                         <h5 class="mb-0 ps-4 me-4">Total</h5>
-                        <p class="mb-0 pe-4 cart-total">$<%= (cart.cartTotal + 3).toFixed(2) %></p> <!-- Adding flat rate shipping -->
+                        <p class="mb-0 pe-4 cart-total">Rs. <%= (cart.cartTotal + 3).toFixed(2) %></p> <!-- Adding flat rate shipping -->
                     </div>
                     <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button" onclick="proceedToCheckout()">Proceed to Checkout</button>
                 </div>
@@ -117,88 +117,74 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // Function to update cart items
-    function updateCartItem(productId, change) {
-        console.log("Updating item:", productId, "Change:", change);
+   
 
-        fetch('/cart/update', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId, change }),
+
+function updateCartItem(productId, change) {
+    console.log("Updating item:", productId, "Change:", change);
+
+    fetch('/cart/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, change }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    if (data.message === 'Insufficient stock available') {
+                        // Display SweetAlert for insufficient stock
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Insufficient stock',
+                            text: 'You cannot add more items than the available stock.',
+                        });
+                    }
+                    throw new Error(data.message || 'Error updating cart item');
+                });
+            }
+            return response.json();
         })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        if (data.message === 'Insufficient stock available') {
-                            // Display SweetAlert for insufficient stock
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Insufficient stock',
-                                text: 'You cannot add more items than the available stock.',
-                            });
+        .then(data => {
+            console.log("Response data:", data);
 
-                            // Disable the plus button if stock is insufficient
-                            const row = document.querySelector(`tr[data-product-id="${productId}"]`);
-                            console.log( row ? 'Element found row' : 'Element not found');
-                            const plusButton = row.querySelector('.btn-plus');
-                            console.log( plusButton ? 'Element found plus' : 'Element not found');
-                            const quantityInput = row.querySelector('input[type="text"]');
-                            console.log( quantityInput  ? 'Element found quantity' : 'Element not found');
-                            const availableStock = parseInt(quantityInput.getAttribute('data-available-stock'), 10);
-                            const currentQuantity = parseInt(quantityInput.value, 10);
+            const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+            if (!row) {
+                console.error("Row not found for product ID:", productId);
+                return;
+            }
 
-                            plusButton.disabled = currentQuantity >= availableStock;
-                        }
-                        throw new Error(data.message || 'Error updating cart item');
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Response data:", data);
-
-                const row = document.querySelector(`tr[data-product-id="${productId}"]`);
-                if (!row) {
-                    console.error("Row not found for product ID:", productId);
-                    return;
-                }
-
-                const quantityInput = row.querySelector('input[type="text"]');
-                console.log( quantityInput? 'Element found input' : 'Element not found');
+            const quantityInput = row.querySelector('input[type="text"]');
+            if (quantityInput) {
                 const updatedItem = data.items.find(item => item.productId.toString() === productId);
                 if (updatedItem) {
-                
                     quantityInput.value = updatedItem.quantity;
 
                     const totalPriceElement = row.querySelector('.total-price');
-                    console.log( totalPriceElement? 'Element found price element' : 'Element not found');
                     if (totalPriceElement) {
                         totalPriceElement.textContent = `$${updatedItem.totalPrice.toFixed(2)}`;
                     }
-                    const availableStock = parseInt(quantityInput.getAttribute('data-available-stock'), 10);
-                    console.log( availableStock? 'Element found available stock' : 'Element not found');
-                    const plusButton = row.querySelector('.btn-plus');
-                    console.log(plusButton ? 'Element found button plus' : 'Element not found');
-                    plusButton.disabled = updatedItem.quantity >= availableStock;
                 }
+            }
 
-            
-                const cartSubtotalElement = document.querySelector('.cart-subtotal');
-                console.log(cartSubtotalElement ? 'Element found cart subtotal' : 'Element not found');
-                const cartTotalElement = document.querySelector('.cart-total');
-                console.log(cartTotalElement ? 'Element found cart total' : 'Element not found');
+            const cartSubtotalElement = document.querySelector('.cart-subtotal');
+            const cartTotalElement = document.querySelector('.cart-total');
 
-                if (cartSubtotalElement) {
-                    cartSubtotalElement.textContent = `$${data.cartTotal.toFixed(2)}`;
-                }
-                if (cartTotalElement) {
-                    cartTotalElement.textContent = `$${(data.cartTotal + 3).toFixed(2)}`; // Flat shipping cost
-                }
-            })
-            .catch(error => {
-                console.error('Error updating cart item:', error);
-            });
-    }
+            if (cartSubtotalElement) {
+                cartSubtotalElement.textContent = `$${data.cartTotal.toFixed(2)}`;
+            }
+            if (cartTotalElement) {
+                cartTotalElement.textContent = `$${(data.cartTotal + 3).toFixed(2)}`; // Flat shipping cost
+            }
+        })
+        .catch(error => {
+            console.error('Error updating cart item:', error);
+        });
+}
+
+
+
+
+
 
     // Function to remove a cart item
     function removeCartItem(productId) {
@@ -241,6 +227,23 @@
             plusButton.disabled = currentQuantity >= availableStock;
         });
     });
+
+
+    const updateCartCount = async () => {
+    try {
+        const response = await fetch('/cart/count');
+        const data = await response.json();
+
+        const cartCountElement = document.querySelector('.cart-count');
+        cartCountElement.textContent = data.count || 0;
+    } catch (error) {
+        console.error('Error fetching cart count:', error);
+    }
+};
+
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', updateCartCount);
+
 </script>
 
 

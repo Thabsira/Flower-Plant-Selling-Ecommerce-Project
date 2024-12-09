@@ -67,7 +67,13 @@ const productSchema= new Schema({
     featured: {
         type: Boolean,
         default: false
-    }
+    },
+    wishlist:[{
+        type:Schema.Types.ObjectId,
+        ref:"Wishlist"
+    }],
+    
+
 
 },{timestamps:true});
 

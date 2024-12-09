@@ -24,11 +24,11 @@
 
 .suggestions-container {
     position: absolute;
-    background-color: #ddd;
-    border: 1px solid #ddd;
+    background-color: white;
+    /*border: 1px solid #ddd;*/
     width: 100%;
     max-height: 200px;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
     z-index: 10;
     width: 300px;
 }
@@ -43,7 +43,7 @@
     background-color: #f0f0f0;
 }
 
-.category-dropdown {
+/*.category-dropdown {
     color: #333 !important;  
     background-color: #f5f2f2; 
     border: 1px solid #141212; 
@@ -57,7 +57,30 @@
 .category-dropdown option:hover {
     background-color: #f0f0f0; 
     color: #000; 
+}*/
+
+/*select option {
+    color: #333; 
+    background-color: #fff; 
+}*/
+
+/*.category-dropdown {
+    color: #333 !important;
+    background-color: #f5f2f2; 
+    border: 1px solid #141212; 
+    appearance: none; 
 }
+
+.category-dropdown option {
+    color: #333 !important; 
+    background-color: #fff; 
+}
+
+.category-dropdown option:hover {
+    background-color: #f0f0f0; 
+    color: #000; 
+}*/
+
 
 
 </style>
@@ -126,11 +149,11 @@
                             <div class="col-lg-12">
                                 <div class="mb-3">
                                     <h4>Categories</h4>
-                                    <select id="categoryFilter" class="form-select category-dropdown" onchange="filterByCategory()">
+                                    <select id="categoryFilter" class="form-select" onchange="filterByCategory()">
                                         <option value="">All Categories</option>
                                         <% categories.forEach(category => { %>
                                             <option value="<%= category._id %>" <%= String(category._id) === String(selectedCategory) ? 'selected' : '' %>>
-                                                <%= category.categoryName %>
+                                                <%= category.name %>
                                             </option>
                                         <% }) %>
                                     </select>
@@ -142,14 +165,14 @@
 
 
 
-                            <div class="col-lg-12">
+                         <!----   <div class="col-lg-12">
                                 <div class="mb-3">
                                     <h4 class="mb-2">Price</h4>
                                     <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
                                     <output id="amount" name="amount" min-velue="0" max-value="500" for="rangeInput">0</output>
                                 </div>
-                            </div>
-                            <div class="col-lg-12">
+                            </div>--->
+                        <!-----    <div class="col-lg-12">
                                 <div class="mb-3">
                                     <h4>Additional</h4>
                                     <div class="mb-2">
@@ -173,15 +196,15 @@
                                         <label for="Categories-5"> Expired</label>
                                     </div>
                                 </div>
-                            </div>
+                            </div>--->
                             <div class="col-lg-12">
                                 <h4 class="mb-3">Featured products</h4>
                                 <div class="d-flex align-items-center justify-content-start">
                                     <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                        <img src="img/featur-1.jpg" class="img-fluid rounded" alt="">
+                                        <img src="https://cms.interiorcompany.com/wp-content/uploads/2024/01/cyclamen-indoor-flowers.jpg" class="img-fluid rounded" alt="">
                                     </div>
                                     <div>
-                                        <h6 class="mb-2">Big Banana</h6>
+                                        <h6 class="mb-2">Paradise Flower</h6>
                                         <div class="d-flex mb-2">
                                             <i class="fa fa-star text-secondary"></i>
                                             <i class="fa fa-star text-secondary"></i>
@@ -190,17 +213,17 @@
                                             <i class="fa fa-star"></i>
                                         </div>
                                         <div class="d-flex mb-2">
-                                            <h5 class="fw-bold me-2">2.99 $</h5>
-                                            <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+                                            <h5 class="fw-bold me-2">240.99 Rs</h5>
+                                            <h5 class="text-danger text-decoration-line-through">400.11 Rs</h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-start">
                                     <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                        <img src="img/featur-2.jpg" class="img-fluid rounded" alt="">
+                                        <img src="https://cms.interiorcompany.com/wp-content/uploads/2024/01/bromeliad-flower-plants-for-home.jpg" class="img-fluid rounded" alt="">
                                     </div>
                                     <div>
-                                        <h6 class="mb-2">Big Banana</h6>
+                                        <h6 class="mb-2">Paradise Flower</h6>
                                         <div class="d-flex mb-2">
                                             <i class="fa fa-star text-secondary"></i>
                                             <i class="fa fa-star text-secondary"></i>
@@ -209,17 +232,17 @@
                                             <i class="fa fa-star"></i>
                                         </div>
                                         <div class="d-flex mb-2">
-                                            <h5 class="fw-bold me-2">2.99 $</h5>
-                                            <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+                                            <h5 class="fw-bold me-2">200.99 Rs</h5>
+                                            <h5 class="text-danger text-decoration-line-through">400.11 Rs</h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-start">
                                     <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                        <img src="img/featur-3.jpg" class="img-fluid rounded" alt="">
+                                        <img src="https://nurserylive.com/cdn/shop/collections/nurserylive-anthurium-plants-category-image-121132_600x600.jpg?v=1681381475" class="img-fluid rounded" alt="">
                                     </div>
                                     <div>
-                                        <h6 class="mb-2">Big Banana</h6>
+                                        <h6 class="mb-2">Paradise Flower</h6>
                                         <div class="d-flex mb-2">
                                             <i class="fa fa-star text-secondary"></i>
                                             <i class="fa fa-star text-secondary"></i>
@@ -228,8 +251,8 @@
                                             <i class="fa fa-star"></i>
                                         </div>
                                         <div class="d-flex mb-2">
-                                            <h5 class="fw-bold me-2">2.99 $</h5>
-                                            <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+                                            <h5 class="fw-bold me-2">200.99 Rs</h5>
+                                            <h5 class="text-danger text-decoration-line-through">400.11 Rs</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -239,9 +262,9 @@
                             </div>
                             <div class="col-lg-12">
                                 <div class="position-relative">
-                                    <img src="img/banner-fruits.jpg" class="img-fluid w-100 rounded" alt="">
+                                    <img src="https://binnybotanics.in/wp-content/uploads/2024/08/11-3.jpg.webp" class="img-fluid w-100 rounded" alt="">
                                     <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
-                                        <h3 class="text-secondary fw-bold">Fresh <br> Fruits <br> Banner</h3>
+                                        <h3 class="text-secondary fw-bold">Fresh <br> Flower <br> Banner</h3>
                                     </div>
                                 </div>
                             </div>
@@ -279,14 +302,35 @@
                                        <!---- <h4><%= product.productName %></h4>--->
                                         <p><%= product.description %></p>
                                         <div class="d-flex justify-content-between flex-lg-wrap">
-                                            <p class="text-dark fs-5 fw-bold mb-0">$<%= product.price %></p>
+                                            <p class="text-dark fs-5 fw-bold mb-0">Rs. <%= product.price %></p>
                                           
-                                            <% if (product.status=== "Available") { %>
+                                       
+
+
+                            
+                                               <% if (product.status=== "Available") { %>
+                                                <button 
+                                                    class="btn btn-primary" 
+                                                    onclick="addToCart('<%= product._id %>')" 
+                                                    >
+                                                    Add to Cart
+                                                </button>
                                     
-                                                <a href="/cart/add<%= product._id %>" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                             <!----   <a href="/add<%= product._id %>" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>-->
                                                 <% } else { %> 
                                                     <button class="btn btn-secondary" disabled>Out of Stock</button> 
-                                                    <% } %>   
+                                                <% } %>
+
+
+                                               <!----    <button 
+                                                    class="btn btn-primary" 
+                                                    onclick="addToCart('<%= product._id %>')" 
+                                                    >
+                                                    Add to Cart
+                                                </button>--->
+                                                    
+                                                    
+
                                         </div>
                                        
                                     </div>
@@ -342,6 +386,62 @@
    /* document.getElementById('sortOption').addEventListener('change', function() {
         document.getElementById('sortForm').submit();  // Trigger form submission
     });*/
+
+
+    /*document.querySelectorAll('.category-dropdown option').forEach(option => {
+    option.style.color = '#333';
+    option.style.backgroundColor = '#fff';
+});*/
+
+
+
+
+    function addToCart(productId) {
+        const button = document.querySelector(`[onclick="addToCart('${productId}')"]`);
+        if (button.disabled) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Out of Stock',
+                text: 'This item is out of stock!',
+            });
+            return;
+        }
+    
+        fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId, quantity: 1 }),
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.alreadyInCart) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Item Already in Cart',
+                    text: 'This item is already in your cart!',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+                updateCartCount();
+            } else {
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Cart!',
+                    text: 'Item added to cart successfully!',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+                updateCartCount();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+
+
 
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -455,6 +555,7 @@ function addToWishlist(productId, element) {
                 timer: 1500,
                 showConfirmButton: false
             });
+            updateWishlistCount()
             element.classList.add('disabled');
             element.style.pointerEvents = 'none';
         } else {
@@ -472,6 +573,39 @@ function addToWishlist(productId, element) {
     })
     .catch(error => console.error('Error:', error));
 }
+
+
+
+const updateCartCount = async () => {
+    try {
+        const response = await fetch('/cart/count');
+        const data = await response.json();
+
+        const cartCountElement = document.querySelector('.cart-count');
+        cartCountElement.textContent = data.count || 0;
+    } catch (error) {
+        console.error('Error fetching cart count:', error);
+    }
+};
+
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', updateCartCount);
+
+
+const updateWishlistCount = async () => {
+    try {
+        const response = await fetch('/wishlist/count');
+        const data = await response.json();
+
+        const wishlistCountElement = document.querySelector('.wishlist-count');
+        wishlistCountElement.textContent = data.count || 0;
+    } catch (error) {
+        console.error('Error fetching wishlist count:', error);
+    }
+};
+
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', updateWishlistCount);
 
 </script>
 

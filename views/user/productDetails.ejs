@@ -391,6 +391,7 @@
                     showConfirmButton: false,
                 });
             } else {
+                
                 Swal.fire({
                     icon: 'success',
                     title: 'Added to Cart!',
@@ -398,6 +399,7 @@
                     timer: 1500,
                     showConfirmButton: false,
                 });
+                updateCartCount();
             }
         })
         .catch(error => console.error('Error:', error));
@@ -422,6 +424,7 @@
                     timer: 1500,
                     showConfirmButton: false
                 });
+                updateWishlistCount();
                 // Disable the wishlist button
                 button.classList.add('disabled');
                 button.setAttribute('title', 'Already in Wishlist');
@@ -443,6 +446,39 @@
         .catch(error => console.error('Error:', error));
     }
 
+
+    const updateCartCount = async () => {
+    try {
+        const response = await fetch('/cart/count');
+        const data = await response.json();
+
+        const cartCountElement = document.querySelector('.cart-count');
+        cartCountElement.textContent = data.count || 0;
+    } catch (error) {
+        console.error('Error fetching cart count:', error);
+    }
+};
+
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', updateCartCount);
+
+
+    const updateWishlistCount = async () => {
+    try {
+        const response = await fetch('/wishlist/count');
+        const data = await response.json();
+
+        const wishlistCountElement = document.querySelector('.wishlist-count');
+        wishlistCountElement.textContent = data.count || 0;
+    } catch (error) {
+        console.error('Error fetching wishlist count:', error);
+    }
+};
+
+// Call the function when page loads to get wishlist count
+document.addEventListener('DOMContentLoaded', updateWishlistCount);
+
+    
 
     </script>
     

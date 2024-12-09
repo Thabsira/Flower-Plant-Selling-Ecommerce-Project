@@ -4,6 +4,8 @@ const User = require("../../models/userSchema");
 
 
 
+
+
 const getUserProfile = async (req, res) => {
     try {
         const userId = req.session.user;
@@ -11,18 +13,23 @@ const getUserProfile = async (req, res) => {
         if (!userId) {
             return res.status(401).send("User not authenticated");
         }
+
         const user = await User.findById(userId)
-            .populate("orderHistory wishlist cart searchHistory.category");
+            .populate("orderHistory wishlist cart searchHistory.category referredUsers redeemedusers");
+
         const addressDoc = await Address.findOne({ userId });
-        res.render("profile", { user, addresses: addressDoc ? addressDoc.address : [] });
+        console.log("User data:", user);
+        res.render("profile", { 
+            user, 
+            addresses: addressDoc ? addressDoc.address : [], 
+            referredUsers: user.referredUsers || [], 
+            redeemedUsers: user.redeemedusers || [] 
+        });
     } catch (error) {
         console.error("Error loading profile:", error);
         res.status(500).send("Server Error");
     }
 };
-
-
-
 
 
 
@@ -43,7 +50,7 @@ const geteditProfilePage = async (req, res) => {
     }
 };
 
-//edit profile post
+
 
 const updateUserProfile = async (req, res) => {
     try {

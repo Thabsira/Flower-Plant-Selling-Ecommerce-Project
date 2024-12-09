@@ -140,217 +140,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script>
-/*async function updateOrderStatus(orderId, status) {
 
-    const orderRow = document.querySelector(`select[onchange="updateOrderStatus('${orderId}', this.value)"]`);
-    if (orderRow && orderRow.value === 'Delivered') {
-        Swal.fire({
-            icon: 'info',
-            title: 'Info',
-            text: 'Order status cannot be changed after delivery.',
-            timer: 2000,
-        });
-        return;
-    }
-
-    const response = await fetch(`/admin/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status })
-    });
-
-    if (response.ok) {
-        //alert('Order status updated successfully.');
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Order status updated successfully.',
-            timer:2000,
-            willClose:()=>{
-              location.reload();
-            }
-        });
-         
-    } else {
-        //alert('Error updating order status.');
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Error updating order status.',
-            timer:2000,
-        });
-    }
-}*/
-
-
-/*async function updateOrderStatus(orderId, status) {
-    const orderRow = document.querySelector(`select[onchange="updateOrderStatus('${orderId}', this.value)"]`);
-    if (order.status === 'Delivered') {
-  document.getElementById("orderStatus").disabled = true;
-}
-   if (orderRow && orderRow.value === 'Delivered') {
-        Swal.fire({
-            icon: 'info',
-            title: 'Info',
-            text: 'Order status cannot be changed after delivery.',
-            timer: 2000,
-        });
-        return;
-    }
-
-    const response = await fetch(`/admin/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status })
-    });
-
-    if (response.ok) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Order status updated successfully.',
-            timer: 2000,
-            willClose: () => {
-                location.reload();
-            }
-        });
-    } else {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Error updating order status.',
-            timer: 2000,
-        });
-    }
-}*/
-
-
-/*async function updateOrderStatus(orderId, status) {
-    const orderRow = document.querySelector(`select[onchange="updateOrderStatus('${orderId}', this.value)"]`);
-
-    // This should be called on page load
-
-
-    // Check if the current status is "Delivered" before updating
-    if (status === 'Delivered') {
-        Swal.fire({
-            icon: 'info',
-            title: 'Info',
-            text: 'Once the order is delivered, the status cannot be changed.',
-            timer: 2000,
-        });
-
-        // Disable the dropdown immediately
-        if (orderRow) orderRow.disabled = true;
-    }
-
-    const response = await fetch(`/admin/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status })
-    });
-
-    if (response.ok) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Order status updated successfully.',
-            timer: 2000,
-            willClose: () => {
-                location.reload();
-            }
-        });
-    } else {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Error updating order status.',
-            timer: 2000,
-        });
-    }
-}*/
-
-
-
-
-
-
-
-
-
-/*async function deleteOrder(orderId) {
-    if (confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
-        const response = await fetch(`/admin/orders/${orderId}`, {
-            method: 'DELETE'
-        });
-
-        if (response.ok) {
-            alert('Order deleted successfully.');
-            location.reload(); // Reload the page to see changes
-        } else {
-            alert('Error deleting order.');
-        }
-    }
-}*/
-
-
-
-/*async function updateOrderStatus(orderId, status) {
-    const orderRow = document.querySelector(`select[onchange="updateOrderStatus('${orderId}', this.value)"]`);
-    
-    // Check if trying to set to "Delivered" and prevent further changes
-    if (status === 'Delivered') {
-        Swal.fire({
-            icon: 'info',
-            title: 'Info',
-            text: 'Once the order is delivered, the status cannot be changed.',
-            timer: 2000,
-        });
-
-        // Disable the dropdown
-        if (orderRow) orderRow.disabled = true;
-    }
-
-    // Make the request to update status on the server
-    const response = await fetch(`/admin/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status })
-    });
-
-    if (response.ok) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Order status updated successfully.',
-            timer: 2000,
-            willClose: () => {
-                // Refresh the page to fetch and display updated data
-                location.reload();
-            }
-        });
-    } else {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Error updating order status.',
-            timer: 2000,
-        });
-    }
-}*/
 
 async function updateOrderStatus(orderId, status) {
     const orderRow = document.querySelector(`select[onchange="updateOrderStatus('${orderId}', this.value)"]`);
     
-    // Check if trying to set to "Delivered" and prevent further changes
     if (status === 'Delivered') {
         Swal.fire({
             icon: 'info',
@@ -359,11 +153,9 @@ async function updateOrderStatus(orderId, status) {
             timer: 2000,
         });
 
-        // Disable the dropdown
         if (orderRow) orderRow.disabled = true;
     }
 
-    // Make the request to update status on the server
     const response = await fetch(`/admin/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
@@ -379,7 +171,6 @@ async function updateOrderStatus(orderId, status) {
             text: 'Order status updated successfully.',
             timer: 2000,
             willClose: () => {
-                // Refresh the page to fetch and display updated data
                 location.reload();
             }
         });

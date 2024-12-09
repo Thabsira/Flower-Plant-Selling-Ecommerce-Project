@@ -19,7 +19,7 @@ const getCategoriesWithProductCount = async () => {
         {
             $project: {
                 _id: 1,
-                categoryName: 1,
+                name: 1,
                 productCount: { $size: '$products' },
             },
         },
@@ -31,7 +31,7 @@ const getProductPage = async (req, res) => {
         const { sortOption, page = 1, categoryId } = req.query;
         console.log('Received Query Parameters:', req.query);
 
-        let productQuery = { isBlocked: false, quantity: { $gt: 1 } };
+        let productQuery = { isBlocked: false, quantity: { $gte: 1 } };
         if (categoryId && mongoose.Types.ObjectId.isValid(categoryId)) {
             productQuery.category = categoryId; 
         }

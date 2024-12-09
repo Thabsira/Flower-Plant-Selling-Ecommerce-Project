@@ -12,6 +12,7 @@
                     <th scope="col">Price</th>
                     <th scope="col">Date</th>
                     <th scope="col">Handle</th>
+                    <th>Move to cart</th>
                   </tr>
                 </thead>
             
@@ -28,6 +29,12 @@
                                 <td><%= item.addedOn.toDateString() %></td>
                                 <td>
                                     <i class="fa fa-times remove-icon" onclick="removeFromWishlist('<%= item.productId._id %>', this)"></i>
+                                </td>
+                                <td>
+                                
+                                    <button class="btn btn-primary addToCartBtn" data-product-id="<%= item.productId._id %>" data-quantity="1">
+                                        Add to Cart
+                                    </button>
                                 </td>
                             </tr>
                         <% }) %>
@@ -52,7 +59,7 @@
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // SweetAlert notification for successful removal
+        
             Swal.fire({
                 icon: 'success',
                 title: 'Removed from Wishlist',
@@ -61,7 +68,7 @@
                 showConfirmButton: false
             });
 
-            // Remove the item row from the table
+
             const row = element.closest('tr');
             row.parentNode.removeChild(row);
         } else {
@@ -76,6 +83,78 @@
     })
     .catch(error => console.error('Error:', error));
 }
+
+
+
+
+document.querySelectorAll('.addToCartBtn').forEach(button => {
+    button.addEventListener('click', async (e) => {
+        const productId = e.target.getAttribute('data-product-id');
+        const quantity = e.target.getAttribute('data-quantity');
+
+        try {
+            const response = await fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId, quantity }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: result.message,
+                    confirmButtonText: 'OK'
+                });
+
+            
+                e.target.closest('tr').remove(); 
+            } else {
+            
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: result.message,
+                    confirmButtonText: 'Try Again'
+                });
+            }
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error adding to cart. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+});
+
+
+
+const updateWishlistCount = async () => {
+    try {
+        const response = await fetch('/wishlist/count');
+        const data = await response.json();
+
+        const wishlistCountElement = document.querySelector('.wishlist-count');
+        wishlistCountElement.textContent = data.count || 0;
+    } catch (error) {
+        console.error('Error fetching wishlist count:', error);
+    }
+};
+
+
+document.addEventListener('DOMContentLoaded', updateWishlistCount);
+
+
+
+
 
 </script>
 

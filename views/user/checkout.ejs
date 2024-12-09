@@ -67,9 +67,9 @@
                                             </div>
                                         </th>
                                         <td class="py-5"><%= item.productId.productName %></td>
-                                        <td class="py-5">$<%= item.price.toFixed(2) %></td>
+                                        <td class="py-5">Rs. <%= item.price.toFixed(2) %></td>
                                         <td class="py-5"><%= item.quantity %></td>
-                                        <td class="py-5">$<%= (item.price * item.quantity).toFixed(2) %></td>
+                                        <td class="py-5">Rs. <%= (item.price * item.quantity).toFixed(2) %></td>
                                     </tr>
                                 <% }) %>
                             </tbody>
@@ -80,29 +80,43 @@
                     <div class="bg-light rounded p-4 mt-4">
                         <div class="d-flex justify-content-between">
                             <h5>Subtotal</h5>
-                            <p id="subtotal">$<%= cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2) %></p>
+                            <p id="subtotal">Rs <%= (cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)+3).toFixed(2) %></p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h5>Discount</h5>
-                            <p id="discount">$<%=totalDiscount.toFixed(2) %></p>
+                            <p id="discount">Rs <%=totalDiscount.toFixed(2) %></p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h5>Final Total</h5>
-                            <p id="final-total">$<%= finalAmount.toFixed(2) %></p>
+                            <p id="final-total">Rs <%= (finalAmount+3).toFixed(2) %></p>
                         </div>
                     </div>
 
                     <!-- Coupon Section -->
                     <label for="couponSelect">Select a Coupon:</label>
                     <div class="d-flex align-items-center">
+
+
+                    
+
+
                         <select id="couponSelect" class="form-select me-3">
                             <option value="" selected disabled>Choose a coupon</option>
-                            <% coupons.forEach(coupon => { %>
-                                <option value="<%= coupon.couponCode %>" data-discount="<%= coupon.discount %>">
-                                    <%= coupon.couponCode %>  <%= coupon.discount %>
-                                </option>
-                            <% }) %>
+                            <% if (coupons && coupons.length > 0) { %>
+                                <% coupons.forEach(coupon => { %>
+                                    <option value="<%= coupon.couponCode %>" data-discount="<%= coupon.discount %>">
+                                        <%= coupon.couponCode %>  <%= coupon.discount %>
+                                    </option>
+                                <% }) %>
+                            <% } else { %>
+                                <option disabled>No coupons available</option>
+                            <% } %>
                         </select>
+                        
+                        
+
+
+                        
                         <button class="btn btn-secondary" id="copyCoupon" onclick="copyCouponCode()">Copy Code</button>
                     </div>
 
@@ -116,14 +130,20 @@
                         <small id="couponMessage" class="text-danger"></small>
                     </div>
 
+                    <div id="coupon-section">
+                      <!----  <p id="applied-coupon">Coupon Applied: <span id="coupon-code-display"></span></p>--->
+                        <button style="margin-top: 20px; border-radius: 6px; background-color: rgb(235, 98, 98); border-style: none; color: aliceblue;" id="remove-coupon-btn" onclick="removeCoupon()">Remove Coupon</button>
+                    </div>
+                    
+
                     <!-- Payment Methods -->
                     <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                         <div class="col-12">
-                            <div class="form-check text-start my-3">
+                         <!----   <div class="form-check text-start my-3">
                                 <input type="radio" class="form-check-input bg-primary border-0" id="Transfer-1" name="paymentMethod" value="bank_transfer">
                                 <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
-                            </div>
-                            <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
+                            </div>--->
+                           <!----- <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>--->
                         </div>
                     </div>
                     <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
@@ -136,10 +156,10 @@
                     </div>
                     <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                         <div class="col-12">
-                            <div class="form-check text-start my-3">
+                         <!----   <div class="form-check text-start my-3">
                                 <input type="radio" class="form-check-input bg-primary border-0" id="Paypal-1" name="paymentMethod" value="paypal">
                                 <label class="form-check-label" for="Paypal-1">Paypal</label>
-                            </div>
+                            </div>--->
                         </div>
                     </div>
                     <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
@@ -154,7 +174,7 @@
                     <!-- Place Order Button -->
                     <input type="hidden" name="addressId" id="addressId"/>
                     <input type="hidden" name="paymentMethod" id="paymentMethod"/>
-                    <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
+                    <button id="place-order-btn" type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
 
                 </div>
             </div>
@@ -178,37 +198,36 @@
 <script>
 
 
+
+
+
 function copyCouponCode() {
     const couponSelect = document.getElementById("couponSelect");
     const selectedCoupon = couponSelect.options[couponSelect.selectedIndex];
 
-    // Check if a coupon is selected
     if (selectedCoupon.value) {
         const couponCode = selectedCoupon.value;
 
-        // Create a temporary input element to copy the coupon code
         const tempInput = document.createElement("input");
-        tempInput.value = couponCode; // Set the value to the selected coupon code
+        tempInput.value = couponCode; 
         document.body.appendChild(tempInput);
         
-        // Select the text in the input field
-        tempInput.select();
-        tempInput.setSelectionRange(0, 99999); // For mobile devices
 
-        // Copy the text to clipboard
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999);
+
         document.execCommand("copy");
 
-        // Remove the temporary input element
         document.body.removeChild(tempInput);
 
-        // Alert the user that the coupon code has been copied
+
         alert(`${couponCode} copied to clipboard!`);
     } else {
         alert("Please select a coupon first!");
     }
 }
 
-// Dynamically update totals based on coupon selection
+
 const couponSelect = document.getElementById('couponSelect');
 const subtotalElement = document.getElementById('subtotal');
 const discountElement = document.getElementById('discount');
@@ -225,18 +244,118 @@ async function applyCoupon() {
 
     const result = await response.json();
     if (response.ok) {
-        // Update the UI with the new totals
         document.getElementById('subtotal').innerText = `Subtotal: ${result.subtotal}`;
         document.getElementById('discount').innerText = `Discount: ${result.couponDiscount}`;
         document.getElementById('final-total').innerText = `Total: ${result.totalAfterCoupon}`;
 
-        // Optional: update hidden fields if you need them for further processing (e.g., during checkout)
+        
         document.getElementById('finalAmount').value = result.totalAfterCoupon;
         console.log(result);
     } else {
-        alert(result.message); // Show error message if coupon is invalid
+        alert(result.message); 
     }
 }
+
+
+
+//remove coupon
+async function removeCoupon() {
+    const response = await fetch('/remove-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+        document.getElementById('subtotal').innerText = `Subtotal: ${result.subtotal}`;
+        document.getElementById('discount').innerText = `Discount: ${result.discount}`;
+        document.getElementById('final-total').innerText = `Total: ${result.total}`;
+        
+        document.getElementById('coupon-section').style.display = 'none';
+    } else {
+        alert(result.message); 
+    }
+}
+
+async function removeCoupon() {
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will remove the applied coupon.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, remove it!',
+    });
+
+    if (confirmation.isConfirmed) {
+        const response = await fetch('/remove-coupon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            Swal.fire('Removed!', 'The coupon has been removed.', 'success');
+            
+            document.getElementById('subtotal').innerText = `Subtotal: ${result.subtotal}`;
+            document.getElementById('discount').innerText = `Discount: ${result.discount}`;
+            document.getElementById('final-total').innerText = `Total: ${result.total}`;
+            document.getElementById('coupon-section').style.display = 'none';
+        } else {
+            Swal.fire('Error!', result.message, 'error');
+        }
+    }
+}
+
+
+    
+
+
+
+   
+
+
+
+const codRadioButton = document.getElementById('Delivery-1');
+const totalAmountElement = document.getElementById('final-total');
+
+codRadioButton.addEventListener('change', () => {
+  const rawAmountText = totalAmountElement.innerText.trim();
+
+  console.log("Raw Total Amount Text:", rawAmountText);
+
+  // Step 1: Clean the amount string - Keep only numeric characters and decimal point
+  const cleanedAmountText = rawAmountText.replace(/[^\d.]/g, '');
+
+  console.log("Cleaned Total Amount Text:", cleanedAmountText);
+
+  // Step 2: Manually check if the cleaned string is valid
+  if (cleanedAmountText && !isNaN(cleanedAmountText)) {
+    const numericAmount = parseFloat(cleanedAmountText);
+
+    console.log("Parsed Total Amount:", numericAmount);
+
+    if (numericAmount > 1000) {
+      console.log('COD not available');
+
+      Swal.fire({
+        title: 'COD Not Available',
+        text: 'Cash on Delivery is only available for orders below ₹1000.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+
+      codRadioButton.checked = false;  
+    }
+  } else {
+    console.log('Cleaned string is invalid:', cleanedAmountText);
+  }
+});
+
+
+
+
 
 
 
@@ -261,13 +380,13 @@ async function applyCoupon() {
         orderForm.addEventListener('submit', async (event) => {
             event.preventDefault(); 
 
-            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
-            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+           const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+           const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
 
             console.log("Selected Address:", selectedAddress);
             console.log("Selected Payment Method:", selectedPaymentMethod);
 
-            if (!selectedAddress || !selectedPaymentMethod) {
+           /* if (!selectedAddress || !selectedPaymentMethod) {
                 Swal.fire({
                     title: 'Missing Information',
                     text: 'Please select an address and payment method to proceed.',
@@ -275,10 +394,10 @@ async function applyCoupon() {
                     confirmButtonText: 'OK'
                 });
                 return;
-            }
+            }*/
 
             const addressId = selectedAddress.value;
-            const paymentMethod = selectedPaymentMethod.value;
+           const paymentMethod = selectedPaymentMethod.value;
 
             document.getElementById('addressId').value = addressId;
             console.log("Address ID:", addressId);
@@ -291,8 +410,11 @@ async function applyCoupon() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ addressId })
                     });
+                    console.log("razorpay order created successfully");
 
                     const data = await response.json();
+
+                    console.log('data',data);
 
                     if (!data.success) {
                         Swal.fire({
@@ -306,7 +428,7 @@ async function applyCoupon() {
 
                     const razorpayOptions = {
                         key: data.order.key,
-                        amount: data.order.amount,
+                        amount: data.order.amount+3,
                         currency: "INR",
                         name: "Petal Paradise",
                         description: "Order Payment",
@@ -337,12 +459,21 @@ async function applyCoupon() {
                                     window.location.href = '/orders/history';
                                 });
                             } else {
-                                Swal.fire({
+                              /*  Swal.fire({
                                     title: 'Error',
                                     text: 'Payment verification failed.',
                                     icon: 'error',
                                     confirmButtonText: 'OK'
-                                });
+                                });*/
+
+                                Swal.fire({
+            title: 'Payment Failed',
+            text: 'Payment verification failed. Order status set to Pending.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            window.location.href = '/orders/history';
+        });
                             }
                         },
                         prefill: {
@@ -392,9 +523,6 @@ async function applyCoupon() {
 
 
 
-
-
-    // Function to copy the selected coupon code to clipboard
 
 </script>
 

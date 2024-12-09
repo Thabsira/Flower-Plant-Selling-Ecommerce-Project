@@ -42,9 +42,14 @@
                         <p><strong>Phone:</strong> <%= user.phone || 'Not Provided' %></p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Wallet Balance:</strong> $<%= user.wallet %></p>
-                        <p><strong>Referral Code:</strong> <%= user.referralCode || 'N/A' %></p>
-                        <p><strong>Account Status:</strong> <%= user.isBlocked ? 'Blocked' : 'Active' %></p>
+                       <!---- <p><strong>Wallet Balance:</strong> $<%= user.wallet %></p>
+                        <p><strong>Referral Code:</strong> <%= user.referalCode || 'N/A' %></p>
+
+                    
+                        <p><strong>Account Status:</strong> <%= user.isBlocked ? 'Blocked' : 'Active' %></p>--->
+                        <a href="/wallet" class="btn btn-primary">Go to Wallet</a>
+                       <!---- <a href="#" class="btn btn-primary">Referral</a>--->
+                       <a href="/orders/history" class="btn btn-primary">Order History</a>
                     </div>
                 </div>
                 <a href="/profile/edit-profile" class="btn btn-primary mt-2">Edit Profile</a>

@@ -39,14 +39,22 @@ const userSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref:"Cart",
     }],
-    wallet:{
+  /*  wallet:{
         type:Number,
         default:0,
-    },
+},*/
+
     wishlist:[{
         type:Schema.Types.ObjectId,
         ref:"Wishlist"
     }],
+    
+    wallet:[{
+        type:Schema.Types.ObjectId,
+        ref:"Wallet"
+
+    }],
+
     orderHistory:[{
         type:Schema.Types.ObjectId,
         ref:"Order"
@@ -56,15 +64,18 @@ const userSchema = new Schema({
         default:Date.now,
     },
     referalCode:{
-        type:String
+        type:String,
+        unique:true,
     },
     redeemed:{
-        type:Boolean
+        type:Boolean,
+       default: false,
     },
     redeemedusers:[{
         type:Schema.Types.ObjectId,
         ref:"User"
     }],
+    referredUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     searchHistory:[{
         category:{
             type:Schema.Types.ObjectId,

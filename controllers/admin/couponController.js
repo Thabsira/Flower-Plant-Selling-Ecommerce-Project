@@ -24,64 +24,22 @@ const getCouponsList = async (req, res) => {
 
 
 
-/*const createCoupon = async (req, res) => {
-  const { name,couponCode, expireOn, offerPrice, minimumPrice } = req.body;
-  if (!name || !expireOn || !offerPrice || !minimumPrice) {
-      req.flash("error", "All fields are required.");
-      return res.redirect("/admin/coupons/create");
-  }
-  const currentDate = new Date();
-  if (new Date(expireOn) <= currentDate) {
-      req.flash("error", "Expiry date must be in the future.");
-      return res.redirect("/admin/coupons/create");
-  }
-  if (offerPrice <= 0) {
-      req.flash("error", "Offer price must be a positive number.");
-      return res.redirect("/admin/coupons/create");
-  }
-  if (minimumPrice <= 0) {
-      req.flash("error", "Minimum purchase price must be a positive number.");
-      return res.redirect("/admin/coupons/create");
-  }
-
-  try {
-      const newCoupon = new Coupon({
-          name,
-          couponCode,
-          expireOn: new Date(expireOn), 
-          offerPrice,
-          minimumPrice,
-      });
-
-      await newCoupon.save();
-
-      req.flash("success", "Coupon created successfully!");
-      res.redirect("/admin/list"); 
-  } catch (err) {
-      console.log(err);
-      req.flash("error", "Failed to create coupon.");
-      res.redirect("/admin/coupons/create");
-  }
-};*/
 
 
 const createCoupon = async (req, res) => {
   const { name, couponCode, expireOn, offerPrice, minimumPrice } = req.body;
 
-  // Validate required fields
   if (!name || !couponCode || !expireOn || !offerPrice || !minimumPrice) {
       req.flash("error", "All fields are required.");
       return res.redirect("/admin/coupons/create");
   }
 
-  // Validate expiry date
   const currentDate = new Date();
   if (new Date(expireOn) <= currentDate) {
       req.flash("error", "Expiry date must be in the future.");
       return res.redirect("/admin/coupons/create");
   }
 
-  // Validate offer price and minimum price
   if (offerPrice <= 0) {
       req.flash("error", "Offer price must be a positive number.");
       return res.redirect("/admin/coupons/create");
@@ -93,7 +51,6 @@ const createCoupon = async (req, res) => {
   }
 
   try {
-      // Save the coupon
       const newCoupon = new Coupon({
           name,
           couponCode,
@@ -105,7 +62,7 @@ const createCoupon = async (req, res) => {
       await newCoupon.save();
 
       req.flash("success", "Coupon created successfully!");
-      res.redirect("/admin/list"); // Redirect to the list of coupons or the desired page
+      res.redirect("/admin/list");
   } catch (err) {
       console.error("Error creating coupon:", err);
       req.flash("error", "Failed to create coupon.");
@@ -153,30 +110,28 @@ const updateCoupon = async (req, res) => {
   const { id } = req.params;
   const { name, couponCode, expireOn, offerPrice, minimumPrice } = req.body;
 
-  // Validate input fields
   if (!name || !couponCode || !expireOn || !offerPrice || !minimumPrice) {
     req.flash("error", "All fields are required.");
-    return res.redirect(`/admin/edit/${id}`);
+    return res.redirect(`/edit/${id}`);
   }
 
-  // Validate expiry date
   const currentDate = new Date();
   if (new Date(expireOn) <= currentDate) {
     req.flash("error", "Expiry date must be in the future.");
-    return res.redirect(`/admin/edit/${id}`);
+    return res.redirect(`/edit/${id}`);
   }
 
-  // Validate offer price and minimum price
+
   if (offerPrice <= 0 || minimumPrice <= 0) {
     req.flash(
       "error",
       "Offer price and minimum purchase price must be positive numbers."
     );
-    return res.redirect(`/admin/edit/${id}`);
+    return res.redirect(`/edit/${id}`);
   }
 
   try {
-    // Update the coupon
+
     await Coupon.findByIdAndUpdate(
       id,
       { name, couponCode, expireOn: new Date(expireOn), offerPrice, minimumPrice },
@@ -184,7 +139,7 @@ const updateCoupon = async (req, res) => {
     );
 
     req.flash("success", "Coupon updated successfully!");
-    res.redirect("/admin/list"); // Redirect to the list page
+    res.redirect("/admin/list"); 
   } catch (err) {
     console.error("Error updating coupon:", err);
     req.flash("error", "Failed to update coupon.");

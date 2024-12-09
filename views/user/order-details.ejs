@@ -1,0 +1,221 @@
+<%- include("../../views/partials/user/header") %>
+
+<div class="container py-5">
+    <h1 class="mb-4">Order Details</h1>
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5>Order ID: <%= order.orderId %></h5>
+            <p><strong>Order Date:</strong> <%= order.createdOn.toDateString() %></p>
+            <p><strong>Status:</strong> <%= order.status %></p>
+            <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+            <p><strong>Payment Status:</strong> <%= order.paymentStatus %></p>
+          
+            <% if (order.paymentStatus === "Pending") { %>
+                <button class="btn btn-warning mt-3" onclick="retryPayment('<%= order.orderId %>')">
+                    Retry Payment
+                </button>
+            <% } %>
+        </div>
+
+        <div class="card-body">
+            <h5 class="mb-3">Shipping Address</h5>
+            <% if (order.address) { %>
+                <div class="card p-3 mb-4">
+                    <p><strong>Type:</strong> <%= order.address.addressType %></p>
+                    <p><strong>Name:</strong> <%= order.address.name %></p>
+                    <p><strong>City:</strong> <%= order.address.city %>, <%= order.address.state %></p>
+                    <p><strong>Pincode:</strong> <%= order.address.pincode %></p>
+                    <p><strong>Landmark:</strong> <%= order.address.landMark %></p>
+                    <p><strong>Phone:</strong> <%= order.address.phone %></p>
+                </div>
+            <% } else { %>
+                <p>No address found for this order.</p>
+            <% } %>
+
+            <h5 class="mb-3">Order Items</h5>
+            <% order.orderItems.forEach(item => { %>
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-2 d-flex align-items-center justify-content-center">
+                            <img src="<%= item.product.productImage[0] %>" alt="Product" class="img-fluid rounded" style="width: 100px;">
+                        </div>
+                        <div class="col-md-10">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= item.product.productName %></h5>
+                                <p class="card-text"><%= item.product.description %></p>
+                                <p><strong>Price:</strong> Rs. <%= item.price.toFixed(2) %></p>
+                                <p><strong>Quantity:</strong> <%= item.quantity %></p>
+                                <p><strong>Total:</strong> Rs. <%= (item.price * item.quantity).toFixed(2) %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+
+            <hr />
+
+            <h5 class="mb-3">Price Details</h5>
+            <div class="card p-3">
+                <p><strong>Subtotal:</strong> Rs. <%= order.totalPrice.toFixed(2) %></p>
+                <p><strong>Shipping</strong>: Rs.3</p>
+                <% if (order.couponApplied) { %>
+                    <p><strong>Coupon Applied:</strong> <%= order.couponApplied %></p>
+                    <p><strong>Discount:</strong> Rs. <%= order.discount.toFixed(2) %></p>
+                <% } else { %>
+                    <p><strong>Coupon Applied:</strong> None</p>
+                <% } %>
+                <p><strong>Final Amount:</strong> Rs. <%= order.finalAmount.toFixed(2) %></p>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4 d-flex justify-content-between">
+       <!---- <button class="btn btn-primary" onclick="downloadInvoice('<%= order.orderId %>')">
+            Download Invoice
+        </button>--->
+        <button class="btn btn-primary" id="downloadInvoice">
+            Download Invoice
+        </button>
+
+      <!----  <button id="printPage" class="btn">Download as PDF</button>--->
+
+        
+        <a href="/orders/history" class="btn btn-secondary">
+            Back to Order History
+        </a>
+    </div>
+</div>
+
+<%- include("../../views/partials/user/footer") %>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+  /*  .container {
+        max-width: 900px;
+    }*/
+
+    footer {
+        background-color: #343a40;
+        color: white;
+        padding: 15px 0;
+        text-align: center;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+    }
+
+    footer a {
+        color: #ffc107;
+        text-decoration: none;
+    }
+
+    footer a:hover {
+        text-decoration: underline;
+    }
+
+
+  /* @media print {
+    body {
+        font-family: Arial, sans-serif;
+        background: #fff;
+    }
+    .btn {
+        display: none; 
+    }
+}*/
+
+
+
+ 
+
+</style>
+
+
+<!---<script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>-->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+async function retryPayment(orderId) {
+    try {
+        const response = await fetch(`/retry-payment/${orderId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            alert(error.message || 'Failed to fetch retry details');
+            return;
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            const razorpayOptions = {
+                key: data.order.key,
+                amount: data.order.amount,
+                currency: "INR",
+                name: "Petal Paradise",
+                description: "Retry Payment",
+                order_id: data.order.id,
+                handler: async (paymentResponse) => {
+                    console.log("Payment Response:", paymentResponse);
+                    try {
+                        const verifyResponse = await fetch('/verify-payment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                           // body: JSON.stringify(paymentResponse),
+                           body: JSON.stringify({
+                                    razorpay_order_id: paymentResponse.razorpay_order_id,
+                                    razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                                    razorpay_signature: paymentResponse.razorpay_signature,
+                                   // addressId: addressId
+                                })
+                                
+                        });
+
+                       // console.log("Razorpay Order ID (Frontend):", razorpay_order_id);
+                        //console.log("Razorpay Payment ID (Frontend):", razorpay_payment_id);
+                        //console.log("Razorpay Signature (Frontend):", razorpay_signature);
+
+                        console.log("verify response",verifyResponse)
+
+                        const verifyData = await verifyResponse.json();
+
+                        if (verifyData.success) {
+                            alert('Payment successful! Order status updated.');
+                            window.location.reload();
+                        } else {
+                            alert('Payment verification failed. Please try again.');
+                        }
+                    } catch (error) {
+                        console.error('Error verifying payment:', error);
+                        alert('Error verifying payment. Please contact support.');
+                    }
+                },
+                theme: {
+                    color: "#3399cc",
+                },
+            };
+
+            const razorpay = new Razorpay(razorpayOptions);
+            razorpay.open();
+        } else {
+            alert('Failed to retry payment. Please try again later.');
+        }
+    } catch (error) {
+        console.error('Retry Payment Error:', error);
+        alert('An error occurred while retrying payment.');
+    }
+}
+
+</script>
+
+
+
+
+
+
+

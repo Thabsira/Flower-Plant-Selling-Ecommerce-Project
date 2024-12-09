@@ -9,7 +9,9 @@ const checkoutController = require("../controllers/user/checkoutController");
 const orderController = require("../controllers/user/orderController");
 const productController = require("../controllers/user/productControllers");
 const wishlistController = require("../controllers/user/wishlistController");
-const razorpayController = require("../controllers/user/razorpayController")
+const razorpayController = require("../controllers/user/razorpayController");
+const orderDetailsController = require("../controllers/user/orderDetailsController");
+//const walletController = require("../controllers/user/walletController");
 const {userAuth,adminAuth} = require("../middlewares/auth");
 /*const paymentController = require('../controllers/user/paymentController');
 
@@ -84,6 +86,7 @@ router.post("/cart/add", userAuth, cartController.addToCart);
 router.get("/cart", userAuth, cartController.listCartItems);
 router.delete('/cart/remove/:productId', cartController.removeItemFromCart);
 router.post('/cart/update', userAuth, cartController.updateCartItem);
+router.get('/cart/count', userAuth, cartController.getCartCount);
 
 //checkout
 
@@ -119,7 +122,11 @@ router.get('/products/search-suggestions', (req, res, next) => {
 router.get('/wishlist/add',userAuth, wishlistController.addToWishlist);
 router.get('/wishlist',userAuth, wishlistController.getWishlistPage);
 router.delete('/wishlist/remove',userAuth,wishlistController.removeFromWishlist);
-
+//router.post('/wishlist/move-to-cart', userAuth, wishlistController.moveToCart);
+// In wishlistRoutes.js
+//router.post('/wishlist/move-to-cart',userAuth, wishlistController.moveToCart);
+router.post('/wishlist/move-to-cart', userAuth, wishlistController.moveToCart);
+router.get('/wishlist/count',userAuth, wishlistController.getWishlistCount);
 
 
 //router.post('/cart/apply-coupon',userAuth,cartController.applyCoupon);
@@ -137,6 +144,17 @@ router.post('/create-order',userAuth, razorpayController.createRazorpayOrder); /
 router.post('/verify-payment',userAuth, razorpayController.verifyRazorpayPayment); // Verify Razorpay payment
 
 router.post('/apply-coupon',userAuth,checkoutController.applyCoupon);
+router.post('/remove-coupon',userAuth,checkoutController.removeCoupon);
+
+//router.get('/wallet',userAuth, walletController.getWalletDetails);
+
+router.get("/wallet",userAuth,userController.loadWalletPage);
+
+
+router.get('/order/:orderId',userAuth, orderDetailsController.getOrderDetails);
+router.get('/order-confirm',userAuth,checkoutController.orderconfirm);
+router.post('/retry-payment/:orderId',userAuth,razorpayController.retryRazorpayPayment);
+
 
 
 

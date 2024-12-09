@@ -1,0 +1,63 @@
+<%- include("../../views/partials/user/header") %>
+
+
+<h1>Referral Page</h1>
+
+<!-- Referral Code Display -->
+<div>
+    <label>Your Referral Code:</label>
+    <input type="text" id="referralCode" value="<%= referralCode || '' %>" readonly>
+    <button onclick="generateReferralCode()">Generate Code</button>
+    <button onclick="copyReferralCode()">Copy</button>
+</div>
+
+<script>
+    function copyReferralCode() {
+        const code = document.getElementById("referralCode");
+        code.select();
+        document.execCommand("copy");
+        alert("Referral code copied!");
+    }
+
+
+    function generateReferralCode() {
+        fetch('/referral/generate', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('referralCode').value = data.referralCode;
+                    alert("Referral code generated successfully!");
+                } else {
+                    alert(data.message || "Error generating referral code.");
+                }
+            })
+            .catch(err => alert("Error connecting to the server."));
+    }
+</script>
+
+
+
+<!-- Apply Referral Code -->
+<div>
+    <label>Apply Referral Code:</label>
+    <input type="text" id="applyReferral" placeholder="Enter referral code">
+    <button onclick="applyReferral()">Submit</button>
+</div>
+
+<script>
+    function applyReferral() {
+        const code = document.getElementById("applyReferral").value;
+        fetch('/referral/apply', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ referralCode: code })
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(err => alert("Error applying referral code."));
+    }
+</script>
+
+
+
+<%- include("../../views/partials/user/footer") %>
