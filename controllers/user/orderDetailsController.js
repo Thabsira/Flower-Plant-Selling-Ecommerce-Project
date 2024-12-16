@@ -106,23 +106,18 @@ const getOrderDetails = async (req, res) => {
             path: 'address',
             select: 'address', // Fetch the address array
         });*/
-
-
         if (!order) {
             return res.status(404).send('Order not found');
         }
 
        // const selectedAddress = order.address?.address?.[0];
         // Compute cart total (before applying shipping charges and discounts)
-        const cartTotal = order.orderItems.reduce((total, item) => {
+       /* const cartTotal = order.orderItems.reduce((total, item) => {
             return total + item.product.salePrice * item.quantity;
-        }, 0);
-
-
-
+        }, 0);*/
         res.render('order-details', {
             order,
-            cartTotal: cartTotal.toFixed(2), // Pass cart total to view
+          //  cartTotal: cartTotal.toFixed(2), // Pass cart total to view
         });
     } catch (err) {
         console.error('Error fetching order details:', err);
