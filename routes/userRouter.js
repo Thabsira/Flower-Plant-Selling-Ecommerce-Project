@@ -157,7 +157,7 @@ router.get('/order-confirm',userAuth,checkoutController.orderconfirm);
 router.post('/retry-payment/:orderId',userAuth,razorpayController.retryRazorpayPayment);
 
 
-//router.get("/order/invoice/:orderId", orderDetailsController.downloadInvoice);
+
 router.get("/order/:orderId/download-invoice",userAuth, orderDetailsController.downloadInvoice);
 
 router.get("/contact",contactController.contact);
