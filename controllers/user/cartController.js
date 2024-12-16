@@ -200,9 +200,9 @@ const updateCartItem = async (req, res) => {
 
 const getCartCount = async (req, res) => {
     try {
-        const userId = req.session.user._id; // Retrieve logged-in user ID from session
+        const userId = req.session.user._id; 
         if (!userId) {
-            return res.json({ count: 0 }); // Return 0 for unauthenticated users
+            return res.json({ count: 0 });
         }
         
         const cart = await Cart.findOne({ userId });

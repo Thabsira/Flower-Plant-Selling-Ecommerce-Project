@@ -93,14 +93,14 @@
                         <div class="d-flex justify-content-between">
                             <h5 class="mb-0 me-4">Shipping</h5>
                             <div>
-                                <p class="mb-0">Flat rate: Rs. 3.00</p>
+                                <p class="mb-0">Flat rate: Rs. 50.00</p>
                             </div>
                         </div>
                         <p class="mb-0 text-end">Shipping to your address.</p>
                     </div>
                     <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                         <h5 class="mb-0 ps-4 me-4">Total</h5>
-                        <p class="mb-0 pe-4 cart-total">Rs. <%= (cart.cartTotal + 3).toFixed(2) %></p> <!-- Adding flat rate shipping -->
+                        <p class="mb-0 pe-4 cart-total">Rs. <%= (cart.cartTotal + 50).toFixed(2) %></p> <!-- Adding flat rate shipping -->
                     </div>
                     <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button" onclick="proceedToCheckout()">Proceed to Checkout</button>
                 </div>
@@ -161,7 +161,7 @@ function updateCartItem(productId, change) {
 
                     const totalPriceElement = row.querySelector('.total-price');
                     if (totalPriceElement) {
-                        totalPriceElement.textContent = `$${updatedItem.totalPrice.toFixed(2)}`;
+                        totalPriceElement.textContent = `Rs ${updatedItem.totalPrice.toFixed(2)}`;
                     }
                 }
             }
@@ -170,10 +170,10 @@ function updateCartItem(productId, change) {
             const cartTotalElement = document.querySelector('.cart-total');
 
             if (cartSubtotalElement) {
-                cartSubtotalElement.textContent = `$${data.cartTotal.toFixed(2)}`;
+                cartSubtotalElement.textContent = `Rs ${data.cartTotal.toFixed(2)}`;
             }
             if (cartTotalElement) {
-                cartTotalElement.textContent = `$${(data.cartTotal + 3).toFixed(2)}`; // Flat shipping cost
+                cartTotalElement.textContent = `Rs ${(data.cartTotal + 50).toFixed(2)}`; // Flat shipping cost
             }
         })
         .catch(error => {

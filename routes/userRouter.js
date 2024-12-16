@@ -11,6 +11,7 @@ const productController = require("../controllers/user/productControllers");
 const wishlistController = require("../controllers/user/wishlistController");
 const razorpayController = require("../controllers/user/razorpayController");
 const orderDetailsController = require("../controllers/user/orderDetailsController");
+const contactController = require("../controllers/user/contactController");
 //const walletController = require("../controllers/user/walletController");
 const {userAuth,adminAuth} = require("../middlewares/auth");
 /*const paymentController = require('../controllers/user/paymentController');
@@ -154,6 +155,12 @@ router.get("/wallet",userAuth,userController.loadWalletPage);
 router.get('/order/:orderId',userAuth, orderDetailsController.getOrderDetails);
 router.get('/order-confirm',userAuth,checkoutController.orderconfirm);
 router.post('/retry-payment/:orderId',userAuth,razorpayController.retryRazorpayPayment);
+
+
+//router.get("/order/invoice/:orderId", orderDetailsController.downloadInvoice);
+router.get("/order/:orderId/download-invoice",userAuth, orderDetailsController.downloadInvoice);
+
+router.get("/contact",contactController.contact);
 
 
 

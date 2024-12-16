@@ -80,7 +80,7 @@
                     <div class="bg-light rounded p-4 mt-4">
                         <div class="d-flex justify-content-between">
                             <h5>Subtotal</h5>
-                            <p id="subtotal">Rs <%= (cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)+3).toFixed(2) %></p>
+                            <p id="subtotal">Rs <%= (cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)+50).toFixed(2) %></p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h5>Discount</h5>
@@ -88,7 +88,7 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <h5>Final Total</h5>
-                            <p id="final-total">Rs <%= (finalAmount+3).toFixed(2) %></p>
+                            <p id="final-total">Rs <%= (finalAmount+50).toFixed(2) %></p>
                         </div>
                     </div>
 
@@ -428,7 +428,7 @@ codRadioButton.addEventListener('change', () => {
 
                     const razorpayOptions = {
                         key: data.order.key,
-                        amount: data.order.amount+3,
+                        amount: data.order.amount+50,
                         currency: "INR",
                         name: "Petal Paradise",
                         description: "Order Payment",
@@ -483,11 +483,25 @@ codRadioButton.addEventListener('change', () => {
                         },
                         theme: {
                             color: "#F37254"
-                        }
+                        },
+                        modal: {
+        ondismiss: function () {
+            Swal.fire({
+                title: 'Payment Not Completed',
+                text: 'You exited the payment process.',
+                icon: 'warning',
+                confirmButtonText: 'Go to History'
+            }).then(() => {
+                window.location.href = '/orders/history';
+            });
+        }
+    }
+                        
                     };
 
                     const razorpay = new Razorpay(razorpayOptions);
                     razorpay.open();
+                    
                 } catch (error) {
                     console.error("Error:", error);
                     Swal.fire({
@@ -497,6 +511,7 @@ codRadioButton.addEventListener('change', () => {
                         confirmButtonText: 'OK'
                     });
                 }
+               
             } else {
                 Swal.fire({
                     title: 'Confirm Order',

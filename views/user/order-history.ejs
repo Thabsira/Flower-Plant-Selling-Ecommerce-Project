@@ -60,7 +60,7 @@
                                             <% } %>
                                         </td>
                                         <td><%= item.product ? item.product.productName : 'Product Unavailable' %></td>
-                                        <td>$<%= item.price ? item.price.toFixed(2) : '0.00' %></td>
+                                        <td>Rs. <%= item.price ? item.price.toFixed(2) : '0.00' %></td>
                                         <td><%= item.quantity %></td>
                                         
                                         <td>Rs. <%= (item.price * item.quantity).toFixed(2) %></td>

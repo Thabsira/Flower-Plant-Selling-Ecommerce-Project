@@ -372,90 +372,6 @@ const login = async(req,res)=>{
 
 
 
-/*const login = async (req, res) => {
-    try {
-        const { email, password, referralCode } = req.body;
-
-        const findUser = await User.findOne({ isAdmin: 0, email: email });
-        if (!findUser) {
-            return res.render("login", { message: "User Not Found" });
-        }
-
-        if (findUser.isBlocked) {
-            return res.render("login", { message: "User is blocked by admin" });
-        }
-
-        if (!password || !findUser.password) {
-            return res.render("login", { message: "Password is required." });
-        }
-
-        const passwordMatch = await bcrypt.compare(password, findUser.password);
-        if (!passwordMatch) {
-            return res.render("login", { message: "Incorrect Password" });
-        }
-
-
-       /* if (!findUser.wallet) {
-            findUser.wallet = { balance: 0, transactions: [] };  // Initialize with 0 balance and an empty transactions array
-            await findUser.save();  // Save the changes
-        }*/
-
-       /* if (referralCode) {
-            console.log("Referral code provided:", referralCode); 
-
-            const referredUser = await User.findOne({ referalCode: referralCode });
-            if (!referredUser) {
-                console.log("Invalid referral code.");
-                return res.render("login", { message: "Invalid referral code." });
-            }
-            console.log("Find user:", findUser);  
-            console.log("Referred user:", referredUser);  
-            if (!findUser.redeemed) {
-
-                findUser.redeemed = true;
-                findUser.redeemedusers.push(referredUser._id);
-                referredUser.referredUsers.push(findUser._id);
-
-                console.log("Before update:");
-                console.log("Find user referredUsers:", findUser.referredUsers);
-                console.log("Referred user referredUsers:", referredUser.referredUsers);
-
-                await referredUser.save();
-                await findUser.save();
-                console.log("After update:");
-                console.log("Find user referredUsers:", findUser.referredUsers);
-                console.log("Referred user referredUsers:", referredUser.referredUsers);
-
-                referredUser.wallet += 10; 
-                await referredUser.save(); 
-
-                console.log(`User ${findUser.email} redeemed referral code of ${referredUser.email}`);
-
-                res.render("login", { message: "Referral code redeemed successfully! Welcome!" });
-                return;
-            } else {
-                console.log("User has already redeemed the referral.");
-                return res.render("login", { message: "Referral code already redeemed." });
-            }
-        }
-
-    
-        req.session.user = findUser;
-        console.log("Redirecting to user profile after processing referral.");
-        res.redirect("/");
-
-    } catch (error) {
-        console.error("Login error:", error);
-        res.render("login", { message: "Login Failed. Please try again later" });
-    }
-};*/
-
-
-
-
-
-
-
 const logout = async(req,res)=>{
     try{
         req.session.destroy((err)=>{
@@ -535,10 +451,10 @@ const loadWalletPage = async (req, res) => {
             date: item.date.toISOString().split("T")[0]
         }));
 
-        // Check query parameter to decide whether to show all or limit transactions
+
         const showAll = req.query.view === "all";
         if (!showAll) {
-            transactions = transactions.slice(0, 4); // Show only last 4 transactions
+            transactions = transactions.slice(0, 4); 
         }
 
         console.log('transactions', transactions);

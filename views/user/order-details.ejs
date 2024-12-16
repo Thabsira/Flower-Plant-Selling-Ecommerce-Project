@@ -18,19 +18,7 @@
         </div>
 
         <div class="card-body">
-            <h5 class="mb-3">Shipping Address</h5>
-            <% if (order.address) { %>
-                <div class="card p-3 mb-4">
-                    <p><strong>Type:</strong> <%= order.address.addressType %></p>
-                    <p><strong>Name:</strong> <%= order.address.name %></p>
-                    <p><strong>City:</strong> <%= order.address.city %>, <%= order.address.state %></p>
-                    <p><strong>Pincode:</strong> <%= order.address.pincode %></p>
-                    <p><strong>Landmark:</strong> <%= order.address.landMark %></p>
-                    <p><strong>Phone:</strong> <%= order.address.phone %></p>
-                </div>
-            <% } else { %>
-                <p>No address found for this order.</p>
-            <% } %>
+        
 
             <h5 class="mb-3">Order Items</h5>
             <% order.orderItems.forEach(item => { %>
@@ -56,8 +44,11 @@
 
             <h5 class="mb-3">Price Details</h5>
             <div class="card p-3">
-                <p><strong>Subtotal:</strong> Rs. <%= order.totalPrice.toFixed(2) %></p>
-                <p><strong>Shipping</strong>: Rs.3</p>
+                
+                <p><strong>Cart Total:</strong> Rs. <%= cartTotal %></p> 
+                <p><strong>Shipping</strong>: Rs.50</p>
+                <p><strong>Subtotal:</strong> Rs. <%= order.totalPrice %></p>
+                
                 <% if (order.couponApplied) { %>
                     <p><strong>Coupon Applied:</strong> <%= order.couponApplied %></p>
                     <p><strong>Discount:</strong> Rs. <%= order.discount.toFixed(2) %></p>
@@ -72,11 +63,22 @@
        <!---- <button class="btn btn-primary" onclick="downloadInvoice('<%= order.orderId %>')">
             Download Invoice
         </button>--->
-        <button class="btn btn-primary" id="downloadInvoice">
+        <!--<button class="btn btn-primary" id="downloadInvoice">
             Download Invoice
-        </button>
+        </button>-->
 
       <!----  <button id="printPage" class="btn">Download as PDF</button>--->
+
+      <!--<a href="/order/invoice/<%= order.orderId %>" class="btn btn-primary">
+        Download Invoice
+    </a>-->
+
+    <a href="/order/<%= order.orderId %>/download-invoice"
+            class="btn btn-primary btn-sm"
+            target="_blank">
+            Download Invoice
+          </a>
+    
 
         
         <a href="/orders/history" class="btn btn-secondary">
@@ -132,7 +134,7 @@
 
 </style>
 
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> 
 <!---<script src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>-->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -171,7 +173,7 @@ async function retryPayment(orderId) {
                                     razorpay_order_id: paymentResponse.razorpay_order_id,
                                     razorpay_payment_id: paymentResponse.razorpay_payment_id,
                                     razorpay_signature: paymentResponse.razorpay_signature,
-                                   // addressId: addressId
+                                // addressId: addressId
                                 })
                                 
                         });
@@ -185,8 +187,16 @@ async function retryPayment(orderId) {
                         const verifyData = await verifyResponse.json();
 
                         if (verifyData.success) {
-                            alert('Payment successful! Order status updated.');
-                            window.location.reload();
+                          //  alert('Payment successful! Order status updated.');
+                          Swal.fire({
+                                    title: 'Success',
+                                    text: 'Your payment was successful!',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            
                         } else {
                             alert('Payment verification failed. Please try again.');
                         }
@@ -196,7 +206,7 @@ async function retryPayment(orderId) {
                     }
                 },
                 theme: {
-                    color: "#3399cc",
+                    color: "#F37254",
                 },
             };
 

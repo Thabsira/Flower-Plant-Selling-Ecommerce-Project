@@ -316,6 +316,7 @@ const editProduct = async (req,res)=>{
 
         if(images.length>0){
             updateFields.$push = {productImage:{$each:images}};
+         // updateFields.productImage = [...(product.productImage || []), ...images];
         }
 
         await Product.findByIdAndUpdate(id,updateFields,{new:true});

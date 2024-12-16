@@ -139,132 +139,6 @@ console.log('Updated session:', req.session);
 
 
 
-/*const placeOrder = async (req, res) => {
-    try {
-        console.log("Place order route hit");
-        const userId = req.session.user._id;
-        const { addressId, paymentMethod, couponCode } = req.body;
-
-        //const singlePayment = Array.isArray(paymentMethod) ? paymentMethod[0]:paymentMethod;
-    if (Array.isArray(paymentMethod)) {
-        // Take the first value or throw an error
-        req.body.paymentMethod = paymentMethod[0];
-      }
-  
-
-        console.log("Received Address ID:", addressId);
-        console.log("Received Payment Method:", paymentMethod);
-        console.log("Received Coupon Code:", couponCode);
-
-        const cart = await Cart.findOne({ userId }).populate('items.productId');
-        if (!cart || cart.items.length === 0) {
-            return res.status(400).json({ message: "Cart is empty" });
-        }
-
-        const userAddressData = await Address.findOne({ userId });
-        const address = userAddressData?.address.find(addr => addr._id.toString() === addressId);
-
-        if (!address) {
-            return res.status(400).json({ message: "Address not found" });
-        }
-
-        let totalPrice = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        console.log("Total Price (before discount):", totalPrice);
-
-        for (const item of cart.items) {
-            if (item.productId.quantity < item.quantity) {
-                return res.status(400).json({
-                    message: `Insufficient stock for product: ${item.productId.productName}`
-                });
-            }
-        }
-
-        let discount = 0;
-        let isCouponApplied = false;
-
-        if (couponCode) {
-            const coupon = await Coupon.findOne({ couponCode });
-            if (!coupon || new Date() > new Date(coupon.expireOn) || !coupon.isList) {
-                return res.status(400).json({ message: "Invalid or expired coupon" });
-            }
-
-
-            const appliedCouponCode = req.session.couponCode;
-            if (appliedCouponCode === couponCode) {
-         return res.status(400).json({ message: "You have already used this coupon" });
-               }
-
-        
-            if (totalPrice < coupon.minimumPrice) {
-                return res.status(400).json({ 
-                    message: `Coupon requires a minimum order of $${coupon.minimumPrice}` 
-                });
-            }
-
-        
-            if (coupon.offerPrice && coupon.offerPrice > 0) {
-                discount = coupon.offerPrice;
-            } else if (coupon.discount && coupon.discount > 0) {
-                discount = (totalPrice * coupon.discount) / 100; 
-            }
-
-            isCouponApplied = true;
-        }
-
-        const finalAmount = Math.max(totalPrice - discount, 0);
-        console.log("Discount Applied:", discount);
-        console.log("Final Amount (after discount):", finalAmount);
-
-        const order = new Order({
-            userId,
-            orderItems: cart.items.map(item => ({
-                product: item.productId._id,
-                quantity: item.quantity,
-                price: item.price
-            })),
-            totalPrice,
-            finalAmount,
-            discount,
-            address: address._id,
-            status: "Pending",
-           // paymentMethod:singlePayment,
-           paymentMethod:req.body.paymentMethod,
-          // paymentStatus: singlePayment === "cash_on_delivery" ? "Pending" : "Paid",
-           paymentStatus: paymentMethod === "cash_on_delivery" ? "Pending" : "Paid",
-            couponApplied: isCouponApplied,
-            couponCode: isCouponApplied ? couponCode : null,
-            createdOn: Date.now()
-        });
-
-        console.log("Order to be saved:", order);
-        await order.save();
-        // Clear session values related to coupons and amounts
-        delete req.session.couponCode;
-        delete req.session.totalAfterCoupon;
-
-// Optionally, clear cart-related session values if any
-        delete req.session.cart;
-
-        for (const item of cart.items) {
-            await Product.findByIdAndUpdate(item.productId._id, {
-                $inc: { quantity: -item.quantity }
-            });
-        }
-
-        await Cart.deleteOne({ userId });
-        await User.findByIdAndUpdate(userId, {
-            $push: { orderHistory: order._id }
-        });
-
-        res.redirect('/orders/history');
-
-       //res.json({ success: true, message: 'Order placed successfully!' });
-    } catch (error) {
-        console.error("Error placing order:", error);
-        console.log(error);
-        res.status(500).json({ message: "Error placing order" });
-    }
-};*/
 
 
 
@@ -275,7 +149,6 @@ const placeOrder = async (req, res) => {
         const { addressId, paymentMethod, couponCode } = req.body;
 
         if (Array.isArray(paymentMethod)) {
-            // Take the first value or throw an error
             req.body.paymentMethod = paymentMethod[0];
         }
 
@@ -287,13 +160,28 @@ const placeOrder = async (req, res) => {
         if (!cart || cart.items.length === 0) {
             return res.status(400).json({ message: "Cart is empty" });
         }
-
-        const userAddressData = await Address.findOne({ userId });
+//alredy commented no need
+       /* const userAddressData = await Address.findOne({ userId });
         const address = userAddressData?.address.find(addr => addr._id.toString() === addressId);
 
         if (!address) {
             return res.status(400).json({ message: "Address not found" });
-        }
+        }*/
+       //needed
+            const userAddressData = await Address.findOne({ userId });
+            if (!userAddressData) {
+             return res.status(400).json({ message: "No addresses found for the user" });
+                }
+
+            console.log("User Address Data:", userAddressData);
+
+           const address = userAddressData.address.find(addr => addr._id.toString() === addressId);
+
+            if (!address) {
+             return res.status(400).json({ message: "Address not found" });
+            }
+
+           console.log("Fetched Address:", address);
 
         let totalPrice = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         console.log("Total Price (before discount):", totalPrice);
@@ -305,7 +193,7 @@ const placeOrder = async (req, res) => {
                 message: "Orders above $1000 are not allowed for Cash on Delivery (COD)" 
             });
         }*/
-
+//needed
             if (paymentMethod === req.body.paymentMethod) {
                 console.log("Payment method is cash on delivery");
             }
@@ -356,7 +244,7 @@ const placeOrder = async (req, res) => {
             isCouponApplied = true;
         }
 
-        const finalAmount = Math.max(totalPrice - discount, 0);
+        const finalAmount = Math.max(totalPrice - discount, 0)+50;
         console.log("Discount Applied:", discount);
         console.log("Final Amount (after discount):", finalAmount);
 
@@ -461,7 +349,7 @@ const applyCoupon = async (req, res) => {
             discount = coupon.offerPrice;
             console.log("Fixed Offer Price Discount Applied:", discount);
         } else if (coupon.discount) {
-            discount = (finalAmount+3 * coupon.discount) / 100; 
+            discount = (finalAmount+50 * coupon.discount) / 100; 
             console.log("Percentage Discount Applied:", discount);
         }
 
@@ -494,17 +382,27 @@ const applyCoupon = async (req, res) => {
 
 
 
-//  function for removing coupon
+
 const removeCoupon = async (req, res) => {
     try {
+        const userId = req.session.user._id;
+        const couponCode = req.session.couponCode;
+
+        // Clear session values
         req.session.couponCode = null;
         req.session.totalAfterCoupon = null;
 
-        const userId = req.session.user._id;
         const cart = await Cart.findOne({ userId }).populate("items.productId");
-        
         if (!cart || !cart.items.length) {
             return res.status(400).json({ success: false, message: "Cart is empty" });
+        }
+
+        if (couponCode) {
+            // Remove the user's userId from the coupon's used list
+            await Coupon.findOneAndUpdate(
+                { couponCode },
+                { $pull: { userId: userId } }
+            );
         }
 
         const subtotal = cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -512,9 +410,9 @@ const removeCoupon = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Coupon removed successfully",
-            subtotal: subtotal+3,
+            subtotal: subtotal + 50, // Adding shipping fee
             discount: 0,
-            total: subtotal+3,
+            total: subtotal + 50,
         });
     } catch (error) {
         console.error("Error removing coupon:", error);
@@ -523,9 +421,14 @@ const removeCoupon = async (req, res) => {
 };
 
 
+
 const orderconfirm = async(req,res) => {
     res.render('order-confirmation');
 }
+
+
+
+
 
 
 
