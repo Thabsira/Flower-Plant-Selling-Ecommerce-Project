@@ -201,7 +201,7 @@
 
 
 
-function copyCouponCode() {
+/*function copyCouponCode() {
     const couponSelect = document.getElementById("couponSelect");
     const selectedCoupon = couponSelect.options[couponSelect.selectedIndex];
 
@@ -225,7 +225,46 @@ function copyCouponCode() {
     } else {
         alert("Please select a coupon first!");
     }
+}*/
+
+
+
+function copyCouponCode() {
+    const couponSelect = document.getElementById("couponSelect");
+    const selectedCoupon = couponSelect.options[couponSelect.selectedIndex];
+
+    if (selectedCoupon.value) {
+        const couponCode = selectedCoupon.value;
+
+        const tempInput = document.createElement("input");
+        tempInput.value = couponCode; 
+        document.body.appendChild(tempInput);
+
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999);
+
+        document.execCommand("copy");
+
+        document.body.removeChild(tempInput);
+
+        // SweetAlert for success message
+        Swal.fire({
+            icon: 'success',
+            title: 'Copied!',
+            text: `${couponCode} has been copied to the clipboard!`,
+            confirmButtonText: 'OK',
+        });
+    } else {
+        // SweetAlert for error message
+        Swal.fire({
+            icon: 'error',
+            title: 'No Coupon Selected',
+            text: 'Please select a coupon first!',
+            confirmButtonText: 'OK',
+        });
+    }
 }
+
 
 
 const couponSelect = document.getElementById('couponSelect');
@@ -233,7 +272,7 @@ const subtotalElement = document.getElementById('subtotal');
 const discountElement = document.getElementById('discount');
 const finalTotalElement = document.getElementById('final-total');
 
-async function applyCoupon() {
+/*async function applyCoupon() {
     const couponCode = document.getElementById('couponCode').value;
 
     const response = await fetch('/apply-coupon', {
@@ -254,7 +293,57 @@ async function applyCoupon() {
     } else {
         alert(result.message); 
     }
+}*/
+
+
+
+async function applyCoupon() {
+    const couponCode = document.getElementById('couponCode').value;
+
+    try {
+        const response = await fetch('/apply-coupon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ couponCode }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            // Update the displayed values
+            document.getElementById('subtotal').innerText = `Subtotal: ${result.subtotal}`;
+            document.getElementById('discount').innerText = `Discount: ${result.couponDiscount}`;
+            document.getElementById('final-total').innerText = `Total: ${result.totalAfterCoupon}`;
+
+            document.getElementById('finalAmount').value = result.totalAfterCoupon;
+
+            // SweetAlert for success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Coupon Applied!',
+                text: `Discount of ${result.couponDiscount} has been applied.`,
+                confirmButtonText: 'OK',
+            });
+        } else {
+            // SweetAlert for error message
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Coupon',
+                text: result.message,
+                confirmButtonText: 'OK',
+            });
+        }
+    } catch (error) {
+        // Handle any network or unexpected errors
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Something went wrong while applying the coupon. Please try again.',
+            confirmButtonText: 'OK',
+        });
+    }
 }
+
 
 
 
