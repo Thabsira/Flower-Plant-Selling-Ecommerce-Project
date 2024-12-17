@@ -300,7 +300,7 @@ const finalTotalElement = document.getElementById('final-total');
 async function applyCoupon() {
     const couponCode = document.getElementById('couponCode').value;
 
-    try {
+    
         const response = await fetch('/apply-coupon', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -333,16 +333,9 @@ async function applyCoupon() {
                 confirmButtonText: 'OK',
             });
         }
-    } catch (error) {
-        // Handle any network or unexpected errors
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong while applying the coupon. Please try again.',
-            confirmButtonText: 'OK',
-        });
     }
-}
+
+
 
 
 
