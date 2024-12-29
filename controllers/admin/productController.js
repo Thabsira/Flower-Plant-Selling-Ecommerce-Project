@@ -155,6 +155,12 @@ const addProductOffer = async(req,res)=>{
     try {
         const {productId,percentage} = req.body;
         console.log("Received offer for product:", productId, "with percentage:", percentage);
+
+         // Validate the percentage (must be between 0 and 90)
+         if (percentage < 0 || percentage > 90) {
+            return res.status(400).json({ status: false, message: "Offer percentage must be between 0 and 90." });
+        }
+        
         const findProduct = await Product.findOne({_id:productId});
         if(!findProduct){
             return res.status(404).json({status:false,message:"Product Not Found"});
@@ -171,19 +177,7 @@ const addProductOffer = async(req,res)=>{
             return res.json({status:false,message:"This category already exists"})
         }
 
-//Apply offer
 
-        /*findProduct.salePrice = Math.floor(findProduct.regularPrice - (findProduct.regularPrice * (percentage / 100)));
-        findProduct.productOffer = parseInt(percentage);
-        await findProduct.save();
-        findCategory.categoryOffer = 0;
-        await findCategory.save();
-        res.json({status:true});
-    } catch (error) {
-        res.redirect("/pageerror");
-        res.status(500).json({status:false,message:"Internal Server Error"})
-        
-    }*/
         findProduct.salePrice = findProduct.regularPrice - (findProduct.regularPrice * (percentage / 100)); 
         findProduct.productOffer = percentage;
         await findProduct.save();
@@ -265,8 +259,9 @@ const editProduct = async (req,res)=>{
                 productName: req.body.productName,
                 _id: { $ne: id }
             });
-            
 
+
+       
         if(existingproduct){
             return res.status(400).json({error:"Product with this name already exists. Please try another name"});
         }

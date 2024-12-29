@@ -427,7 +427,7 @@ const productDetails = async (req, res) => {
 
 
 
-const loadWalletPage = async (req, res) => {
+/*const loadWalletPage = async (req, res) => {
     try {
         const userId = req.session.user._id;
         console.log("userId", userId);
@@ -467,7 +467,55 @@ const loadWalletPage = async (req, res) => {
         console.error('Error loading wallet page', error);
         res.status(500).send('Error loading wallet page');
     }
+};*/
+
+
+const loadWalletPage = async (req, res) => {
+    try {
+        const userId = req.session.user._id;
+        console.log("userId", userId);
+
+        const wallet = await Wallet.findOne({ userId });
+        if (!wallet) {
+            return res.render('wallet', {
+                balance: 0,
+                transactions: [],
+                currentPage: 1,
+                totalPages: 1
+            });
+        }
+
+        console.log('wallet', wallet);
+
+        // Pagination logic
+        const page = parseInt(req.query.page) || 1; // Default to page 1
+        const limit = 4; // Number of transactions per page
+        const totalTransactions = wallet.transactions.length;
+        const totalPages = Math.ceil(totalTransactions / limit);
+
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+
+        const paginatedTransactions = wallet.transactions
+            .sort((a, b) => b.date - a.date) // Sort by date (newest first)
+            .slice(startIndex, endIndex) // Paginate transactions
+            .map(item => ({
+                ...item.toObject(),
+                date: item.date.toISOString().split("T")[0]
+            }));
+
+        res.render('wallet', {
+            balance: wallet.balance.toFixed(2),
+            transactions: paginatedTransactions,
+            currentPage: page,
+            totalPages: totalPages
+        });
+    } catch (error) {
+        console.error('Error loading wallet page', error);
+        res.status(500).send('Error loading wallet page');
+    }
 };
+
 
 
 

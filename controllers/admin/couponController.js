@@ -49,6 +49,10 @@ const createCoupon = async (req, res) => {
       req.flash("error", "Minimum purchase price must be a positive number.");
       return res.redirect("/admin/coupons/create");
   }
+  if (offerPrice > minimumPrice) {
+    req.flash("error", "Offer price cannot exceed the minimum purchase price.");
+    return res.redirect("/admin/coupons/create");
+}
 
   try {
       const newCoupon = new Coupon({
@@ -91,7 +95,7 @@ const editCoupon = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Find the coupon by ID
+    
     const coupon = await Coupon.findById(id);
     if (!coupon) {
       req.flash("error", "Coupon not found.");
@@ -129,6 +133,12 @@ const updateCoupon = async (req, res) => {
     );
     return res.redirect(`/edit/${id}`);
   }
+
+  if (parseFloat(offerPrice) > parseFloat(minimumPrice)) {
+    req.flash("error", "Offer price cannot exceed the minimum purchase price.");
+    return res.redirect(`/edit/${id}`);
+  }
+
 
   try {
 

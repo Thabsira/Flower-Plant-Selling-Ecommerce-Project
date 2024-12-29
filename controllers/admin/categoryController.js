@@ -54,6 +54,13 @@ const addCategory = async (req,res)=>{
 const addCategoryOffer = async (req, res) => {
     try {
         const percentage = parseInt(req.body.percentage);
+          // Validate the offer percentage
+          if (percentage <= 0 || percentage > 90) {
+            return res.status(400).json({ 
+                status: false, 
+                message: "Offer percentage must be greater than 0 and not exceed 90%" 
+            });
+        }
         const categoryId = req.body.categoryId;
         const category = await Category.findById(categoryId);
         if (!category) {

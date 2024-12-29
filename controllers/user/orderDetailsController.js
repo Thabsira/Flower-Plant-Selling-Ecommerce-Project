@@ -102,10 +102,7 @@ const getOrderDetails = async (req, res) => {
         const order = await Order.findOne({ orderId: req.params.orderId })
             .populate('orderItems.product', 'productName productImage salePrice description couponApplied couponCode') // Populate product details
             .populate('address'); // Populate address details
-          /* .populate({
-            path: 'address',
-            select: 'address', // Fetch the address array
-        });*/
+         
         if (!order) {
             return res.status(404).send('Order not found');
         }

@@ -410,7 +410,7 @@ const removeCoupon = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Coupon removed successfully",
-            subtotal: subtotal + 50, // Adding shipping fee
+            subtotal: subtotal + 50, 
             discount: 0,
             total: subtotal + 50,
         });

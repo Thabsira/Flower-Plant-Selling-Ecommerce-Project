@@ -1,7 +1,7 @@
 <%- include("../../views/partials/user/header") %>
 
 <style>
-     body {
+    body {
         background: linear-gradient(to bottom right, #97b482, #e6f7ff);
         min-height: 100vh;
         margin: 0;
@@ -9,18 +9,36 @@
         color: #333;
         display: flex;
         flex-direction: column;
-    } 
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination .page-item {
+        margin: 0 5px;
+    }
+
+    .pagination .page-link {
+        color: #418510;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #418510;
+        color: #fff;
+        border: none;
+    }
 </style>
 
 <div class="container-fluid min-vh-100 d-flex flex-column justify-content-between">
-    <!-- Wallet Content -->
     <div class="container mt-5 mb-5 flex-grow-1">
         <div class="row justify-content-center" style="margin-top: 120px;">
             <div class="col-md-8">
                 <div class="card p-4">
                     <h3 class="text-center mb-4">Wallet Balance: Rs. <%= balance %></h3>
-                    
-                    
+
                     <% if (transactions && transactions.length > 0) { %>
                         <table class="table table-bordered">
                             <thead class="thead-light">
@@ -31,26 +49,48 @@
                                     <th class="text-center">Description</th>
                                 </tr>
                             </thead>
-                            <h3>All Transactions</h3>
-                           
                             <tbody>
                                 <% transactions.forEach(transaction => { %>
                                     <tr>
-                                        <td class="text-center"><%= new Date(transaction.date).toLocaleDateString() %></td>
+                                        <td class="text-center"><%= transaction.date %></td>
                                         <td class="text-center"><%= transaction.type %></td>
-                                        <td class="text-center">Rs. <%= transaction.amount.toFixed(2) %>
-                                        </td>
+                                        <td class="text-center">Rs. <%= transaction.amount.toFixed(2) %></td>
                                         <td class="text-center"><%= transaction.description %></td>
                                     </tr>
                                 <% }); %>
                             </tbody>
                         </table>
-                     <!----   <button style="border-radius: 5px; border-style: none; background-color: #418510; color: aliceblue;">View All</button>--->
-                     <a href="?view=<%= showAll ? '' : 'all' %>">
-                        <button style="border-radius: 5px; background-color: #418510; color: aliceblue; border-style: none;"><%= showAll ? 'View Less' : 'View All' %></button>
-                    </a>
                     <% } else { %>
                         <p class="text-center text-muted mt-4">No transactions available.</p>
+                    <% } %>
+
+                    <!-- Pagination Controls -->
+                    <% if (totalPages > 1) { %>
+                        <nav>
+                            <ul class="pagination justify-content-center mt-4">
+                                <% if (currentPage > 1) { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<%= currentPage - 1 %>" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                <% } %>
+
+                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                    </li>
+                                <% } %>
+
+                                <% if (currentPage < totalPages) { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<%= currentPage + 1 %>" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </nav>
                     <% } %>
                 </div>
             </div>

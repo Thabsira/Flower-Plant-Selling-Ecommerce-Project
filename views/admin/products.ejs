@@ -247,6 +247,17 @@
             inputLabel:'percentage',
             inputPlaceholder:'%'
         })
+
+         //  validation for offer percentage
+    if (amount < 0 || amount > 90) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Offer percentage must be between 0 and 90.',
+        });
+        return;
+    }
+
         $.ajax({
             url:"/admin/addProductOffer",
             method:'POST',

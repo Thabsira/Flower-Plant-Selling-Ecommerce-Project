@@ -192,9 +192,6 @@
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script> 
 
-
-
-
 <script>
 
 
@@ -247,7 +244,7 @@ function copyCouponCode() {
 
         document.body.removeChild(tempInput);
 
-        // SweetAlert for success message
+        
         Swal.fire({
             icon: 'success',
             title: 'Copied!',
@@ -255,7 +252,7 @@ function copyCouponCode() {
             confirmButtonText: 'OK',
         });
     } else {
-        // SweetAlert for error message
+        
         Swal.fire({
             icon: 'error',
             title: 'No Coupon Selected',
@@ -310,14 +307,14 @@ async function applyCoupon() {
         const result = await response.json();
 
         if (response.ok) {
-            // Update the displayed values
+            
             document.getElementById('subtotal').innerText = `Subtotal: ${result.subtotal}`;
             document.getElementById('discount').innerText = `Discount: ${result.couponDiscount}`;
             document.getElementById('final-total').innerText = `Total: ${result.totalAfterCoupon}`;
 
             document.getElementById('finalAmount').value = result.totalAfterCoupon;
 
-            // SweetAlert for success message
+            
             Swal.fire({
                 icon: 'success',
                 title: 'Coupon Applied!',
@@ -325,7 +322,7 @@ async function applyCoupon() {
                 confirmButtonText: 'OK',
             });
         } else {
-            // SweetAlert for error message
+            
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Coupon',
